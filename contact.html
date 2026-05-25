@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact - Smart Crop Detective</title>
+  <meta name="description" content="Get in touch with the Smart Crop Detective team. We'd love to hear from you.">
+  <meta property="og:title" content="Smart Crop Detective - AI Crop Disease Detection">
+  <meta property="og:description" content="Detect crop diseases instantly with AI. Free for Indian farmers.">
+  <meta property="og:image" content="/assets/images/og-banner.jpg">
+  <meta property="og:type" content="website">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Smart Crop Detective">
+  <meta name="twitter:description" content="AI-powered crop disease detection for farmers.">
+  <meta name="twitter:image" content="/assets/images/og-banner.jpg">
+  <link rel="icon" href="/static/favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/components.css">
+  <link rel="stylesheet" href="/static/css/pages.css">
+    <script src="/static/js/theme.js"></script>
+</head>
+<body>
+  <div id="nav-root"></div>
+
+  <section class="contact-page">
+    <div class="contact-inner">
+      <!-- Left Side - Info -->
+      <div class="contact-info">
+        <h2>Get in Touch</h2>
+        <p>Have questions about Smart Crop Detective? Want to report an issue or suggest a feature? We'd love to hear from you!</p>
+        
+        <div class="contact-cards">
+          <div class="contact-card">
+            <div class="contact-card-icon">📧</div>
+            <div>
+              <p class="contact-card-label">Email</p>
+              <p class="contact-card-value">support@smartcropdetective.com</p>
+            </div>
+          </div>
+          
+          <div class="contact-card">
+            <div class="contact-card-icon">📍</div>
+            <div>
+              <p class="contact-card-label">Location</p>
+              <p class="contact-card-value">Shirpur, Maharashtra, India</p>
+            </div>
+          </div>
+          
+          <div class="contact-card">
+            <div class="contact-card-icon">⏰</div>
+            <div>
+              <p class="contact-card-label">Response Time</p>
+              <p class="contact-card-value">Within 24 hours</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right Side - Form -->
+      <div class="contact-form-card">
+        <form id="contact-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="contact-name">Name</label>
+            <input type="text" id="contact-name" class="form-input" placeholder="Your name" required>
+            <div class="form-error"></div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="contact-email">Email</label>
+            <input type="email" id="contact-email" class="form-input" placeholder="Your email address" required>
+            <div class="form-error"></div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="contact-subject">Subject</label>
+            <input type="text" id="contact-subject" class="form-input" placeholder="What is this about?" required>
+            <div class="form-error"></div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="contact-message">Message</label>
+            <textarea id="contact-message" class="form-input" rows="5" placeholder="Tell us more..." required></textarea>
+            <div class="form-error"></div>
+          </div>
+          
+          <button type="submit" class="btn btn-orange btn-full" id="contact-btn">
+            Send Message
+          </button>
+        </form>
+        
+        <div class="contact-success" id="contact-success">
+          <div class="contact-success-icon">✅</div>
+          <h3>Message Received!</h3>
+          <p style="color: var(--text-muted); margin-top: 8px;">We'll get back to you soon.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="footer-logo">🌿 Smart Crop Detective</div>
+          <p class="footer-tagline">AI-powered crop health for every farmer</p>
+        </div>
+        <div class="footer-links">
+          <a href="/index.html" class="footer-link">Home</a>
+          <a href="/about.html" class="footer-link">About</a>
+          <a href="/library.html" class="footer-link">Library</a>
+          <a href="/contact.html" class="footer-link">Contact</a>
+          <a href="https://github.com/ninadpatil05" target="_blank" class="footer-link">GitHub</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copyright">© 2025 Smart Crop Detective</p>
+        <p class="footer-made">Made with ❤️ for Indian Farmers</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/nav.js"></script>
+  <script src="/static/js/utils.js"></script>
+  <script>
+    document.getElementById('contact-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById('contact-name');
+      const email = document.getElementById('contact-email');
+      const subject = document.getElementById('contact-subject');
+      const message = document.getElementById('contact-message');
+      const btn = document.getElementById('contact-btn');
+      
+      FormValidator.clearAllErrors(this);
+      let isValid = true;
+
+      if (!name.value.trim()) {
+        FormValidator.showError(name, 'Name is required');
+        isValid = false;
+      }
+
+      if (!email.value.trim()) {
+        FormValidator.showError(email, 'Email is required');
+        isValid = false;
+      } else if (!FormValidator.validateEmail(email.value)) {
+        FormValidator.showError(email, 'Please enter a valid email');
+        isValid = false;
+      }
+
+      if (!subject.value.trim()) {
+        FormValidator.showError(subject, 'Subject is required');
+        isValid = false;
+      }
+
+      if (!message.value.trim()) {
+        FormValidator.showError(message, 'Message is required');
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      btn.innerHTML = '<div class="spinner"></div> Sending...';
+      btn.disabled = true;
+
+      try {
+        const response = await API.post('/contact', {
+          name: name.value.trim(),
+          email: email.value.trim(),
+          subject: subject.value.trim(),
+          message: message.value.trim()
+        });
+
+        if (response.status === 'success') {
+          document.getElementById('contact-form').style.display = 'none';
+          document.getElementById('contact-success').classList.add('show');
+        } else {
+          Toast.error(response.message || 'Email service not configured. Please try again later.');
+          btn.innerHTML = 'Send Message';
+          btn.disabled = false;
+        }
+      } catch (error) {
+        Toast.error('Email service not configured. Please try again later.');
+        btn.innerHTML = 'Send Message';
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

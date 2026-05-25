@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /profile.html
+Disallow: /detect.html
+Disallow: /reports.html

@@ -1,0 +1,338 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login / Sign Up - Smart Crop Detective</title>
+  <meta name="description" content="Login or create an account to access Smart Crop Detective's AI-powered crop disease detection.">
+  <link rel="icon" href="/static/favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/components.css">
+  <link rel="stylesheet" href="/static/css/pages.css">
+    <script src="/static/js/theme.js"></script>
+</head>
+<body>
+  <div class="auth-page">
+    <!-- Left Panel -->
+    <div class="auth-left">
+      <div class="auth-left-content">
+        <a href="/index.html" class="footer-logo" style="margin-bottom: 48px; display: inline-flex;">🌿 Smart Crop Detective</a>
+        <h2>Protect your crops with AI</h2>
+        <ul>
+          <li>Detect 38+ crop diseases</li>
+          <li>Weather-based farming advice</li>
+          <li>English + हिंदी support</li>
+          <li>Free to use</li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- Right Panel -->
+    <div class="auth-right">
+      <div class="auth-card">
+        <!-- Tab Toggle -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">Login</button>
+          <button class="auth-tab" data-tab="signup">Sign Up</button>
+        </div>
+        
+        <!-- Login Form -->
+        <form class="auth-form active" id="login-form" novalidate>
+          <h2>Welcome back 👋</h2>
+          
+          <div class="form-group">
+            <label class="form-label" for="login-email">Email</label>
+            <div class="form-input-icon">
+              <span class="icon-left">📧</span>
+              <input type="email" id="login-email" class="form-input" placeholder="Enter your email" required>
+            </div>
+            <div class="form-error"></div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="login-password">Password</label>
+            <div class="form-input-icon">
+              <span class="icon-left">🔒</span>
+              <input type="password" id="login-password" class="form-input" placeholder="Enter your password" required>
+              <span class="icon-right" onclick="togglePassword('login-password', this)">👁</span>
+            </div>
+            <div class="form-error"></div>
+          </div>
+          
+          <a href="#" class="forgot-password">Forgot password?</a>
+          
+          <button type="submit" class="btn btn-primary btn-full" id="login-btn">
+            Login →
+          </button>
+          
+          <div class="auth-divider">or</div>
+          
+          <p class="auth-switch">
+            Don't have an account? <a href="#" onclick="switchTab('signup')">Sign Up</a>
+          </p>
+        </form>
+        
+        <!-- Signup Form -->
+        <form class="auth-form" id="signup-form" novalidate>
+          <h2>Create your account</h2>
+          
+          <div class="auth-form-row">
+            <div class="form-group">
+              <label class="form-label" for="signup-firstname">First Name</label>
+              <input type="text" id="signup-firstname" class="form-input" placeholder="First name" required>
+              <div class="form-error"></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="signup-lastname">Last Name</label>
+              <input type="text" id="signup-lastname" class="form-input" placeholder="Last name" required>
+              <div class="form-error"></div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="signup-email">Email</label>
+            <div class="form-input-icon">
+              <span class="icon-left">📧</span>
+              <input type="email" id="signup-email" class="form-input" placeholder="Enter your email" required>
+            </div>
+            <div class="form-error"></div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="signup-phone">Phone <span style="color: var(--text-muted); font-weight: 400;">(optional)</span></label>
+            <div class="form-input-icon">
+              <span class="icon-left">📱</span>
+              <input type="tel" id="signup-phone" class="form-input" placeholder="10-digit phone number">
+            </div>
+            <div class="form-error"></div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="signup-password">Password</label>
+            <div class="form-input-icon">
+              <span class="icon-left">🔒</span>
+              <input type="password" id="signup-password" class="form-input" placeholder="Create a password" required>
+              <span class="icon-right" onclick="togglePassword('signup-password', this)">👁</span>
+            </div>
+            <div class="password-strength">
+              <div class="password-strength-bar" id="password-strength-bar"></div>
+            </div>
+            <div class="form-error"></div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="signup-confirm">Confirm Password</label>
+            <div class="form-input-icon" style="position: relative;">
+              <span class="icon-left">🔒</span>
+              <input type="password" id="signup-confirm" class="form-input" placeholder="Confirm your password" required>
+              <span class="match-indicator" id="password-match"></span>
+            </div>
+            <div class="form-error"></div>
+          </div>
+          
+          <button type="submit" class="btn btn-orange btn-full" id="signup-btn">
+            Create Account →
+          </button>
+          
+          <div class="auth-divider">or</div>
+          
+          <p class="auth-switch">
+            Already have an account? <a href="#" onclick="switchTab('login')">Login</a>
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/utils.js"></script>
+  <script>
+    // Tab switching
+    function switchTab(tab) {
+      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+      
+      document.querySelector(`.auth-tab[data-tab="${tab}"]`).classList.add('active');
+      document.getElementById(`${tab}-form`).classList.add('active');
+    }
+
+    document.querySelectorAll('.auth-tab').forEach(tab => {
+      tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+    });
+
+    // Check URL hash for initial tab
+    if (window.location.hash === '#signup') {
+      switchTab('signup');
+    }
+
+    // Password visibility toggle
+    function togglePassword(inputId, icon) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.textContent = '🙈';
+      } else {
+        input.type = 'password';
+        icon.textContent = '👁';
+      }
+    }
+
+    // Password strength indicator
+    document.getElementById('signup-password').addEventListener('input', function() {
+      const strength = FormValidator.getPasswordStrength(this.value);
+      const bar = document.getElementById('password-strength-bar');
+      bar.className = 'password-strength-bar ' + strength;
+    });
+
+    // Password match indicator
+    document.getElementById('signup-confirm').addEventListener('input', function() {
+      const password = document.getElementById('signup-password').value;
+      const indicator = document.getElementById('password-match');
+      
+      if (this.value === '') {
+        indicator.textContent = '';
+        indicator.className = 'match-indicator';
+      } else if (this.value === password) {
+        indicator.textContent = '✓';
+        indicator.className = 'match-indicator match';
+      } else {
+        indicator.textContent = '✗';
+        indicator.className = 'match-indicator no-match';
+      }
+    });
+
+    // Login form submission
+    document.getElementById('login-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('login-email');
+      const password = document.getElementById('login-password');
+      const btn = document.getElementById('login-btn');
+      
+      FormValidator.clearAllErrors(this);
+      let isValid = true;
+
+      if (!email.value.trim()) {
+        FormValidator.showError(email, 'Email is required');
+        isValid = false;
+      } else if (!FormValidator.validateEmail(email.value)) {
+        FormValidator.showError(email, 'Please enter a valid email');
+        isValid = false;
+      }
+
+      if (!password.value) {
+        FormValidator.showError(password, 'Password is required');
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      btn.innerHTML = '<div class="spinner"></div> Logging in...';
+      btn.disabled = true;
+
+      try {
+        const response = await API.post('/login', {
+          email: email.value,
+          password: password.value
+        });
+
+        if (response.status === 'success') {
+          // Fetch user profile after login (Flask sets cookie, /me returns user)
+          const me = await API.get('/me');
+          sessionStorage.setItem('agritech_user', JSON.stringify(me.user || {}));
+          window.location.href = '/dashboard.html';
+        } else {
+          Toast.error(response.message || 'Invalid credentials');
+          btn.innerHTML = 'Login →';
+          btn.disabled = false;
+        }
+      } catch (error) {
+        Toast.error('Something went wrong. Please try again.');
+        btn.innerHTML = 'Login →';
+        btn.disabled = false;
+      }
+    });
+
+    // Signup form submission
+    document.getElementById('signup-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const firstname = document.getElementById('signup-firstname');
+      const lastname = document.getElementById('signup-lastname');
+      const email = document.getElementById('signup-email');
+      const phone = document.getElementById('signup-phone');
+      const password = document.getElementById('signup-password');
+      const confirm = document.getElementById('signup-confirm');
+      const btn = document.getElementById('signup-btn');
+      
+      FormValidator.clearAllErrors(this);
+      let isValid = true;
+
+      if (!firstname.value.trim()) {
+        FormValidator.showError(firstname, 'First name is required');
+        isValid = false;
+      }
+
+      if (!lastname.value.trim()) {
+        FormValidator.showError(lastname, 'Last name is required');
+        isValid = false;
+      }
+
+      if (!email.value.trim()) {
+        FormValidator.showError(email, 'Email is required');
+        isValid = false;
+      } else if (!FormValidator.validateEmail(email.value)) {
+        FormValidator.showError(email, 'Please enter a valid email');
+        isValid = false;
+      }
+
+      if (phone.value && !FormValidator.validatePhone(phone.value)) {
+        FormValidator.showError(phone, 'Please enter a valid 10-digit phone number');
+        isValid = false;
+      }
+
+      if (!password.value) {
+        FormValidator.showError(password, 'Password is required');
+        isValid = false;
+      } else if (!FormValidator.validatePassword(password.value)) {
+        FormValidator.showError(password, 'Password must be at least 6 characters');
+        isValid = false;
+      }
+
+      if (password.value !== confirm.value) {
+        FormValidator.showError(confirm, 'Passwords do not match');
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      btn.innerHTML = '<div class="spinner"></div> Creating account...';
+      btn.disabled = true;
+
+      try {
+        const response = await API.post('/signup', {
+          first_name: firstname.value.trim(),
+          last_name: lastname.value.trim(),
+          email: email.value.trim(),
+          phone: phone.value.trim() || null,
+          password: password.value
+        });
+
+        if (response.status === 'success') {
+          Toast.success('Account created successfully! Please log in.');
+          switchTab('login');
+        } else {
+          Toast.error(response.message || 'Registration failed');
+          btn.innerHTML = 'Create Account →';
+          btn.disabled = false;
+        }
+      } catch (error) {
+        Toast.error('Something went wrong. Please try again.');
+        btn.innerHTML = 'Create Account →';
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,533 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detect Disease - Smart Crop Detective</title>
+  <meta name="description" content="Upload a leaf photo for instant AI-powered crop disease detection.">
+  <meta property="og:title" content="Smart Crop Detective - AI Crop Disease Detection">
+  <meta property="og:description" content="Detect crop diseases instantly with AI. Free for Indian farmers.">
+  <meta property="og:image" content="/assets/images/og-banner.jpg">
+  <meta property="og:type" content="website">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Smart Crop Detective">
+  <meta name="twitter:description" content="AI-powered crop disease detection for farmers.">
+  <meta name="twitter:image" content="/assets/images/og-banner.jpg">
+  <link rel="icon" href="/static/favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/components.css">
+  <link rel="stylesheet" href="/static/css/pages.css">
+    <script src="/static/js/theme.js"></script>
+</head>
+<body class="auth-protected">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <a href="/dashboard.html" class="sidebar-logo">🌿 Smart Crop Detective</a>
+    
+    <nav class="sidebar-nav">
+      <a href="/dashboard.html" class="sidebar-link">🏠 Dashboard</a>
+      <a href="/detect.html" class="sidebar-link active">🔬 Detect</a>
+      <a href="/weather.html" class="sidebar-link">🌤 Weather</a>
+      <a href="/library.html" class="sidebar-link">📚 Library</a>
+      <a href="/reports.html" class="sidebar-link">📋 Reports</a>
+      <a href="/profile.html" class="sidebar-link">👤 Profile</a>
+    </nav>
+    
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="sidebar-avatar">U</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebar-name">User</div>
+        <div class="sidebar-user-email" id="sidebar-email">user@example.com</div>
+        <a href="#" class="sidebar-logout" onclick="handleLogout(event)">Logout</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Mobile Nav -->
+  <nav class="mobile-nav">
+    <div class="mobile-nav-inner">
+      <a href="/dashboard.html" class="mobile-nav-link">
+        <span>🏠</span>
+        <span>Home</span>
+      </a>
+      <a href="/detect.html" class="mobile-nav-link active">
+        <span>🔬</span>
+        <span>Detect</span>
+      </a>
+      <a href="/weather.html" class="mobile-nav-link">
+        <span>🌤</span>
+        <span>Weather</span>
+      </a>
+      <a href="/library.html" class="mobile-nav-link">
+        <span>📚</span>
+        <span>Library</span>
+      </a>
+      <a href="/profile.html" class="mobile-nav-link">
+        <span>👤</span>
+        <span>Profile</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-with-sidebar">
+    <div class="container" style="padding: 32px 24px;">
+      <div class="detect-container">
+        <div class="section-title" style="text-align: left; margin-bottom: 32px;">
+          <h2>🔬 Detect Crop Disease</h2>
+          <p class="text-muted">Upload a leaf photo to get instant AI diagnosis</p>
+        </div>
+
+        <!-- Upload Zone -->
+        <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+          <div id="upload-default">
+            <div class="upload-zone-icon">🌿</div>
+            <h3>Drag & drop a leaf photo here</h3>
+            <p>or click to browse</p>
+            <small>JPEG · PNG · Max 10MB</small>
+          </div>
+          <div class="upload-preview" id="upload-preview">
+            <img id="preview-image" src="" alt="Preview">
+            <p class="upload-preview-info" id="preview-info"></p>
+            <button class="upload-remove" onclick="removeImage(event)">✕ Remove</button>
+          </div>
+          <input type="file" id="file-input" accept="image/jpeg,image/png" style="display: none;">
+        </div>
+
+        <!-- Crop Selector -->
+        <div class="crop-selector">
+          <label class="form-label" for="crop-select">Crop Type (optional)</label>
+          <select id="crop-select" class="form-select">
+            <option value="">All Crops</option>
+            <option value="Tomato">🍅 Tomato</option>
+            <option value="Potato">🥔 Potato</option>
+            <option value="Apple">🍎 Apple</option>
+            <option value="Corn">🌽 Corn</option>
+            <option value="Grape">🍇 Grape</option>
+            <option value="Pepper">🫑 Pepper</option>
+            <option value="Peach">🍑 Peach</option>
+            <option value="Cherry">🍒 Cherry</option>
+            <option value="Strawberry">🍓 Strawberry</option>
+            <option value="Blueberry">🫐 Blueberry</option>
+            <option value="Orange">🍊 Orange</option>
+            <option value="Raspberry">🍃 Raspberry</option>
+            <option value="Squash">🎃 Squash</option>
+            <option value="Soybean">🟫 Soybean</option>
+          </select>
+        </div>
+
+        <!-- Analyze Button -->
+        <div class="analyze-btn-wrapper">
+          <button class="btn btn-orange btn-full btn-lg" id="analyze-btn" disabled>
+            🔬 Analyze Crop
+          </button>
+        </div>
+
+        <!-- Detection Results -->
+        <div class="detection-results" id="detection-results">
+          <div class="detection-card" id="detection-card">
+            <div class="detection-header">
+              <div class="detection-header-top">
+                <span class="pill" id="result-crop">🍅 Tomato</span>
+                <h2 id="result-disease">Early Blight</h2>
+                <span class="badge" id="result-status">Diseased</span>
+              </div>
+              <div class="detection-confidence">
+                <span id="result-confidence-text">Confidence: 92%</span>
+                <div class="progress" style="flex: 1;">
+                  <div class="progress-bar" id="result-confidence-bar" style="width: 92%;"></div>
+                </div>
+              </div>
+              <span class="badge badge-orange" id="result-severity">High Urgency</span>
+            </div>
+            
+            <div class="detection-body">
+              <p class="detection-description" id="result-description">
+                Loading description...
+              </p>
+              
+              <div class="detection-symptoms" id="symptoms-section">
+                <h4>Symptoms:</h4>
+                <ul id="result-symptoms"></ul>
+              </div>
+              
+              <div class="immediate-action" id="immediate-action">
+                <span class="immediate-action-icon">⚠️</span>
+                <p id="result-action">Take immediate action to prevent spread.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <button class="btn btn-primary" id="get-advice-btn" onclick="getAdvice()">
+              💊 Get AI Advice
+            </button>
+            <button class="btn btn-ghost" onclick="resetDetection()">
+              🔄 Scan Another Crop
+            </button>
+          </div>
+
+          <!-- AI Advice Panel -->
+          <div class="advice-panel" id="advice-panel">
+            <div class="advice-card">
+              <div class="advice-header">
+                <div class="language-toggle">
+                  <button data-lang="en" class="active">🇬🇧 English</button>
+                  <button data-lang="hi">🇮🇳 हिंदी</button>
+                </div>
+                <span class="badge badge-orange" id="advice-urgency">High Urgency</span>
+              </div>
+              
+              <div class="advice-section">
+                <h4>Treatment Steps</h4>
+                <ol class="advice-steps" id="advice-treatment"></ol>
+              </div>
+              
+              <div class="advice-section">
+                <h4>Prevention Tips</h4>
+                <ul class="prevention-tips" id="advice-prevention"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/auth-guard.js"></script>
+  <script src="/static/js/utils.js"></script>
+  <script src="/static/js/lang.js"></script>
+  <script>
+    let selectedFile = null;
+    let detectionResult = null;
+    let adviceData = null;
+
+    // Handle logout
+    function handleLogout(e) {
+      e.preventDefault();
+      API.post('/logout', {}).then(() => {
+        sessionStorage.removeItem('agritech_user');
+        window.location.href = '/index.html';
+      });
+    }
+
+    // Load user data
+    window.addEventListener('userLoaded', function(e) {
+      const user = e.detail;
+      const name = user.first_name || 'User';
+      document.getElementById('sidebar-avatar').textContent = name[0].toUpperCase();
+      document.getElementById('sidebar-name').textContent = name;
+      document.getElementById('sidebar-email').textContent = user.email;
+    });
+
+    // File input handling
+    const fileInput = document.getElementById('file-input');
+    const uploadZone = document.getElementById('upload-zone');
+    const analyzeBtn = document.getElementById('analyze-btn');
+
+    fileInput.addEventListener('change', handleFileSelect);
+
+    // Drag and drop
+    uploadZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadZone.classList.add('dragover');
+    });
+
+    uploadZone.addEventListener('dragleave', () => {
+      uploadZone.classList.remove('dragover');
+    });
+
+    uploadZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadZone.classList.remove('dragover');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        handleFile(files[0]);
+      }
+    });
+
+    function handleFileSelect(e) {
+      const file = e.target.files[0];
+      if (file) {
+        handleFile(file);
+      }
+    }
+
+    function handleFile(file) {
+      // Validate file type
+      if (!file.type.match(/^image\/(jpeg|png)$/)) {
+        Toast.error('Please upload a JPEG or PNG image');
+        return;
+      }
+
+      // Validate file size (10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        Toast.error('File size must be less than 10MB');
+        return;
+      }
+
+      selectedFile = file;
+      
+      // Show preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        document.getElementById('preview-image').src = e.target.result;
+        document.getElementById('preview-info').textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+        document.getElementById('upload-default').style.display = 'none';
+        document.getElementById('upload-preview').classList.add('show');
+        analyzeBtn.disabled = false;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removeImage(e) {
+      e.stopPropagation();
+      selectedFile = null;
+      fileInput.value = '';
+      document.getElementById('upload-default').style.display = 'block';
+      document.getElementById('upload-preview').classList.remove('show');
+      analyzeBtn.disabled = true;
+    }
+
+    // Analyze image
+    analyzeBtn.addEventListener('click', async function() {
+      if (!selectedFile) return;
+
+      const formData = new FormData();
+      formData.append('image', selectedFile);
+      
+      const cropType = document.getElementById('crop-select').value;
+      if (cropType) {
+        formData.append('crop_type', cropType);
+      }
+
+      analyzeBtn.innerHTML = '<div class="spinner"></div> Analyzing with AI...';
+      analyzeBtn.disabled = true;
+
+      try {
+        const result = await API.postForm('/detect', formData);
+        
+        if (result.status === 'success') {
+          // Normalize Flask response fields → what displayResults expects
+          const normalized = {
+            status: 'success',
+            predicted_class: result.raw_class || result.disease_detected || 'Unknown',
+            confidence: result.confidence || 0,
+            description: result.report?.description || result.description || '',
+            symptoms: result.report?.causes ? [result.report.causes] : null,
+            immediate_action: result.report?.preventive_measures || null,
+            severity: null,
+          };
+          detectionResult = normalized;
+          displayResults(normalized);
+        } else {
+          Toast.error(result.message || 'Detection failed');
+          analyzeBtn.innerHTML = '🔬 Analyze Crop';
+          analyzeBtn.disabled = false;
+        }
+      } catch (error) {
+        Toast.error('Something went wrong. Please try again.');
+        analyzeBtn.innerHTML = '🔬 Analyze Crop';
+        analyzeBtn.disabled = false;
+      }
+    });
+
+    function displayResults(result) {
+      const parsed = DiseaseParser.parse(result.predicted_class);
+      const isHealthy = DiseaseParser.isHealthy(result.predicted_class);
+      const confidence = result.confidence || 0;
+      const confidenceColor = ConfidenceHelper.getColor(confidence);
+
+      // Update card styling
+      const card = document.getElementById('detection-card');
+      card.className = `detection-card ${isHealthy ? 'healthy' : 'diseased'}`;
+
+      // Update content
+      document.getElementById('result-crop').textContent = getCropEmoji(parsed.crop) + ' ' + parsed.crop;
+      document.getElementById('result-disease').textContent = parsed.disease;
+      
+      const statusBadge = document.getElementById('result-status');
+      statusBadge.className = `badge ${isHealthy ? 'badge-green' : 'badge-red'}`;
+      statusBadge.textContent = isHealthy ? 'Healthy' : 'Diseased';
+
+      document.getElementById('result-confidence-text').textContent = `Confidence: ${ConfidenceHelper.formatPercent(confidence)}`;
+      
+      const bar = document.getElementById('result-confidence-bar');
+      bar.style.width = `${confidence * 100}%`;
+      bar.className = `progress-bar ${confidenceColor}`;
+
+      // Severity
+      const severity = result.severity || (isHealthy ? 'None' : (confidence >= 0.8 ? 'High' : confidence >= 0.6 ? 'Moderate' : 'Low'));
+      const severityBadge = document.getElementById('result-severity');
+      severityBadge.textContent = severity + ' Urgency';
+      severityBadge.className = `badge ${severity === 'High' ? 'badge-red' : severity === 'Moderate' ? 'badge-yellow' : 'badge-green'}`;
+
+      // Description
+      document.getElementById('result-description').textContent = result.description || 'Disease detected. Get AI advice for treatment recommendations.';
+
+      // Symptoms
+      const symptomsSection = document.getElementById('symptoms-section');
+      const symptomsList = document.getElementById('result-symptoms');
+      if (result.symptoms && result.symptoms.length > 0) {
+        symptomsSection.style.display = 'block';
+        symptomsList.innerHTML = result.symptoms.map(s => `<li>${s}</li>`).join('');
+      } else if (!isHealthy) {
+        symptomsSection.style.display = 'block';
+        symptomsList.innerHTML = '<li>Visible signs of disease on leaves</li><li>Discoloration or spots</li>';
+      } else {
+        symptomsSection.style.display = 'none';
+      }
+
+      // Immediate action
+      const actionSection = document.getElementById('immediate-action');
+      if (isHealthy) {
+        actionSection.style.display = 'none';
+      } else {
+        actionSection.style.display = 'flex';
+        document.getElementById('result-action').textContent = result.immediate_action || 'Take immediate action to prevent spread to other plants.';
+      }
+
+      // Show/hide advice button based on health status
+      document.getElementById('get-advice-btn').style.display = isHealthy ? 'none' : 'inline-flex';
+
+      // Show results
+      document.getElementById('detection-results').classList.add('show');
+      analyzeBtn.innerHTML = '🔬 Analyze Crop';
+      analyzeBtn.disabled = false;
+
+      // Scroll to results
+      document.getElementById('detection-results').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function getCropEmoji(crop) {
+      const emojis = {
+        'Tomato': '🍅',
+        'Potato': '🥔',
+        'Apple': '🍎',
+        'Corn': '🌽',
+        'Grape': '🍇',
+        'Pepper': '🫑',
+        'Peach': '🍑',
+        'Cherry': '🍒',
+        'Strawberry': '🍓',
+        'Blueberry': '🫐',
+        'Orange': '🍊',
+        'Raspberry': '🍃',
+        'Squash': '🎃',
+        'Soybean': '🟫'
+      };
+      return emojis[crop] || '🌿';
+    }
+
+    // Get AI Advice
+    async function getAdvice() {
+      if (!detectionResult) return;
+
+      const btn = document.getElementById('get-advice-btn');
+      btn.innerHTML = '<div class="spinner"></div> Getting advice...';
+      btn.disabled = true;
+
+      try {
+        const response = await API.post('/advice', {
+          disease: DiseaseParser.parse(detectionResult.predicted_class).disease,
+          crop_type: DiseaseParser.parse(detectionResult.predicted_class).crop,
+          confidence: detectionResult.confidence
+        });
+
+        if (response.status === 'success') {
+          // Normalize Flask advice response → what displayAdvice expects
+          const a = response.advice || {};
+          const normalized = {
+            urgency: (a.english?.urgency || 'Moderate').charAt(0).toUpperCase() + (a.english?.urgency || 'moderate').slice(1),
+            treatment_en: a.english?.treatment || [],
+            prevention_en: a.english?.prevention || [],
+            treatment_hi: a.hindi?.treatment || [],
+            prevention_hi: a.hindi?.prevention || [],
+          };
+          adviceData = normalized;
+          displayAdvice(normalized);
+        } else {
+          Toast.error(response.message || 'Failed to get advice');
+        }
+      } catch (error) {
+        Toast.error('Something went wrong. Please try again.');
+      }
+
+      btn.innerHTML = '💊 Get AI Advice';
+      btn.disabled = false;
+    }
+
+    function displayAdvice(data) {
+      // Store both language versions
+      adviceData = data;
+
+      // Urgency
+      const urgency = data.urgency || 'Moderate';
+      const urgencyBadge = document.getElementById('advice-urgency');
+      urgencyBadge.textContent = urgency + ' Urgency';
+      urgencyBadge.className = `badge ${urgency === 'High' ? 'badge-red' : urgency === 'Moderate' ? 'badge-yellow' : 'badge-green'}`;
+
+      // Render based on current language
+      renderAdviceContent();
+
+      // Show panel
+      document.getElementById('advice-panel').classList.add('show');
+      document.getElementById('advice-panel').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function renderAdviceContent() {
+      if (!adviceData) return;
+
+      const lang = Lang.get();
+      const treatment = lang === 'hi' ? adviceData.treatment_hi : adviceData.treatment_en;
+      const prevention = lang === 'hi' ? adviceData.prevention_hi : adviceData.prevention_en;
+
+      // Treatment steps
+      const treatmentEl = document.getElementById('advice-treatment');
+      if (treatment && treatment.length > 0) {
+        treatmentEl.innerHTML = treatment.map((step, i) => `
+          <li class="advice-step">
+            <span class="advice-step-number">${i + 1}</span>
+            <p>${step}</p>
+          </li>
+        `).join('');
+      } else {
+        treatmentEl.innerHTML = '<li class="advice-step"><span class="advice-step-number">1</span><p>Consult a local agricultural expert for specific treatment.</p></li>';
+      }
+
+      // Prevention tips
+      const preventionEl = document.getElementById('advice-prevention');
+      if (prevention && prevention.length > 0) {
+        preventionEl.innerHTML = prevention.map(tip => `<li>${tip}</li>`).join('');
+      } else {
+        preventionEl.innerHTML = '<li>Maintain good crop hygiene</li><li>Monitor plants regularly</li>';
+      }
+    }
+
+    // Language toggle
+    document.querySelectorAll('.language-toggle button').forEach(btn => {
+      btn.addEventListener('click', function() {
+        Lang.set(this.dataset.lang);
+        renderAdviceContent();
+      });
+    });
+
+    function resetDetection() {
+      selectedFile = null;
+      detectionResult = null;
+      adviceData = null;
+      fileInput.value = '';
+      document.getElementById('upload-default').style.display = 'block';
+      document.getElementById('upload-preview').classList.remove('show');
+      document.getElementById('detection-results').classList.remove('show');
+      document.getElementById('advice-panel').classList.remove('show');
+      analyzeBtn.disabled = true;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Smart Crop Detective</title>
+  <meta name="description" content="Your crop health dashboard - view stats, recent scans, and quick actions.">
+  <link rel="icon" href="/static/favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/components.css">
+  <link rel="stylesheet" href="/static/css/pages.css">
+  <script src="/static/js/theme.js"></script>
+  <style>
+    /* Premium Dashboard Grid Layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 2.2fr 1fr;
+      gap: 28px;
+      margin-top: 24px;
+    }
+    
+    .dashboard-main-col {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    
+    .dashboard-side-col {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    @media (max-width: 1024px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+    }
+
+    /* Animated Counters */
+    .stat-card-value {
+      transition: all 0.5s ease-out;
+      transform: scale(1);
+    }
+    .stat-card-value.pop {
+      transform: scale(1.1);
+    }
+
+    /* SVG Donut Chart */
+    .donut-chart-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      height: 160px;
+    }
+    .donut-ring {
+      stroke: var(--border);
+    }
+    .donut-segment {
+      transform: rotate(-90deg);
+      transform-origin: center;
+      transition: stroke-dasharray 0.8s ease-in-out;
+    }
+    .chart-center-text {
+      position: absolute;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+
+    /* Sparkline Trend Chart */
+    .sparkline-container {
+      position: relative;
+      height: 70px;
+      width: 100%;
+    }
+    .sparkline-svg {
+      overflow: visible;
+    }
+
+    /* Crop Care Tips Carousel */
+    .tip-card {
+      background: linear-gradient(135deg, var(--green-tint) 0%, rgba(82, 183, 136, 0.08) 100%);
+      border: 1px solid var(--green-pale);
+      border-radius: var(--radius);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      transition: opacity 0.5s ease-in-out;
+    }
+    .tip-icon {
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    /* Enhanced Weather Widget */
+    .weather-widget {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: white;
+      border: none;
+      position: relative;
+      overflow: hidden;
+    }
+    html[data-theme="dark"] .weather-widget {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    }
+    .weather-widget .weather-widget-stat {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .weather-widget .weather-widget-location {
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body class="auth-protected">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <a href="/dashboard.html" class="sidebar-logo">🌿 Smart Crop Detective</a>
+    
+    <nav class="sidebar-nav">
+      <a href="/dashboard.html" class="sidebar-link active">🏠 Dashboard</a>
+      <a href="/detect.html" class="sidebar-link">🔬 Detect</a>
+      <a href="/weather.html" class="sidebar-link">🌤 Weather</a>
+      <a href="/library.html" class="sidebar-link">📚 Library</a>
+      <a href="/reports.html" class="sidebar-link">📋 Reports</a>
+      <a href="/profile.html" class="sidebar-link">👤 Profile</a>
+    </nav>
+    
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="sidebar-avatar">U</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebar-name">User</div>
+        <div class="sidebar-user-email" id="sidebar-email">user@example.com</div>
+        <a href="#" class="sidebar-logout" onclick="handleLogout(event)">Logout</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Mobile Nav -->
+  <nav class="mobile-nav">
+    <div class="mobile-nav-inner">
+      <a href="/dashboard.html" class="mobile-nav-link active">
+        <span>🏠</span>
+        <span>Home</span>
+      </a>
+      <a href="/detect.html" class="mobile-nav-link">
+        <span>🔬</span>
+        <span>Detect</span>
+      </a>
+      <a href="/weather.html" class="mobile-nav-link">
+        <span>🌤</span>
+        <span>Weather</span>
+      </a>
+      <a href="/library.html" class="mobile-nav-link">
+        <span>📚</span>
+        <span>Library</span>
+      </a>
+      <a href="/profile.html" class="mobile-nav-link">
+        <span>👤</span>
+        <span>Profile</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-with-sidebar">
+    <div class="container" style="padding: 32px 24px;">
+      <!-- Header -->
+      <div class="dashboard-header">
+        <div>
+          <h2 id="greeting">Good morning, User 👋</h2>
+          <p>Here's your crop health overview</p>
+        </div>
+        <div class="dashboard-date" id="today-date"></div>
+      </div>
+
+      <!-- Main Layout Grid -->
+      <div class="dashboard-grid">
+        <!-- Main Column (Left) -->
+        <div class="dashboard-main-col">
+          <!-- Stats Row -->
+          <div class="stats-row" style="margin-bottom: 0;">
+            <div class="stat-card blue">
+              <div class="stat-card-icon">📊</div>
+              <div class="stat-card-value" id="total-scans">0</div>
+              <div class="stat-card-label">Total Scans</div>
+            </div>
+            <div class="stat-card red">
+              <div class="stat-card-icon">🦠</div>
+              <div class="stat-card-value" id="diseases-found">0</div>
+              <div class="stat-card-label">Diseases Found</div>
+            </div>
+            <div class="stat-card green">
+              <div class="stat-card-icon">🌿</div>
+              <div class="stat-card-value" id="healthy-plants">0</div>
+              <div class="stat-card-label">Healthy Plants</div>
+            </div>
+            <div class="stat-card yellow">
+              <div class="stat-card-icon">📅</div>
+              <div class="stat-card-value" id="this-week">0</div>
+              <div class="stat-card-label">This Week</div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="quick-actions" style="margin-bottom: 0;">
+            <a href="/detect.html" class="quick-action-card green">
+              <div class="quick-action-icon">🔬</div>
+              <h3>Scan a Crop</h3>
+              <p>Upload a photo for instant disease detection</p>
+            </a>
+            <a href="/weather.html" class="quick-action-card blue">
+              <div class="quick-action-icon">🌤</div>
+              <h3>Check Weather</h3>
+              <p>Get farming advice based on weather</p>
+            </a>
+            <a href="/library.html" class="quick-action-card orange">
+              <div class="quick-action-icon">📚</div>
+              <h3>Disease Library</h3>
+              <p>Browse all 38 plant diseases</p>
+            </a>
+          </div>
+
+          <!-- Crop Care Tip Banner -->
+          <div class="tip-card" id="tip-banner">
+            <span class="tip-icon" id="tip-icon">💡</span>
+            <div>
+              <h4 style="font-size: 15px; font-weight: 600; color: var(--green-primary); margin-bottom: 4px;">Smart Crop Advisory</h4>
+              <p id="tip-text" style="font-size: 14px; line-height: 1.5; color: var(--text);">Loading agricultural advice...</p>
+            </div>
+          </div>
+
+          <!-- Recent Scans -->
+          <div class="recent-scans-section">
+            <div class="section-header">
+              <h3>Recent Scans</h3>
+              <a href="/reports.html">View All →</a>
+            </div>
+            
+            <div id="recent-scans-loading" style="padding: 20px;">
+              <div class="skeleton" style="height: 40px; margin-bottom: 12px;"></div>
+              <div class="skeleton" style="height: 40px; margin-bottom: 12px;"></div>
+              <div class="skeleton" style="height: 40px;"></div>
+            </div>
+
+            <div id="recent-scans-table" style="display: none;">
+              <div class="table-wrapper" style="box-shadow: none;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Crop</th>
+                      <th>Disease</th>
+                      <th>Confidence</th>
+                      <th>Date</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recent-scans-body"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div id="recent-scans-empty" class="empty-state" style="display: none;">
+              <div class="empty-state-icon">🌱</div>
+              <h3>No scans yet</h3>
+              <p>Detect your first crop to see results here!</p>
+              <a href="/detect.html" class="btn btn-orange">🔬 Scan a Crop</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar Column (Right) -->
+        <div class="dashboard-side-col">
+          <!-- Weather Widget -->
+          <div class="weather-widget" id="weather-widget" style="margin-top: 0;">
+            <div class="weather-widget-header">
+              <span>📍</span>
+              <span class="weather-widget-location" id="weather-location">Loading...</span>
+            </div>
+            <div class="weather-widget-main">
+              <div class="weather-widget-temp" id="weather-temp">--°C</div>
+              <div class="weather-widget-icon" id="weather-icon"></div>
+            </div>
+            <div class="weather-widget-stats" style="margin-bottom: 16px;">
+              <span class="weather-widget-stat" id="weather-humidity">💧 --% Humidity</span>
+              <span class="weather-widget-stat" id="weather-wind">💨 -- km/h Wind</span>
+            </div>
+            <button class="btn btn-ghost btn-sm btn-full" onclick="getWeatherByLocation()" style="color: white; border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.1);">📍 Use My Location</button>
+          </div>
+
+          <!-- SVG Donut Chart Card -->
+          <div class="card card-static" id="donut-card">
+            <h3 style="font-size: 16px; margin-bottom: 16px; font-weight: 600;">Disease Distribution</h3>
+            <div class="donut-chart-container">
+              <svg width="130" height="130" viewBox="0 0 42 42" class="donut">
+                <circle class="donut-hole" cx="21" cy="21" r="15.915" fill="transparent"></circle>
+                <circle class="donut-ring" cx="21" cy="21" r="15.915" fill="transparent" stroke="var(--border)" stroke-width="3.2"></circle>
+                <circle id="donut-segment" class="donut-segment" cx="21" cy="21" r="15.915" fill="transparent" stroke="var(--green-light)" stroke-width="3.2" stroke-dasharray="100 0" stroke-dashoffset="25"></circle>
+              </svg>
+              <div class="chart-center-text">
+                <span style="font-size: 20px; font-weight: 700; color: var(--text);" id="chart-percentage">100%</span>
+                <span style="font-size: 11px; color: var(--text-muted);" id="chart-label">Healthy</span>
+              </div>
+            </div>
+            <div id="chart-legend" style="display: flex; flex-direction: column; gap: 8px; margin-top: 16px;">
+              <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--green-light);"></div>
+                <span style="flex: 1;">Healthy</span>
+                <span id="legend-healthy-count">0</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--red);"></div>
+                <span style="flex: 1;">Diseased</span>
+                <span id="legend-diseased-count">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sparkline Trend Chart Card -->
+          <div class="card card-static" id="sparkline-card">
+            <h3 style="font-size: 16px; margin-bottom: 4px; font-weight: 600;">Activity Trend</h3>
+            <p class="text-sm text-muted" style="margin-bottom: 16px;">Scans over the last 7 days</p>
+            <div class="sparkline-container">
+              <svg class="sparkline-svg" viewBox="0 0 100 30" width="100%" height="100%" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="sparkline-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="var(--green-light)" stop-opacity="0.3" />
+                    <stop offset="100%" stop-color="var(--green-light)" stop-opacity="0" />
+                  </linearGradient>
+                </defs>
+                <path id="sparkline-fill" d="" fill="url(#sparkline-grad)" stroke="none"></path>
+                <path id="sparkline-path" d="" fill="none" stroke="var(--green-primary)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); margin-top: 8px;">
+              <span id="sparkline-start-date">7 days ago</span>
+              <span id="sparkline-end-date">Today</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/auth-guard.js"></script>
+  <script src="/static/js/utils.js"></script>
+  <script>
+    // Handle logout
+    function handleLogout(e) {
+      e.preventDefault();
+      API.post('/logout', {}).then(() => {
+        sessionStorage.removeItem('agritech_user');
+        window.location.href = '/index.html';
+      }).catch(() => {
+        sessionStorage.removeItem('agritech_user');
+        window.location.href = '/index.html';
+      });
+    }
+
+    // Rotating Crop Health Care Tips
+    const FARMING_TIPS = [
+      { icon: "💡", text: "Rotate crops regularly to improve soil health and break pest cycles." },
+      { icon: "💧", text: "Water plants early in the morning to reduce evaporation and prevent fungal leaf diseases." },
+      { icon: "🌿", text: "Inspect the undersides of leaves weekly; pests often hide there before spreading." },
+      { icon: "🧪", text: "Get your soil tested annually to choose the perfect fertilizer mix for your crop type." },
+      { icon: "🍃", text: "Prune dead or diseased leaves immediately to prevent infections from spreading." },
+      { icon: "☀️", text: "Ensure proper spacing between crops to allow air circulation and sunlight penetration." }
+    ];
+    
+    let currentTipIndex = 0;
+    function rotateTip() {
+      const banner = document.getElementById('tip-banner');
+      const icon = document.getElementById('tip-icon');
+      const text = document.getElementById('tip-text');
+      
+      banner.style.opacity = 0;
+      setTimeout(() => {
+        const tip = FARMING_TIPS[currentTipIndex];
+        icon.textContent = tip.icon;
+        text.textContent = tip.text;
+        banner.style.opacity = 1;
+        currentTipIndex = (currentTipIndex + 1) % FARMING_TIPS.length;
+      }, 500);
+    }
+    
+    // Initial tip rotation
+    rotateTip();
+    setInterval(rotateTip, 10000);
+
+    // Set today's date
+    document.getElementById('today-date').textContent = DateFormatter.today();
+
+    // Animated Counter Function
+    function animateCounter(id, targetValue) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      
+      let start = 0;
+      const duration = 1200; // ms
+      const startTime = performance.now();
+      
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Easing function (easeOutQuad)
+        const easedProgress = progress * (2 - progress);
+        const currentValue = Math.floor(easedProgress * targetValue);
+        
+        el.textContent = currentValue;
+        
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        } else {
+          el.textContent = targetValue;
+          el.classList.add('pop');
+          setTimeout(() => el.classList.remove('pop'), 200);
+        }
+      }
+      
+      requestAnimationFrame(update);
+    }
+
+    // Load user data
+    window.addEventListener('userLoaded', function(e) {
+      const user = e.detail;
+      const greeting = GreetingHelper.get();
+      const name = user.first_name || 'User';
+      
+      document.getElementById('greeting').textContent = `${greeting}, ${name} 👋`;
+      document.getElementById('sidebar-avatar').textContent = name[0].toUpperCase();
+      document.getElementById('sidebar-name').textContent = name;
+      document.getElementById('sidebar-email').textContent = user.email;
+      
+      loadDashboardData();
+      initWeather();
+    });
+
+    // Load dashboard stats and chart data
+    async function loadDashboardData() {
+      try {
+        const stats = await API.get('/stats');
+        if (stats) {
+          animateCounter('total-scans', stats.total_scans || 0);
+          animateCounter('diseases-found', stats.diseases_found || 0);
+          animateCounter('healthy-plants', stats.healthy_plants || 0);
+          animateCounter('this-week', stats.this_week || 0);
+
+          // Update Donut Chart
+          const total = stats.total_scans || 0;
+          const healthy = stats.healthy_plants || 0;
+          const diseased = stats.diseases_found || 0;
+          
+          document.getElementById('legend-healthy-count').textContent = healthy;
+          document.getElementById('legend-diseased-count').textContent = diseased;
+
+          const percentage = total > 0 ? Math.round((healthy / total) * 100) : 100;
+          document.getElementById('chart-percentage').textContent = `${percentage}%`;
+          
+          const labelEl = document.getElementById('chart-label');
+          if (total === 0) {
+            labelEl.textContent = 'No Scans';
+          } else if (percentage >= 80) {
+            labelEl.textContent = 'Excellent';
+          } else if (percentage >= 50) {
+            labelEl.textContent = 'Moderate';
+          } else {
+            labelEl.textContent = 'Needs Care';
+          }
+
+          // Donut SVG dasharray logic
+          const segment = document.getElementById('donut-segment');
+          segment.setAttribute('stroke-dasharray', `${percentage} ${100 - percentage}`);
+        }
+      } catch (error) {
+        console.error('Failed to load stats:', error);
+      }
+
+      // Load recent scans and sparkline trend
+      try {
+        const history = await API.get('/history');
+        const loading = document.getElementById('recent-scans-loading');
+        const table = document.getElementById('recent-scans-table');
+        const empty = document.getElementById('recent-scans-empty');
+        const tbody = document.getElementById('recent-scans-body');
+
+        loading.style.display = 'none';
+
+        if (history && history.history && history.history.length > 0) {
+          table.style.display = 'block';
+          
+          // Display last 5 in table
+          const limitScans = history.history.slice(0, 5);
+          tbody.innerHTML = limitScans.map(scan => {
+            const parsed = DiseaseParser.parse(scan.predicted_class);
+            const isHealthy = DiseaseParser.isHealthy(scan.predicted_class);
+            const confidence = scan.confidence || 0;
+            const confidenceClass = ConfidenceHelper.getClass(confidence);
+            
+            return `
+              <tr>
+                <td>${parsed.crop}</td>
+                <td>${parsed.disease}</td>
+                <td class="${confidenceClass}">${ConfidenceHelper.formatPercent(confidence)}</td>
+                <td>${DateFormatter.format(scan.timestamp, 'short')}</td>
+                <td>
+                  <span class="badge ${isHealthy ? 'badge-green' : 'badge-red'}">
+                    ${isHealthy ? 'Healthy' : 'Diseased'}
+                  </span>
+                </td>
+              </tr>
+            `;
+          }).join('');
+
+          // Generate Sparkline Trend for the last 7 days
+          generateSparkline(history.history);
+        } else {
+          empty.style.display = 'block';
+          generateEmptySparkline();
+        }
+      } catch (error) {
+        console.error('Failed to load history:', error);
+        document.getElementById('recent-scans-loading').style.display = 'none';
+        document.getElementById('recent-scans-empty').style.display = 'block';
+        generateEmptySparkline();
+      }
+    }
+
+    // Sparkline Generator
+    function generateSparkline(historyList) {
+      // Group scans by date for the last 7 days
+      const days = [];
+      const counts = {};
+      
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const dateString = d.toISOString().split('T')[0];
+        days.push(dateString);
+        counts[dateString] = 0;
+      }
+
+      historyList.forEach(scan => {
+        if (!scan.timestamp) return;
+        const dateString = scan.timestamp.split(' ')[0]; // YYYY-MM-DD
+        if (counts[dateString] !== undefined) {
+          counts[dateString]++;
+        }
+      });
+
+      const maxCount = Math.max(...Object.values(counts), 1);
+      
+      // Calculate coordinates (x from 0 to 100, y from 30 down to 0)
+      const points = days.map((day, idx) => {
+        const x = (idx / 6) * 100;
+        const y = 28 - ((counts[day] / maxCount) * 25);
+        return { x, y };
+      });
+
+      const pathD = "M " + points.map(p => `${p.x} ${p.y}`).join(" L ");
+      document.getElementById('sparkline-path').setAttribute('d', pathD);
+
+      const fillD = pathD + ` L 100 30 L 0 30 Z`;
+      document.getElementById('sparkline-fill').setAttribute('d', fillD);
+      
+      // Format start/end labels
+      const startD = new Date(days[0]);
+      const endD = new Date(days[6]);
+      document.getElementById('sparkline-start-date').textContent = startD.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+      document.getElementById('sparkline-end-date').textContent = "Today";
+    }
+
+    function generateEmptySparkline() {
+      // Straight line at 0 scans
+      const pathD = "M 0 28 L 100 28";
+      document.getElementById('sparkline-path').setAttribute('d', pathD);
+      document.getElementById('sparkline-fill').setAttribute('d', "M 0 28 L 100 28 L 100 30 L 0 30 Z");
+    }
+
+    // Load weather
+    async function loadWeather(city = 'Pune') {
+      try {
+        const weather = await API.get(`/weather?city=${encodeURIComponent(city)}`);
+        if (weather && weather.main) {
+          displayWeather(weather, city);
+        }
+      } catch (error) {
+        console.error('Failed to load weather:', error);
+      }
+    }
+
+    async function loadWeatherByCoords(lat, lon) {
+      try {
+        const weather = await API.get(`/weather?lat=${lat}&lon=${lon}`);
+        if (weather && weather.main) {
+          displayWeather(weather, 'Your Location');
+        }
+      } catch (error) {
+        console.error('Failed to load weather by coords:', error);
+        loadWeather('Pune');
+      }
+    }
+
+    function displayWeather(weather, label) {
+      document.getElementById('weather-location').textContent = weather.name || label;
+      document.getElementById('weather-temp').textContent = `${Math.round(weather.main.temp)}°C`;
+      document.getElementById('weather-humidity').textContent = `💧 ${weather.main.humidity}% Humidity`;
+      document.getElementById('weather-wind').textContent = `💨 ${Math.round(weather.wind.speed * 3.6)} km/h Wind`;
+      
+      if (weather.weather && weather.weather[0]) {
+        const icon = weather.weather[0].icon;
+        document.getElementById('weather-icon').innerHTML = `<img src="https://openweathermap.org/img/wn/${icon}@2x.png" alt="Weather" style="width: 50px; height: 50px;">`;
+      }
+    }
+
+    function initWeather() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            loadWeatherByCoords(position.coords.latitude, position.coords.longitude);
+          },
+          () => {
+            loadWeather('Pune');
+          }
+        );
+      } else {
+        loadWeather('Pune');
+      }
+    }
+
+    function getWeatherByLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            loadWeatherByCoords(position.coords.latitude, position.coords.longitude);
+            Toast.success('Weather updated for your location!');
+          },
+          () => {
+            Toast.error('Location access denied. Using default city Pune.');
+            loadWeather('Pune');
+          }
+        );
+      } else {
+        Toast.error('Geolocation not supported');
+      }
+    }
+  </script>
+</body>
+</html>

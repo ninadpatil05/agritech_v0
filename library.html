@@ -1,0 +1,318 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Disease Library - Smart Crop Detective</title>
+  <meta name="description" content="Browse all 38 plant diseases across 14 crops. Learn about symptoms and treatments.">
+  <meta property="og:title" content="Smart Crop Detective - AI Crop Disease Detection">
+  <meta property="og:description" content="Detect crop diseases instantly with AI. Free for Indian farmers.">
+  <meta property="og:image" content="/assets/images/og-banner.jpg">
+  <meta property="og:type" content="website">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Smart Crop Detective">
+  <meta name="twitter:description" content="AI-powered crop disease detection for farmers.">
+  <meta name="twitter:image" content="/assets/images/og-banner.jpg">
+  <link rel="icon" href="/static/favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/components.css">
+  <link rel="stylesheet" href="/static/css/pages.css">
+    <script src="/static/js/theme.js"></script>
+</head>
+<body class="auth-protected">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <a href="/dashboard.html" class="sidebar-logo">🌿 Smart Crop Detective</a>
+    
+    <nav class="sidebar-nav">
+      <a href="/dashboard.html" class="sidebar-link">🏠 Dashboard</a>
+      <a href="/detect.html" class="sidebar-link">🔬 Detect</a>
+      <a href="/weather.html" class="sidebar-link">🌤 Weather</a>
+      <a href="/library.html" class="sidebar-link active">📚 Library</a>
+      <a href="/reports.html" class="sidebar-link">📋 Reports</a>
+      <a href="/profile.html" class="sidebar-link">👤 Profile</a>
+    </nav>
+    
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="sidebar-avatar">U</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebar-name">User</div>
+        <div class="sidebar-user-email" id="sidebar-email">user@example.com</div>
+        <a href="#" class="sidebar-logout" onclick="handleLogout(event)">Logout</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Mobile Nav -->
+  <nav class="mobile-nav">
+    <div class="mobile-nav-inner">
+      <a href="/dashboard.html" class="mobile-nav-link">
+        <span>🏠</span>
+        <span>Home</span>
+      </a>
+      <a href="/detect.html" class="mobile-nav-link">
+        <span>🔬</span>
+        <span>Detect</span>
+      </a>
+      <a href="/weather.html" class="mobile-nav-link">
+        <span>🌤</span>
+        <span>Weather</span>
+      </a>
+      <a href="/library.html" class="mobile-nav-link active">
+        <span>📚</span>
+        <span>Library</span>
+      </a>
+      <a href="/profile.html" class="mobile-nav-link">
+        <span>👤</span>
+        <span>Profile</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-with-sidebar">
+    <div class="container" style="padding: 32px 24px;">
+      <!-- Header -->
+      <div class="library-header">
+        <h2>📚 Disease Library</h2>
+        <p class="text-muted">38 plant diseases across 14 crops</p>
+        
+        <!-- Filters -->
+        <div class="library-filters">
+          <input type="text" class="form-input" id="search-input" placeholder="🔍 Search disease or crop...">
+          <select class="form-select" id="crop-filter">
+            <option value="">All Crops</option>
+            <option value="Apple">🍎 Apple</option>
+            <option value="Blueberry">🫐 Blueberry</option>
+            <option value="Cherry">🍒 Cherry</option>
+            <option value="Corn">🌽 Corn</option>
+            <option value="Grape">🍇 Grape</option>
+            <option value="Orange">🍊 Orange</option>
+            <option value="Peach">🍑 Peach</option>
+            <option value="Pepper">🫑 Pepper</option>
+            <option value="Potato">🥔 Potato</option>
+            <option value="Raspberry">🍃 Raspberry</option>
+            <option value="Soybean">🟫 Soybean</option>
+            <option value="Squash">🎃 Squash</option>
+            <option value="Strawberry">🍓 Strawberry</option>
+            <option value="Tomato">🍅 Tomato</option>
+          </select>
+          <select class="form-select" id="status-filter">
+            <option value="">All Status</option>
+            <option value="diseased">Diseased</option>
+            <option value="healthy">Healthy</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Results Count -->
+      <p class="results-count" id="results-count">Showing 38 results</p>
+
+      <!-- Grid -->
+      <div class="library-grid" id="library-grid"></div>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="disease-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <span class="pill pill-sm" id="modal-crop">🍅 Tomato</span>
+          <h3 class="modal-title" id="modal-disease" style="margin-top: 8px;">Early Blight</h3>
+        </div>
+        <button class="modal-close" onclick="Modal.hide('disease-modal')">×</button>
+      </div>
+      <div class="modal-body">
+        <span class="badge" id="modal-status">Diseased</span>
+        <p id="modal-description" style="margin-top: 16px; color: var(--text-muted);">
+          Disease description will appear here.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="Modal.hide('disease-modal')">Close</button>
+        <a href="/detect.html" class="btn btn-orange">🔬 Detect This Disease</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/auth-guard.js"></script>
+  <script src="/static/js/utils.js"></script>
+  <script>
+    // All 38 diseases
+    const diseases = [
+      { crop: 'Apple', disease: 'Apple Scab', healthy: false },
+      { crop: 'Apple', disease: 'Black Rot', healthy: false },
+      { crop: 'Apple', disease: 'Cedar Apple Rust', healthy: false },
+      { crop: 'Apple', disease: 'Healthy', healthy: true },
+      { crop: 'Blueberry', disease: 'Healthy', healthy: true },
+      { crop: 'Cherry', disease: 'Powdery Mildew', healthy: false },
+      { crop: 'Cherry', disease: 'Healthy', healthy: true },
+      { crop: 'Corn', disease: 'Cercospora Leaf Spot', healthy: false },
+      { crop: 'Corn', disease: 'Common Rust', healthy: false },
+      { crop: 'Corn', disease: 'Northern Leaf Blight', healthy: false },
+      { crop: 'Corn', disease: 'Healthy', healthy: true },
+      { crop: 'Grape', disease: 'Black Rot', healthy: false },
+      { crop: 'Grape', disease: 'Esca (Black Measles)', healthy: false },
+      { crop: 'Grape', disease: 'Leaf Blight', healthy: false },
+      { crop: 'Grape', disease: 'Healthy', healthy: true },
+      { crop: 'Orange', disease: 'Haunglongbing (Citrus Greening)', healthy: false },
+      { crop: 'Peach', disease: 'Bacterial Spot', healthy: false },
+      { crop: 'Peach', disease: 'Healthy', healthy: true },
+      { crop: 'Pepper', disease: 'Bacterial Spot', healthy: false },
+      { crop: 'Pepper', disease: 'Healthy', healthy: true },
+      { crop: 'Potato', disease: 'Early Blight', healthy: false },
+      { crop: 'Potato', disease: 'Late Blight', healthy: false },
+      { crop: 'Potato', disease: 'Healthy', healthy: true },
+      { crop: 'Raspberry', disease: 'Healthy', healthy: true },
+      { crop: 'Soybean', disease: 'Healthy', healthy: true },
+      { crop: 'Squash', disease: 'Powdery Mildew', healthy: false },
+      { crop: 'Strawberry', disease: 'Leaf Scorch', healthy: false },
+      { crop: 'Strawberry', disease: 'Healthy', healthy: true },
+      { crop: 'Tomato', disease: 'Bacterial Spot', healthy: false },
+      { crop: 'Tomato', disease: 'Early Blight', healthy: false },
+      { crop: 'Tomato', disease: 'Late Blight', healthy: false },
+      { crop: 'Tomato', disease: 'Leaf Mold', healthy: false },
+      { crop: 'Tomato', disease: 'Septoria Leaf Spot', healthy: false },
+      { crop: 'Tomato', disease: 'Spider Mites', healthy: false },
+      { crop: 'Tomato', disease: 'Target Spot', healthy: false },
+      { crop: 'Tomato', disease: 'Yellow Leaf Curl Virus', healthy: false },
+      { crop: 'Tomato', disease: 'Mosaic Virus', healthy: false },
+      { crop: 'Tomato', disease: 'Healthy', healthy: true }
+    ];
+
+    const cropEmojis = {
+      'Apple': '🍎',
+      'Blueberry': '🫐',
+      'Cherry': '🍒',
+      'Corn': '🌽',
+      'Grape': '🍇',
+      'Orange': '🍊',
+      'Peach': '🍑',
+      'Pepper': '🫑',
+      'Potato': '🥔',
+      'Raspberry': '🍃',
+      'Soybean': '🟫',
+      'Squash': '🎃',
+      'Strawberry': '🍓',
+      'Tomato': '🍅'
+    };
+
+    const diseaseDescriptions = {
+      'Apple Scab': 'A fungal disease causing dark, scabby lesions on leaves and fruit. Most common in humid conditions.',
+      'Black Rot': 'A fungal disease causing circular leaf spots and fruit rot. Spreads through infected debris.',
+      'Cedar Apple Rust': 'A fungal disease requiring both cedar and apple trees. Causes orange spots on leaves.',
+      'Powdery Mildew': 'A fungal disease creating white powdery coating on leaves. Thrives in dry conditions.',
+      'Cercospora Leaf Spot': 'A fungal disease causing gray to tan rectangular lesions on corn leaves.',
+      'Common Rust': 'A fungal disease causing small, circular to elongate brown pustules on both leaf surfaces.',
+      'Northern Leaf Blight': 'A fungal disease causing long, elliptical gray-green or tan lesions on corn leaves.',
+      'Esca (Black Measles)': 'A complex fungal disease causing tiger-stripe patterns on grape leaves.',
+      'Leaf Blight': 'A fungal disease causing brown lesions that spread rapidly across grape leaves.',
+      'Haunglongbing (Citrus Greening)': 'A bacterial disease spread by psyllids causing yellow shoots and bitter fruit.',
+      'Bacterial Spot': 'A bacterial disease causing small, dark, water-soaked spots on leaves and fruit.',
+      'Early Blight': 'A fungal disease causing dark concentric ring patterns (target spots) on older leaves.',
+      'Late Blight': 'A devastating fungal disease causing water-soaked lesions that rapidly destroy foliage.',
+      'Leaf Mold': 'A fungal disease causing pale green to yellow spots on upper leaf surfaces.',
+      'Septoria Leaf Spot': 'A fungal disease causing many small circular spots with dark borders.',
+      'Spider Mites': 'Tiny arachnids that cause stippling and bronzing of leaves. Thrive in hot, dry conditions.',
+      'Target Spot': 'A fungal disease causing brown circular lesions with concentric rings.',
+      'Yellow Leaf Curl Virus': 'A viral disease spread by whiteflies causing severe leaf curling and yellowing.',
+      'Mosaic Virus': 'A viral disease causing mottled light and dark green patterns on leaves.',
+      'Leaf Scorch': 'A fungal disease causing purple to red spots that develop tan centers on strawberry leaves.',
+      'Healthy': 'No disease detected. The plant appears to be in good health.'
+    };
+
+    // Handle logout
+    function handleLogout(e) {
+      e.preventDefault();
+      API.post('/logout', {}).then(() => {
+        sessionStorage.removeItem('agritech_user');
+        window.location.href = '/index.html';
+      });
+    }
+
+    // Load user data
+    window.addEventListener('userLoaded', function(e) {
+      const user = e.detail;
+      const name = user.first_name || 'User';
+      document.getElementById('sidebar-avatar').textContent = name[0].toUpperCase();
+      document.getElementById('sidebar-name').textContent = name;
+      document.getElementById('sidebar-email').textContent = user.email;
+    });
+
+    // Render diseases
+    function renderDiseases(filtered) {
+      const grid = document.getElementById('library-grid');
+      const count = document.getElementById('results-count');
+      
+      count.textContent = `Showing ${filtered.length} results`;
+      
+      grid.innerHTML = filtered.map(d => `
+        <div class="disease-card" onclick="showDisease('${d.crop}', '${d.disease}', ${d.healthy})">
+          <div class="disease-card-crop">
+            <span class="pill pill-sm">${cropEmojis[d.crop]} ${d.crop}</span>
+          </div>
+          <h3>${d.disease}</h3>
+          <span class="badge ${d.healthy ? 'badge-green' : 'badge-red'}">
+            ${d.healthy ? 'Healthy' : 'Diseased'}
+          </span>
+        </div>
+      `).join('');
+    }
+
+    // Filter diseases
+    function filterDiseases() {
+      const search = document.getElementById('search-input').value.toLowerCase();
+      const crop = document.getElementById('crop-filter').value;
+      const status = document.getElementById('status-filter').value;
+
+      let filtered = diseases;
+
+      if (search) {
+        filtered = filtered.filter(d => 
+          d.crop.toLowerCase().includes(search) || 
+          d.disease.toLowerCase().includes(search)
+        );
+      }
+
+      if (crop) {
+        filtered = filtered.filter(d => d.crop === crop);
+      }
+
+      if (status === 'healthy') {
+        filtered = filtered.filter(d => d.healthy);
+      } else if (status === 'diseased') {
+        filtered = filtered.filter(d => !d.healthy);
+      }
+
+      renderDiseases(filtered);
+    }
+
+    // Show disease modal
+    function showDisease(crop, disease, healthy) {
+      document.getElementById('modal-crop').textContent = `${cropEmojis[crop]} ${crop}`;
+      document.getElementById('modal-disease').textContent = disease;
+      
+      const statusEl = document.getElementById('modal-status');
+      statusEl.className = `badge ${healthy ? 'badge-green' : 'badge-red'}`;
+      statusEl.textContent = healthy ? 'Healthy' : 'Diseased';
+      
+      document.getElementById('modal-description').textContent = 
+        diseaseDescriptions[disease] || 'No description available.';
+      
+      Modal.show('disease-modal');
+    }
+
+    // Event listeners
+    document.getElementById('search-input').addEventListener('input', filterDiseases);
+    document.getElementById('crop-filter').addEventListener('change', filterDiseases);
+    document.getElementById('status-filter').addEventListener('change', filterDiseases);
+
+    // Initial render
+    renderDiseases(diseases);
+  </script>
+</body>
+</html>

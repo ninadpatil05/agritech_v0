@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather Advisory - Smart Crop Detective</title>
+  <meta name="description" content="Get weather-based farming advice, irrigation recommendations, and crop planning.">
+  <meta property="og:title" content="Smart Crop Detective - AI Crop Disease Detection">
+  <meta property="og:description" content="Detect crop diseases instantly with AI. Free for Indian farmers.">
+  <meta property="og:image" content="/assets/images/og-banner.jpg">
+  <meta property="og:type" content="website">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Smart Crop Detective">
+  <meta name="twitter:description" content="AI-powered crop disease detection for farmers.">
+  <meta name="twitter:image" content="/assets/images/og-banner.jpg">
+  <link rel="icon" href="/static/favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/components.css">
+  <link rel="stylesheet" href="/static/css/pages.css">
+    <script src="/static/js/theme.js"></script>
+</head>
+<body class="auth-protected">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <a href="/dashboard.html" class="sidebar-logo">🌿 Smart Crop Detective</a>
+    
+    <nav class="sidebar-nav">
+      <a href="/dashboard.html" class="sidebar-link">🏠 Dashboard</a>
+      <a href="/detect.html" class="sidebar-link">🔬 Detect</a>
+      <a href="/weather.html" class="sidebar-link active">🌤 Weather</a>
+      <a href="/library.html" class="sidebar-link">📚 Library</a>
+      <a href="/reports.html" class="sidebar-link">📋 Reports</a>
+      <a href="/profile.html" class="sidebar-link">👤 Profile</a>
+    </nav>
+    
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="sidebar-avatar">U</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebar-name">User</div>
+        <div class="sidebar-user-email" id="sidebar-email">user@example.com</div>
+        <a href="#" class="sidebar-logout" onclick="handleLogout(event)">Logout</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Mobile Nav -->
+  <nav class="mobile-nav">
+    <div class="mobile-nav-inner">
+      <a href="/dashboard.html" class="mobile-nav-link">
+        <span>🏠</span>
+        <span>Home</span>
+      </a>
+      <a href="/detect.html" class="mobile-nav-link">
+        <span>🔬</span>
+        <span>Detect</span>
+      </a>
+      <a href="/weather.html" class="mobile-nav-link active">
+        <span>🌤</span>
+        <span>Weather</span>
+      </a>
+      <a href="/library.html" class="mobile-nav-link">
+        <span>📚</span>
+        <span>Library</span>
+      </a>
+      <a href="/profile.html" class="mobile-nav-link">
+        <span>👤</span>
+        <span>Profile</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-with-sidebar">
+    <div class="container" style="padding: 32px 24px;">
+      <div class="section-title" style="text-align: left; margin-bottom: 32px;">
+        <h2>🌤 Weather Advisory</h2>
+        <p class="text-muted">Get farming advice based on live weather data</p>
+      </div>
+
+      <!-- Location Bar -->
+      <div class="location-bar">
+        <input type="text" class="form-input" id="city-input" placeholder="Enter city name...">
+        <button class="btn btn-ghost" onclick="getLocationWeather()">📍 Use My Location</button>
+        <button class="btn btn-primary" onclick="searchCity()">Search</button>
+      </div>
+
+      <!-- Weather Card -->
+      <div class="weather-card" id="weather-card">
+        <div class="weather-card-header">
+          <div class="weather-card-location">
+            <h2 id="weather-city">Loading...</h2>
+            <p class="weather-card-date" id="weather-date"></p>
+          </div>
+        </div>
+        <div class="weather-card-main">
+          <div class="weather-card-temp" id="weather-temp">--°C</div>
+          <div class="weather-card-icon" id="weather-icon"></div>
+          <div class="weather-card-desc" id="weather-desc">--</div>
+        </div>
+        <div class="weather-card-stats">
+          <div class="weather-stat-pill">
+            <span>💧</span>
+            <span id="weather-humidity">-- %</span>
+          </div>
+          <div class="weather-stat-pill">
+            <span>💨</span>
+            <span id="weather-wind">-- km/h</span>
+          </div>
+          <div class="weather-stat-pill">
+            <span>🌡</span>
+            <span id="weather-feels">Feels --°C</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Advisory Tabs -->
+      <div class="advisory-tabs">
+        <div class="advisory-tabs-header">
+          <button class="advisory-tab active" data-tab="farming">🌾 Farming Advice</button>
+          <button class="advisory-tab" data-tab="irrigation">💧 Irrigation</button>
+          <button class="advisory-tab" data-tab="planning">🌱 Crop Planning</button>
+          <button class="advisory-tab" data-tab="alerts">⚠️ Alerts</button>
+        </div>
+        
+        <div class="advisory-content">
+          <!-- Farming Advice Panel -->
+          <div class="advisory-panel active" id="panel-farming">
+            <div id="farming-loading">
+              <div class="skeleton" style="height: 100px; margin-bottom: 16px;"></div>
+              <div class="skeleton" style="height: 80px;"></div>
+            </div>
+            <div id="farming-content" style="display: none;">
+              <div class="alert alert-success" style="margin-bottom: 20px;">
+                <p id="farming-advice">Loading farming advice...</p>
+              </div>
+              <h4 style="margin-bottom: 12px;">Tips for Today:</h4>
+              <ul id="farming-tips" style="list-style: disc; padding-left: 20px; color: var(--text-muted);"></ul>
+            </div>
+          </div>
+
+          <!-- Irrigation Panel -->
+          <div class="advisory-panel" id="panel-irrigation">
+            <div class="irrigation-decision">
+              <div class="irrigation-badge" id="irrigation-decision">LOADING</div>
+              <p id="irrigation-reason" class="text-muted">Analyzing weather conditions...</p>
+              <div class="card card-static" style="max-width: 300px; margin: 20px auto; padding: 16px;">
+                <p style="font-size: 14px; color: var(--text-muted);">Suggested amount:</p>
+                <p style="font-size: 24px; font-weight: 700; color: var(--green-primary);" id="irrigation-amount">-- mm</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Crop Planning Panel -->
+          <div class="advisory-panel" id="panel-planning">
+            <div class="season-toggle">
+              <button class="season-btn active" data-season="kharif">🌧 Kharif</button>
+              <button class="season-btn" data-season="rabi">❄️ Rabi</button>
+              <button class="season-btn" data-season="zaid">☀️ Zaid</button>
+            </div>
+            <button class="btn btn-primary" onclick="getCropRecommendations()">Get Recommendations</button>
+            
+            <div id="crop-recommendations" style="margin-top: 24px; display: none;">
+              <h4 style="margin-bottom: 12px;">Recommended Crops:</h4>
+              <div class="crop-recommendations" id="recommended-crops"></div>
+              <div class="card card-static" style="margin-top: 20px; padding: 16px;">
+                <p style="font-size: 14px; font-weight: 600; margin-bottom: 8px;">Sowing Window:</p>
+                <p id="sowing-window" class="text-muted">--</p>
+              </div>
+              <div class="card card-static" style="margin-top: 12px; padding: 16px;">
+                <p style="font-size: 14px; font-weight: 600; margin-bottom: 8px;">Notes:</p>
+                <p id="planning-notes" class="text-muted">--</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alerts Panel -->
+          <div class="advisory-panel" id="panel-alerts">
+            <div class="alert-severity">
+              <div class="severity-segment" id="severity-none">None</div>
+              <div class="severity-segment" id="severity-low">Low</div>
+              <div class="severity-segment" id="severity-medium">Medium</div>
+              <div class="severity-segment" id="severity-high">High</div>
+            </div>
+            
+            <div id="alerts-content">
+              <div class="alert alert-success" id="no-alerts">
+                <span>✅</span>
+                <p>No weather alerts for your area</p>
+              </div>
+              <div id="alerts-list" style="display: none;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/auth-guard.js"></script>
+  <script src="/static/js/utils.js"></script>
+  <script>
+    let currentWeather = null;
+    let currentCity = 'Pune';
+
+    // Handle logout
+    function handleLogout(e) {
+      e.preventDefault();
+      API.post('/logout', {}).then(() => {
+        sessionStorage.removeItem('agritech_user');
+        window.location.href = '/index.html';
+      });
+    }
+
+    // Load user data
+    window.addEventListener('userLoaded', function(e) {
+      const user = e.detail;
+      const name = user.first_name || 'User';
+      document.getElementById('sidebar-avatar').textContent = name[0].toUpperCase();
+      document.getElementById('sidebar-name').textContent = name;
+      document.getElementById('sidebar-email').textContent = user.email;
+      
+      // Try to get location, fallback to Pune
+      getLocationWeather();
+    });
+
+    // Tab switching
+    document.querySelectorAll('.advisory-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.advisory-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.advisory-panel').forEach(p => p.classList.remove('active'));
+        
+        this.classList.add('active');
+        document.getElementById(`panel-${this.dataset.tab}`).classList.add('active');
+      });
+    });
+
+    // Season toggle
+    document.querySelectorAll('.season-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.season-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    // Load weather
+    async function loadWeather(city) {
+      currentCity = city;
+      document.getElementById('weather-date').textContent = DateFormatter.today();
+
+      try {
+        const weather = await API.get(`/weather?city=${encodeURIComponent(city)}`);
+        if (weather && weather.main) {
+          currentWeather = weather;
+          displayWeather(weather);
+          loadAdvisory(weather);
+        }
+      } catch (error) {
+        Toast.error('Failed to load weather data');
+      }
+    }
+
+    async function loadWeatherByCoords(lat, lon) {
+      document.getElementById('weather-date').textContent = DateFormatter.today();
+
+      try {
+        const weather = await API.get(`/weather?lat=${lat}&lon=${lon}`);
+        if (weather && weather.main) {
+          currentWeather = weather;
+          currentCity = weather.name || 'Your Location';
+          displayWeather(weather);
+          loadAdvisory(weather);
+        }
+      } catch (error) {
+        Toast.error('Failed to load weather data');
+        loadWeather('Pune');
+      }
+    }
+
+    function displayWeather(weather) {
+      document.getElementById('weather-city').textContent = weather.name || currentCity;
+      document.getElementById('weather-temp').textContent = `${Math.round(weather.main.temp)}°C`;
+      document.getElementById('weather-humidity').textContent = `${weather.main.humidity}%`;
+      document.getElementById('weather-wind').textContent = `${Math.round(weather.wind.speed * 3.6)} km/h`;
+      document.getElementById('weather-feels').textContent = `Feels ${Math.round(weather.main.feels_like)}°C`;
+
+      if (weather.weather && weather.weather[0]) {
+        document.getElementById('weather-icon').innerHTML = `<img src="https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png" alt="Weather" style="width: 80px; height: 80px;">`;
+        document.getElementById('weather-desc').textContent = weather.weather[0].description;
+      }
+    }
+
+    async function loadAdvisory(weather) {
+      // Farming advice
+      document.getElementById('farming-loading').style.display = 'block';
+      document.getElementById('farming-content').style.display = 'none';
+
+      try {
+        const advisory = await API.post('/weather-advisory', {
+          lat: weather.coord?.lat,
+          lon: weather.coord?.lon,
+          city: weather.name || currentCity,
+          temperature: weather.main.temp,
+          humidity: weather.main.humidity,
+          description: weather.weather?.[0]?.description || '',
+          wind_speed: weather.wind.speed
+        });
+
+        if (advisory) {
+          document.getElementById('farming-advice').textContent = advisory.farming_advice || 'Weather conditions are suitable for general farming activities.';
+          
+          const tips = advisory.tips || ['Monitor crop health regularly', 'Check soil moisture before irrigation', 'Watch for pest activity'];
+          document.getElementById('farming-tips').innerHTML = tips.map(t => `<li style="margin-bottom: 8px;">${t}</li>`).join('');
+
+          // Irrigation
+          const irrigate = advisory.irrigation || {};
+          const decision = irrigate.decision || 'SKIP';
+          const decisionEl = document.getElementById('irrigation-decision');
+          decisionEl.textContent = decision.toUpperCase();
+          decisionEl.className = `irrigation-badge ${decision.toLowerCase()}`;
+          document.getElementById('irrigation-reason').textContent = irrigate.reason || 'Based on current weather conditions.';
+          document.getElementById('irrigation-amount').textContent = irrigate.amount || '25 mm';
+
+          // Alerts
+          updateAlerts(advisory.alerts || []);
+        }
+      } catch (error) {
+        console.error('Failed to load advisory:', error);
+      }
+
+      document.getElementById('farming-loading').style.display = 'none';
+      document.getElementById('farming-content').style.display = 'block';
+    }
+
+    function updateAlerts(alerts) {
+      const noAlerts = document.getElementById('no-alerts');
+      const alertsList = document.getElementById('alerts-list');
+
+      // Reset severity indicators
+      document.querySelectorAll('.severity-segment').forEach(s => s.classList.remove('active'));
+
+      if (!alerts || alerts.length === 0) {
+        noAlerts.style.display = 'flex';
+        alertsList.style.display = 'none';
+        document.getElementById('severity-none').classList.add('active', 'none');
+      } else {
+        noAlerts.style.display = 'none';
+        alertsList.style.display = 'block';
+        
+        let maxSeverity = 'low';
+        alertsList.innerHTML = alerts.map(alert => {
+          if (alert.severity === 'high') maxSeverity = 'high';
+          else if (alert.severity === 'medium' && maxSeverity !== 'high') maxSeverity = 'medium';
+          
+          const alertClass = alert.severity === 'high' ? 'alert-error' : 
+                            alert.severity === 'medium' ? 'alert-warning' : 'alert-info';
+          
+          return `
+            <div class="alert ${alertClass}" style="margin-bottom: 12px;">
+              <p><strong>${alert.title || 'Weather Alert'}</strong></p>
+              <p style="margin-top: 4px;">${alert.message}</p>
+            </div>
+          `;
+        }).join('');
+
+        document.getElementById(`severity-${maxSeverity}`).classList.add('active', maxSeverity);
+      }
+    }
+
+    function searchCity() {
+      const city = document.getElementById('city-input').value.trim();
+      if (city) {
+        loadWeather(city);
+      }
+    }
+
+    function getLocationWeather() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            loadWeatherByCoords(position.coords.latitude, position.coords.longitude);
+          },
+          () => {
+            loadWeather('Pune');
+          }
+        );
+      } else {
+        loadWeather('Pune');
+      }
+    }
+
+    async function getCropRecommendations() {
+      const season = document.querySelector('.season-btn.active').dataset.season;
+      const recommendationsDiv = document.getElementById('crop-recommendations');
+      
+      try {
+        const response = await API.post('/crop-planning', {
+          season: season,
+          city: currentCity
+        });
+
+        if (response) {
+          const cropsDiv = document.getElementById('recommended-crops');
+          const crops = response.crops || getDefaultCrops(season);
+          cropsDiv.innerHTML = crops.map(crop => `<span class="pill">${crop}</span>`).join('');
+          
+          document.getElementById('sowing-window').textContent = response.sowing_window || getSowingWindow(season);
+          document.getElementById('planning-notes').textContent = response.notes || 'Consult local agricultural experts for specific recommendations.';
+          
+          recommendationsDiv.style.display = 'block';
+        }
+      } catch (error) {
+        // Use default recommendations
+        const cropsDiv = document.getElementById('recommended-crops');
+        const crops = getDefaultCrops(season);
+        cropsDiv.innerHTML = crops.map(crop => `<span class="pill">${crop}</span>`).join('');
+        
+        document.getElementById('sowing-window').textContent = getSowingWindow(season);
+        document.getElementById('planning-notes').textContent = 'Consult local agricultural experts for specific recommendations.';
+        
+        recommendationsDiv.style.display = 'block';
+      }
+    }
+
+    function getDefaultCrops(season) {
+      const crops = {
+        kharif: ['🌾 Rice', '🌽 Maize', '🥜 Groundnut', '🫘 Soybean', '🥒 Cotton'],
+        rabi: ['🌾 Wheat', '🥔 Potato', '🫛 Chickpea', '🥬 Mustard', '🧅 Onion'],
+        zaid: ['🍉 Watermelon', '🥒 Cucumber', '🍈 Muskmelon', '🌻 Sunflower', '🥜 Moong']
+      };
+      return crops[season] || crops.kharif;
+    }
+
+    function getSowingWindow(season) {
+      const windows = {
+        kharif: 'June - July (with onset of monsoon)',
+        rabi: 'October - November (after monsoon)',
+        zaid: 'March - April (summer crops)'
+      };
+      return windows[season] || 'Varies by region';
+    }
+
+    // Enter key search
+    document.getElementById('city-input').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        searchCity();
+      }
+    });
+  </script>
+</body>
+</html>

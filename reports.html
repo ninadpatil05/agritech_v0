@@ -1,0 +1,442 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scan History - Smart Crop Detective</title>
+  <meta name="description" content="View your crop disease detection history and export reports.">
+  <meta property="og:title" content="Smart Crop Detective - AI Crop Disease Detection">
+  <meta property="og:description" content="Detect crop diseases instantly with AI. Free for Indian farmers.">
+  <meta property="og:image" content="/assets/images/og-banner.jpg">
+  <meta property="og:type" content="website">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Smart Crop Detective">
+  <meta name="twitter:description" content="AI-powered crop disease detection for farmers.">
+  <meta name="twitter:image" content="/assets/images/og-banner.jpg">
+  <link rel="icon" href="/static/favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/components.css">
+  <link rel="stylesheet" href="/static/css/pages.css">
+    <script src="/static/js/theme.js"></script>
+</head>
+<body class="auth-protected">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <a href="/dashboard.html" class="sidebar-logo">🌿 Smart Crop Detective</a>
+    
+    <nav class="sidebar-nav">
+      <a href="/dashboard.html" class="sidebar-link">🏠 Dashboard</a>
+      <a href="/detect.html" class="sidebar-link">🔬 Detect</a>
+      <a href="/weather.html" class="sidebar-link">🌤 Weather</a>
+      <a href="/library.html" class="sidebar-link">📚 Library</a>
+      <a href="/reports.html" class="sidebar-link active">📋 Reports</a>
+      <a href="/profile.html" class="sidebar-link">👤 Profile</a>
+    </nav>
+    
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="sidebar-avatar">U</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebar-name">User</div>
+        <div class="sidebar-user-email" id="sidebar-email">user@example.com</div>
+        <a href="#" class="sidebar-logout" onclick="handleLogout(event)">Logout</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Mobile Nav -->
+  <nav class="mobile-nav">
+    <div class="mobile-nav-inner">
+      <a href="/dashboard.html" class="mobile-nav-link">
+        <span>🏠</span>
+        <span>Home</span>
+      </a>
+      <a href="/detect.html" class="mobile-nav-link">
+        <span>🔬</span>
+        <span>Detect</span>
+      </a>
+      <a href="/weather.html" class="mobile-nav-link">
+        <span>🌤</span>
+        <span>Weather</span>
+      </a>
+      <a href="/library.html" class="mobile-nav-link">
+        <span>📚</span>
+        <span>Library</span>
+      </a>
+      <a href="/profile.html" class="mobile-nav-link">
+        <span>👤</span>
+        <span>Profile</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-with-sidebar">
+    <div class="container" style="padding: 32px 24px;">
+      <!-- Header -->
+      <div class="reports-header">
+        <h2>📋 Scan History</h2>
+        <div class="reports-actions">
+          <button class="btn btn-ghost" onclick="exportCSV()">📥 Export CSV</button>
+          <button class="btn btn-danger btn-ghost" onclick="confirmClearAll()">🗑 Clear All</button>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="reports-filters">
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label">From</label>
+          <input type="date" class="form-input" id="date-from" style="width: 160px;">
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label">To</label>
+          <input type="date" class="form-input" id="date-to" style="width: 160px;">
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label">Crop</label>
+          <select class="form-select" id="crop-filter" style="width: 160px;">
+            <option value="">All Crops</option>
+            <option value="Tomato">Tomato</option>
+            <option value="Potato">Potato</option>
+            <option value="Apple">Apple</option>
+            <option value="Corn">Corn</option>
+            <option value="Grape">Grape</option>
+            <option value="Pepper">Pepper</option>
+            <option value="Peach">Peach</option>
+            <option value="Cherry">Cherry</option>
+            <option value="Strawberry">Strawberry</option>
+            <option value="Orange">Orange</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label">Status</label>
+          <select class="form-select" id="status-filter" style="width: 140px;">
+            <option value="">All</option>
+            <option value="diseased">Diseased</option>
+            <option value="healthy">Healthy</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="reports-loading" style="padding: 20px;">
+        <div class="skeleton" style="height: 60px; margin-bottom: 12px;"></div>
+        <div class="skeleton" style="height: 60px; margin-bottom: 12px;"></div>
+        <div class="skeleton" style="height: 60px; margin-bottom: 12px;"></div>
+        <div class="skeleton" style="height: 60px;"></div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrapper" id="reports-table" style="display: none;">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Crop</th>
+              <th>Disease</th>
+              <th>Confidence</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody id="reports-body"></tbody>
+        </table>
+      </div>
+
+      <!-- Empty State -->
+      <div id="reports-empty" class="empty-state" style="display: none;">
+        <div class="empty-state-icon">🌱</div>
+        <h3>No scans yet</h3>
+        <p>Start scanning your crops to build your history!</p>
+        <a href="/detect.html" class="btn btn-orange">🔬 Scan a Crop</a>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination mt-24" id="pagination" style="display: none;"></div>
+    </div>
+  </main>
+
+  <!-- Delete Confirm Modal -->
+  <div class="modal-overlay" id="delete-modal">
+    <div class="modal" style="max-width: 360px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Delete this scan?</h3>
+        <button class="modal-close" onclick="Modal.hide('delete-modal')">×</button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted">This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="Modal.hide('delete-modal')">Cancel</button>
+        <button class="btn btn-danger" id="confirm-delete-btn">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Clear All Modal -->
+  <div class="modal-overlay" id="clear-all-modal">
+    <div class="modal" style="max-width: 360px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Clear all history?</h3>
+        <button class="modal-close" onclick="Modal.hide('clear-all-modal')">×</button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted">This will permanently delete all your scan history. This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="Modal.hide('clear-all-modal')">Cancel</button>
+        <button class="btn btn-danger" id="confirm-clear-all-btn">Clear All</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/auth-guard.js"></script>
+  <script src="/static/js/utils.js"></script>
+  <script>
+    let allHistory = [];
+    let filteredHistory = [];
+    let currentPage = 1;
+    const perPage = 10;
+    let deleteId = null;
+
+    // Handle logout
+    function handleLogout(e) {
+      e.preventDefault();
+      API.post('/logout', {}).then(() => {
+        sessionStorage.removeItem('agritech_user');
+        window.location.href = '/index.html';
+      });
+    }
+
+    // Load user data
+    window.addEventListener('userLoaded', function(e) {
+      const user = e.detail;
+      const name = user.first_name || 'User';
+      document.getElementById('sidebar-avatar').textContent = name[0].toUpperCase();
+      document.getElementById('sidebar-name').textContent = name;
+      document.getElementById('sidebar-email').textContent = user.email;
+      
+      loadHistory();
+    });
+
+    // Load history
+    async function loadHistory() {
+      try {
+        const response = await API.get('/history');
+        document.getElementById('reports-loading').style.display = 'none';
+        
+        if (response && response.history && response.history.length > 0) {
+          allHistory = response.history;
+          filterHistory();
+        } else {
+          document.getElementById('reports-empty').style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Failed to load history:', error);
+        document.getElementById('reports-loading').style.display = 'none';
+        document.getElementById('reports-empty').style.display = 'block';
+      }
+    }
+
+    // Filter history
+    function filterHistory() {
+      const dateFrom = document.getElementById('date-from').value;
+      const dateTo = document.getElementById('date-to').value;
+      const crop = document.getElementById('crop-filter').value;
+      const status = document.getElementById('status-filter').value;
+
+      filteredHistory = allHistory.filter(scan => {
+        const parsed = DiseaseParser.parse(scan.predicted_class);
+        const isHealthy = DiseaseParser.isHealthy(scan.predicted_class);
+        const scanDate = new Date(scan.timestamp).toISOString().split('T')[0];
+
+        if (dateFrom && scanDate < dateFrom) return false;
+        if (dateTo && scanDate > dateTo) return false;
+        if (crop && parsed.crop !== crop) return false;
+        if (status === 'healthy' && !isHealthy) return false;
+        if (status === 'diseased' && isHealthy) return false;
+
+        return true;
+      });
+
+      currentPage = 1;
+      renderTable();
+    }
+
+    // Render table
+    function renderTable() {
+      const table = document.getElementById('reports-table');
+      const empty = document.getElementById('reports-empty');
+      const tbody = document.getElementById('reports-body');
+      const pagination = document.getElementById('pagination');
+
+      if (filteredHistory.length === 0) {
+        table.style.display = 'none';
+        pagination.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+      }
+
+      empty.style.display = 'none';
+      table.style.display = 'block';
+
+      const start = (currentPage - 1) * perPage;
+      const end = start + perPage;
+      const pageData = filteredHistory.slice(start, end);
+
+      tbody.innerHTML = pageData.map((scan, index) => {
+        const parsed = DiseaseParser.parse(scan.predicted_class);
+        const isHealthy = DiseaseParser.isHealthy(scan.predicted_class);
+        const confidence = scan.confidence || 0;
+        const confidenceClass = ConfidenceHelper.getClass(confidence);
+
+        return `
+          <tr>
+            <td>${start + index + 1}</td>
+            <td>${parsed.crop}</td>
+            <td>${parsed.disease}</td>
+            <td class="${confidenceClass}">${ConfidenceHelper.formatPercent(confidence)}</td>
+            <td>${DateFormatter.format(scan.timestamp, 'short')}</td>
+            <td>
+              <span class="badge ${isHealthy ? 'badge-green' : 'badge-red'}">
+                ${isHealthy ? 'Healthy' : 'Diseased'}
+              </span>
+            </td>
+            <td>
+              <button class="delete-btn" onclick="confirmDelete('${scan.id}')">🗑</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // Render pagination
+      const totalPages = Math.ceil(filteredHistory.length / perPage);
+      if (totalPages > 1) {
+        pagination.style.display = 'flex';
+        let paginationHTML = `
+          <button class="pagination-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+            Previous
+          </button>
+        `;
+        
+        for (let i = 1; i <= totalPages; i++) {
+          if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+            paginationHTML += `
+              <button class="pagination-num ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">
+                ${i}
+              </button>
+            `;
+          } else if (i === currentPage - 2 || i === currentPage + 2) {
+            paginationHTML += '<span style="padding: 0 8px;">...</span>';
+          }
+        }
+
+        paginationHTML += `
+          <button class="pagination-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+            Next
+          </button>
+        `;
+        
+        pagination.innerHTML = paginationHTML;
+      } else {
+        pagination.style.display = 'none';
+      }
+    }
+
+    function goToPage(page) {
+      const totalPages = Math.ceil(filteredHistory.length / perPage);
+      if (page >= 1 && page <= totalPages) {
+        currentPage = page;
+        renderTable();
+      }
+    }
+
+    // Delete functionality
+    function confirmDelete(id) {
+      deleteId = id;
+      Modal.show('delete-modal');
+    }
+
+    document.getElementById('confirm-delete-btn').addEventListener('click', async function() {
+      if (!deleteId) return;
+
+      try {
+        const response = await API.del(`/history/${deleteId}`);
+        if (response.status === 'success') {
+          allHistory = allHistory.filter(s => s.id !== deleteId);
+          filterHistory();
+          Toast.success('Scan deleted successfully');
+        } else {
+          Toast.error(response.message || 'Failed to delete scan');
+        }
+      } catch (error) {
+        Toast.error('Something went wrong');
+      }
+
+      Modal.hide('delete-modal');
+      deleteId = null;
+    });
+
+    // Clear all
+    function confirmClearAll() {
+      if (allHistory.length === 0) {
+        Toast.info('No history to clear');
+        return;
+      }
+      Modal.show('clear-all-modal');
+    }
+
+    document.getElementById('confirm-clear-all-btn').addEventListener('click', async function() {
+      try {
+        const response = await API.del('/history');
+        if (response.status === 'success') {
+          allHistory = [];
+          filteredHistory = [];
+          renderTable();
+          Toast.success('All history cleared');
+        } else {
+          Toast.error(response.message || 'Failed to clear history');
+        }
+      } catch (error) {
+        Toast.error('Something went wrong');
+      }
+
+      Modal.hide('clear-all-modal');
+    });
+
+    // Export CSV
+    function exportCSV() {
+      if (filteredHistory.length === 0) {
+        Toast.info('No data to export');
+        return;
+      }
+
+      const data = filteredHistory.map((scan, index) => {
+        const parsed = DiseaseParser.parse(scan.predicted_class);
+        const isHealthy = DiseaseParser.isHealthy(scan.predicted_class);
+        
+        return {
+          '#': index + 1,
+          'Crop': parsed.crop,
+          'Disease': parsed.disease,
+          'Confidence': ConfidenceHelper.formatPercent(scan.confidence || 0),
+          'Date': DateFormatter.format(scan.timestamp, 'short'),
+          'Status': isHealthy ? 'Healthy' : 'Diseased'
+        };
+      });
+
+      CSVExporter.export(data, 'crop-scan-history.csv');
+      Toast.success('CSV exported successfully');
+    }
+
+    // Event listeners for filters
+    document.getElementById('date-from').addEventListener('change', filterHistory);
+    document.getElementById('date-to').addEventListener('change', filterHistory);
+    document.getElementById('crop-filter').addEventListener('change', filterHistory);
+    document.getElementById('status-filter').addEventListener('change', filterHistory);
+  </script>
+</body>
+</html>

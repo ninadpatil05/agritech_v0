@@ -57,7 +57,7 @@ def create_app():
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://translate.google.com https://translate.googleapis.com; "
             "font-src 'self' https://fonts.gstatic.com data:; "
             "img-src 'self' data: blob: https://images.unsplash.com https://translate.google.com https://translate.googleapis.com https://www.gstatic.com https://openweathermap.org; "
-            "connect-src 'self' https://api.open-meteo.com https://geocoding-api.open-meteo.com https://translate.google.com https://translate.googleapis.com; "
+            "connect-src 'self' https://api.open-meteo.com https://geocoding-api.open-meteo.com https://translate.google.com https://translate.googleapis.com https://api.openweathermap.org https://generativelanguage.googleapis.com; "
             "media-src 'self' blob:;"
         )
         response.headers['Content-Security-Policy'] = csp

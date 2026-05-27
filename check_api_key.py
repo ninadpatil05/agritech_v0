@@ -8,6 +8,10 @@ and how to fix the key if something is wrong.
 import os, sys, requests
 from dotenv import load_dotenv
 
+# Ensure unicode output works correctly on Windows command prompt
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="backslashreplace")
+
 load_dotenv(override=True)
 API_KEY = os.environ.get("GEMINI_API_KEY", "")
 

@@ -101,22 +101,29 @@ def get_advice():
         return jsonify({"status": "error", "message": "disease field is required"}), 400
 
     if not config.GEMINI_API_KEY:
-        return jsonify({"status": "error", "message": "Gemini API key not configured.",
-            "message": (
-                "Open the .env file and set GEMINI_API_KEY=your_key_here, "
-                "then restart the server."
-            ),
-        }), 503
+        return jsonify({"status": "error", "message": "AI advice is not configured. Contact support."}), 503
 
     try:
         advice = get_cached_advice(disease, crop_type)
         return jsonify({"status": "success", "advice": advice})
-    except requests.HTTPError as e:
-        return jsonify({"status": "error", "message": f"Gemini API error: {e.response.status_code}", "detail": e.response.text}), 502
-    except json.JSONDecodeError as e:
-        return jsonify({"status": "error", "message": "Failed to parse Gemini response as JSON", "detail": str(e)}), 500
     except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+        # Check for Gemini 429 rate limit
+        is_429 = False
+        if isinstance(e, requests.HTTPError) and e.response is not None and e.response.status_code == 429:
+            is_429 = True
+        elif "rate limit" in str(e).lower() or "429" in str(e):
+            is_429 = True
+
+        if is_429:
+            return jsonify({"status": "error", "message": "Our AI is busy right now. Please wait 1 minute and try again."}), 429
+
+        # Check for JSON parse error
+        if isinstance(e, json.JSONDecodeError):
+            return jsonify({"status": "error", "message": "AI returned an unexpected response. Please try again."}), 500
+
+        # Generic exceptions: log server-side, return friendly message
+        logger.error(f"Error getting AI advice for {disease} / {crop_type}: {e}", exc_info=True)
+        return jsonify({"status": "error", "message": "Something went wrong. Please try again."}), 500
 
 
 @advice_bp.route("/advice/clear-cache", methods=["POST"])

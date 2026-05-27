@@ -1801,8 +1801,9 @@
       strip.innerHTML = Array(7).fill('<div class="agri-skel-day"></div>').join('');
 
       try {
-        const data = await API.get(`/weather/forecast?city=${encodeURIComponent(city)}`);
-        renderForecast(data.list || []);
+        const res  = await API.get(`/weather/forecast?city=${encodeURIComponent(city)}`);
+        if (res.status === 'error') throw new Error(res.message || 'forecast failed');
+        renderForecast(res.list || []);
       } catch(e) {
         strip.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:16px;">Forecast unavailable</div>';
       }
@@ -2003,17 +2004,17 @@
       let success = false;
 
       try {
-        const response = await API.post('/weather/chat', {
-          message: question,
-          weather: currentWeather
-        });
-        if (response && response.status === 'success') {
-          reply = response.reply;
-          success = true;
-        }
-      } catch (e) {
-        console.error('Error calling backend weather chat:', e);
-      }
+        const weatherCtx = currentWeather ? {
+          name:        currentWeather.name || currentCity,
+          temp:        Math.round(currentWeather.main.temp),
+          humidity:    currentWeather.main.humidity,
+          description: currentWeather.weather?.[0]?.description || 'unknown',
+          wind_speed:  Math.round((currentWeather.wind.speed || 0) * 3.6),
+          feels_like:  Math.round(currentWeather.main.feels_like)
+        } : {};
+        const res = await API.post('/weather/chat', { message: question, weather: weatherCtx });
+        if (res.status === 'success' && res.reply) { reply = res.reply; success = true; }
+      } catch(e) { console.error('AI chat error:', e); }
 
       document.getElementById(typingId)?.remove();
 
@@ -2549,18 +2550,21 @@ Return exactly 8 crops. Rank strictly by suitability for ${city}, ${state} right
 
       cropAI_renderSkeletons();
 
-      const prompt = cropAI_buildPrompt(season, landSize, soilType, waterAvail);
       let success  = false;
 
       try {
-        const response = await API.post('/weather/crop-recommendations', { prompt });
-        if (response && response.status === 'success' && response.data) {
-          cropAI_renderResults(response.data, false);
+        const res = await API.post('/weather/crop-recommendations', {
+          season,
+          land_size:   landSize,
+          soil_type:   soilType,
+          water_avail: waterAvail,
+          city:        currentCity
+        });
+        if (res.status === 'success' && res.recommendations) {
+          cropAI_renderResults(res.recommendations, false);
           success = true;
         }
-      } catch (e) {
-        console.error('cropAI: Error calling backend recommendations:', e);
-      }
+      } catch(e) { console.error('cropAI error:', e); }
 
       if (!success) {
         cropAI_handleError(season);

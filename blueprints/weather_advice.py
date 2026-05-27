@@ -518,50 +518,83 @@ def weather_advisory_alias():
 @weather_advice_bp.route("/weather/chat", methods=["POST"])
 @require_auth
 def weather_chat():
-    """Proxy Gemini chat calls for the weather assistant — keeps key server-side."""
-    data = request.get_json(silent=True) or {}
-    user_message = data.get("message", "")
-    weather_context = data.get("weather", {})
+    """Gemini AI chat proxy — key stays server-side."""
+    body = request.get_json(silent=True) or {}
+    user_message = body.get("message", "").strip()[:500]
+    weather_ctx  = body.get("weather", {})
 
     if not user_message:
         return jsonify({"status": "error", "message": "No message provided."}), 400
+    if not config.GEMINI_API_KEY:
+        return jsonify({"status": "error", "message": "GEMINI_API_KEY not configured."}), 503
 
-    prompt = f"""You are an agricultural advisor for Indian farmers.
-Weather context: {json.dumps(weather_context)}
-Farmer's question: {user_message}
-Reply in plain, practical language."""
+    weather_str = "Weather data not available."
+    if weather_ctx:
+        weather_str = (
+            f"Location: {weather_ctx.get('name', 'unknown')}, India. "
+            f"Temp: {weather_ctx.get('temp', '?')}°C, "
+            f"Humidity: {weather_ctx.get('humidity', '?')}%, "
+            f"Condition: {weather_ctx.get('description', 'unknown')}, "
+            f"Wind: {weather_ctx.get('wind_speed', 0)} km/h."
+        )
+
+    prompt = (
+        "You are an expert Indian agricultural advisor.\n"
+        f"Current weather: {weather_str}\n"
+        f"Farmer's question: \"{user_message}\"\n"
+        "Give a concise, practical answer in 3-4 sentences for rural Indian farmers. "
+        "End with one clear actionable step for today."
+    )
 
     try:
-        from blueprints.gemini_client import call_gemini
-        raw, model = call_gemini(prompt, max_tokens=512)
-        return jsonify({"status": "success", "reply": raw, "model": model})
+        raw, model = call_gemini(prompt, max_tokens=400)
+        return jsonify({"status": "success", "reply": raw.strip(), "model": model})
     except Exception as e:
-        logger.error(f"Weather chat Gemini error: {e}")
+        logger.error(f"weather_chat error: {e}")
         return jsonify({"status": "error", "message": str(e)}), 502
 
 
 @weather_advice_bp.route("/weather/crop-recommendations", methods=["POST"])
 @require_auth
-def weather_crop_recommendations():
-    """Proxy Gemini calls for crop planning recommendations — keeps key server-side."""
-    data = request.get_json(silent=True) or {}
-    prompt = data.get("prompt", "")
+def crop_recommendations():
+    """Crop planning AI proxy — Gemini key stays server-side."""
+    body         = request.get_json(silent=True) or {}
+    season       = body.get("season", "kharif").strip()[:50]
+    land_size    = body.get("land_size", "2 acres").strip()[:50]
+    soil_type    = body.get("soil_type", "loam").strip()[:50]
+    water_avail  = body.get("water_avail", "canal").strip()[:100]
+    city         = body.get("city", "").strip()[:100]
+    lat          = body.get("lat")
+    lon          = body.get("lon")
 
-    if not prompt:
-        return jsonify({"status": "error", "message": "No prompt provided."}), 400
+    if not config.GEMINI_API_KEY:
+        return jsonify({"status": "error", "message": "GEMINI_API_KEY not configured."}), 503
+
+    weather_str = ""
+    if (lat and lon) or city:
+        w = _fetch_owm(lat=lat, lon=lon, city=city)
+        if w:
+            weather_str = f"\nCurrent weather:\n{_weather_summary(w)}"
+
+    prompt = (
+        f"You are an expert agricultural scientist advising a small Indian farmer.\n"
+        f"Season: {season}\nLand: {land_size}\nSoil: {soil_type}\n"
+        f"Water: {water_avail}{weather_str}\n\n"
+        "Recommend best crops. Respond ONLY with valid JSON, no markdown:\n"
+        '{"top_crops":[{"name":str,"suitability":"excellent"|"good"|"moderate",'
+        '"reason":str,"sowing_window":str,"water_requirement":"low"|"medium"|"high"}],'
+        '"avoid_crops":[str],"soil_prep_tip":str,"season_label":str}'
+    )
 
     try:
-        from blueprints.gemini_client import call_gemini, extract_json
-        raw, model = call_gemini(prompt, max_tokens=2048)
-        # Strip any markdown fences
-        raw_clean = raw.replace("```json", "").replace("```", "").strip()
-        try:
-            parsed = json.loads(raw_clean)
-        except json.JSONDecodeError:
-            parsed = extract_json(raw)
-        return jsonify({"status": "success", "data": parsed, "model": model})
+        import re as _re
+        raw, model = call_gemini(prompt, max_tokens=1200)
+        clean  = raw.replace("```json", "").replace("```", "").strip()
+        match  = _re.search(r"\{[\s\S]*\}", clean)
+        parsed = json.loads(match.group(0) if match else clean)
+        return jsonify({"status": "success", "recommendations": parsed, "model": model})
     except Exception as e:
-        logger.error(f"Crop recommendations Gemini error: {e}")
+        logger.error(f"crop_recommendations error: {e}")
         return jsonify({"status": "error", "message": str(e)}), 502
 
 

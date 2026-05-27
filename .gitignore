@@ -1,14 +1,13 @@
-# === SECRETS — never commit these ===
+# Secrets
 .env
 .env.local
 .env.*.local
+secrets.txt
 *.key
 *.pem
-secrets.txt
-service-account*.json
 *credentials*.json
 
-# === Python ===
+# Python
 __pycache__/
 *.py[cod]
 *.h5
@@ -16,13 +15,13 @@ __pycache__/
 .venv/
 venv/
 
-# === App data ===
+# App data
 models/
 agritech.db
 agritech_users.db
+dataset/
 
-# === Misc ===
+# Dev
 .vscode/
 node_modules/
 *.log
-dataset/

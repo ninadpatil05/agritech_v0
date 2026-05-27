@@ -7,11 +7,14 @@
   <meta name="description" content="Your crop health dashboard - view stats, recent scans, and quick actions.">
   <link rel="icon" href="/static/favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700&family=IBM+Plex+Mono:wght@500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/css/base.css">
   <link rel="stylesheet" href="/static/css/components.css">
   <link rel="stylesheet" href="/static/css/pages.css">
   <script>
     (function() {
+      const lang = localStorage.getItem('lang') || 'en';
+      document.documentElement.setAttribute('lang', lang);
       const saved = localStorage.getItem('theme');
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       if (saved === 'dark' || (!saved && prefersDark)) {
@@ -1005,12 +1008,12 @@
     <a href="/dashboard.html" class="sidebar-logo">🌿 Smart Crop Detective</a>
     
     <nav class="sidebar-nav">
-      <a href="/dashboard.html" class="sidebar-link active">🏠 Dashboard</a>
-      <a href="/detect.html" class="sidebar-link">🔬 Detect</a>
-      <a href="/weather.html" class="sidebar-link">🌤 Weather</a>
-      <a href="/library.html" class="sidebar-link">📚 Library</a>
-      <a href="/reports.html" class="sidebar-link">📋 Reports</a>
-      <a href="/profile.html" class="sidebar-link">👤 Profile</a>
+      <a href="/dashboard.html" class="sidebar-link active">🏠 <span data-i18n="nav_dashboard">Dashboard</span></a>
+      <a href="/detect.html" class="sidebar-link">🔬 <span data-i18n="nav_detect">Detect</span></a>
+      <a href="/weather.html" class="sidebar-link">🌤 <span data-i18n="nav_weather">Weather</span></a>
+      <a href="/library.html" class="sidebar-link">📚 <span data-i18n="nav_library">Library</span></a>
+      <a href="/reports.html" class="sidebar-link">📋 <span data-i18n="nav_reports">Reports</span></a>
+      <a href="/profile.html" class="sidebar-link">👤 <span data-i18n="nav_profile">Profile</span></a>
     </nav>
     
     <div class="sidebar-user">
@@ -1018,7 +1021,7 @@
       <div class="sidebar-user-info">
         <div class="sidebar-user-name" id="sidebar-name">User</div>
         <div class="sidebar-user-email" id="sidebar-email">user@example.com</div>
-        <a href="#" class="sidebar-logout" onclick="handleLogout(event)">Logout</a>
+        <a href="#" class="sidebar-logout" onclick="handleLogout(event)" data-i18n="nav_logout">Logout</a>
       </div>
     </div>
   </aside>
@@ -1028,23 +1031,23 @@
     <div class="mobile-nav-inner">
       <a href="/dashboard.html" class="mobile-nav-link active">
         <span>🏠</span>
-        <span>Home</span>
+        <span data-i18n="nav_dashboard">Home</span>
       </a>
       <a href="/detect.html" class="mobile-nav-link">
         <span>🔬</span>
-        <span>Detect</span>
+        <span data-i18n="nav_detect">Detect</span>
       </a>
       <a href="/weather.html" class="mobile-nav-link">
         <span>🌤</span>
-        <span>Weather</span>
+        <span data-i18n="nav_weather">Weather</span>
       </a>
       <a href="/library.html" class="mobile-nav-link">
         <span>📚</span>
-        <span>Library</span>
+        <span data-i18n="nav_library">Library</span>
       </a>
       <a href="/profile.html" class="mobile-nav-link">
         <span>👤</span>
-        <span>Profile</span>
+        <span data-i18n="nav_profile">Profile</span>
       </a>
     </div>
   </nav>
@@ -1056,11 +1059,11 @@
       <div class="dashboard-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; animation: fadeInUp 0.4s ease-out;">
         <div>
           <h2 style="font-family: var(--font-display); font-weight: 700; letter-spacing: -0.01em;" id="greeting-header">Welcome back, User 👋</h2>
-          <p style="color: var(--text-muted); font-size: 14px;">Here's your real-time farm telemetry overview</p>
+          <p style="color: var(--text-muted); font-size: 14px;" data-i18n="dash_subtitle">Here's your real-time farm telemetry overview</p>
         </div>
         <div style="display: flex; align-items: center; gap: 16px;">
           <div class="dashboard-date" id="today-date" style="font-family: var(--font-mono); font-size: 14px; font-weight: 500; color: var(--text-muted);"></div>
-          <button id="theme-toggle" data-theme-toggle onclick="ThemeManager.toggle()" title="Toggle Theme" class="theme-toggle-btn">
+          <button id="theme-toggle" data-theme-toggle onclick="ThemeManager.toggle()" title="Toggle Theme" class="theme-toggle-btn" data-i18n-title="nav_toggle_theme" data-i18n-aria="nav_toggle_theme">
             <span class="tt-icon">🌙</span>
           </button>
         </div>
@@ -1081,8 +1084,8 @@
             <time class="hero-clock" id="hero-clock">Mon, 27 May · 12:00:00</time>
           </div>
           <div class="hero-actions">
-            <a href="/detect.html" class="btn btn-pulse">🔬 Scan a Crop →</a>
-            <a href="/reports.html" class="btn btn-ghost-white" id="hero-last-scan-btn" style="display: none;">View last scan</a>
+            <a href="/detect.html" class="btn btn-pulse">🔬 <span data-i18n="dash_quick_scan">Quick Scan</span> →</a>
+            <a href="/reports.html" class="btn btn-ghost-white" id="hero-last-scan-btn" style="display: none;" data-i18n="dash_view_reports">View Reports</a>
           </div>
         </div>
       </div>
@@ -1091,15 +1094,15 @@
       <div class="quick-actions-strip">
         <a href="/detect.html" class="quick-action-pill qa-scan">
           <span class="qa-icon">📸</span>
-          <span>Quick Scan</span>
+          <span data-i18n="dash_quick_scan">Quick Scan</span>
         </a>
         <a href="/reports.html" class="quick-action-pill qa-reports">
           <span class="qa-icon">📊</span>
-          <span>View Reports</span>
+          <span data-i18n="dash_view_reports">View Reports</span>
         </a>
         <a href="/library.html" class="quick-action-pill qa-library">
           <span class="qa-icon">🌿</span>
-          <span>Disease Library</span>
+          <span data-i18n="dash_disease_lib">Disease Library</span>
         </a>
       </div>
 
@@ -1108,11 +1111,11 @@
         <!-- Total Scans -->
         <div class="stat-bento-card sb-total loading" id="stat-total-scans">
           <div class="sb-header">
-            <span class="sb-label">Total Scans</span>
+            <span class="sb-label" data-i18n="dash_total_scans">Total Scans</span>
             <span class="sb-delta positive" id="delta-total-scans" style="display: none;">▲ 0%</span>
           </div>
           <div class="sb-body">
-            <div class="sb-value"><span id="total-scans">0</span> <span class="sb-value-suffix" style="font-family: var(--font-body); font-size: 14px; font-weight: 500;">scans</span></div>
+            <div class="sb-value"><span id="total-scans">0</span> <span class="sb-value-suffix" style="font-family: var(--font-body); font-size: 14px; font-weight: 500;" data-i18n="dash_scans_suffix">scans</span></div>
             <div class="sb-sparkline-wrap" id="sparkline-total-scans-wrap">
               <svg viewBox="0 0 80 24" width="80" height="24" preserveAspectRatio="none">
                 <path class="sparkline-fill" fill="rgba(67, 97, 238, 0.08)"></path>
@@ -1125,11 +1128,11 @@
         <!-- Diseases Found -->
         <div class="stat-bento-card sb-diseased loading" id="stat-diseases-found">
           <div class="sb-header">
-            <span class="sb-label">Diseases Found</span>
+            <span class="sb-label" data-i18n="dash_diseases_found">Diseases Found</span>
             <span class="sb-delta negative" id="delta-diseases-found" style="display: none;">▼ 0%</span>
           </div>
           <div class="sb-body">
-            <div class="sb-value"><span id="diseases-found">0</span> <span class="sb-value-suffix" style="font-family: var(--font-body); font-size: 14px; font-weight: 500;">cases</span></div>
+            <div class="sb-value"><span id="diseases-found">0</span> <span class="sb-value-suffix" style="font-family: var(--font-body); font-size: 14px; font-weight: 500;" data-i18n="dash_cases_suffix">cases</span></div>
             <div class="sb-sparkline-wrap" id="sparkline-diseases-found-wrap">
               <svg viewBox="0 0 80 24" width="80" height="24" preserveAspectRatio="none">
                 <path class="sparkline-fill" fill="rgba(244, 132, 95, 0.08)"></path>
@@ -1142,7 +1145,7 @@
         <!-- Average Confidence -->
         <div class="stat-bento-card sb-healthy loading" id="stat-healthy-plants">
           <div class="sb-header">
-            <span class="sb-label">Avg Confidence</span>
+            <span class="sb-label" data-i18n="dash_avg_confidence">Avg Confidence</span>
             <span class="sb-delta positive" id="delta-healthy-plants" style="display: none;">▲ 0%</span>
           </div>
           <div class="sb-body">
@@ -1159,11 +1162,11 @@
         <!-- Weekly Activity -->
         <div class="stat-bento-card sb-week loading" id="stat-this-week">
           <div class="sb-header">
-            <span class="sb-label">This Week Scans</span>
+            <span class="sb-label" data-i18n="dash_this_week_scans">This Week Scans</span>
             <span class="sb-delta positive" id="delta-this-week" style="display: none;">▲ 0%</span>
           </div>
           <div class="sb-body">
-            <div class="sb-value"><span id="this-week">0</span> <span class="sb-value-suffix" style="font-family: var(--font-body); font-size: 14px; font-weight: 500;">scans</span></div>
+            <div class="sb-value"><span id="this-week">0</span> <span class="sb-value-suffix" style="font-family: var(--font-body); font-size: 14px; font-weight: 500;" data-i18n="dash_scans_suffix">scans</span></div>
           </div>
         </div>
       </div>
@@ -1176,7 +1179,7 @@
           
           <!-- Disease Distribution / Overall Health Card -->
           <div class="bento-card loading" id="donut-card">
-            <h3 style="font-family: var(--font-display); font-size: 16px; font-weight: 600;">Vitality Distribution</h3>
+            <h3 style="font-family: var(--font-display); font-size: 16px; font-weight: 600;" data-i18n="dash_vitality_dist">Vitality Distribution</h3>
             <div class="bento-donut-wrap">
               <div class="donut-chart-container">
                 <svg width="100%" height="100%" viewBox="0 0 42 42" class="donut-svg">
@@ -1195,14 +1198,14 @@
                 <div class="legend-row" id="legend-row-healthy" onmouseover="highlightDonutSegment('healthy')" onmouseout="clearDonutHighlight()">
                   <div class="legend-label-wrap">
                     <div class="legend-bullet" style="background-color: var(--green-light);"></div>
-                    <span>Healthy Crops</span>
+                    <span data-i18n="dash_healthy_crops">Healthy Crops</span>
                   </div>
                   <span class="legend-count" id="legend-healthy-count">0</span>
                 </div>
                 <div class="legend-row" id="legend-row-diseased" onmouseover="highlightDonutSegment('diseased')" onmouseout="clearDonutHighlight()">
                   <div class="legend-label-wrap">
                     <div class="legend-bullet" style="background-color: var(--orange);"></div>
-                    <span>Diseased Crops</span>
+                    <span data-i18n="dash_diseased_crops">Diseased Crops</span>
                   </div>
                   <span class="legend-count" id="legend-diseased-count">0</span>
                 </div>
@@ -1214,7 +1217,7 @@
             <!-- Destiny power vitality gauge -->
             <div class="vitality-gauge-wrap">
               <div class="vitality-bar-label">
-                <span>Vitality Telemetry Index</span>
+                <span data-i18n="dash_vitality_index">Vitality Telemetry Index</span>
                 <span id="vitality-status-label">Optimal</span>
               </div>
               <div class="vitality-grid-bar" id="vitality-grid-bar">
@@ -1239,7 +1242,7 @@
           <!-- Weather Widget Bento Card -->
           <div class="bento-card weather-bento-card" id="weather-widget">
             <div class="weather-card-header">
-              <span class="weather-location" id="weather-location">Loading location...</span>
+              <span class="weather-location" id="weather-location" data-i18n="dash_loading_loc">Loading location...</span>
               <span style="font-size: 16px;">🌤</span>
             </div>
             <div class="weather-main-row">
@@ -1254,15 +1257,15 @@
               Farming advice: Gathering climate intelligence...
             </div>
             <button class="weather-loc-btn" onclick="getWeatherByLocation()">
-              <span>📍</span> Use My Location
+              <span>📍</span> <span data-i18n="dash_use_location">Use My Location</span>
             </button>
           </div>
 
           <!-- Recent Scans Bento Card -->
           <div class="bento-card bento-scans-card" id="scans-card">
             <div class="bento-scans-header">
-              <h3>Recent Scans</h3>
-              <a href="/reports.html">View All →</a>
+              <h3 data-i18n="dash_recent_scans">Recent Scans</h3>
+              <a href="/reports.html" data-i18n="nav_reports">View Reports</a>
             </div>
             
             <!-- Table loading spinner/skeleton -->
@@ -1276,10 +1279,10 @@
               <table class="scans-table">
                 <thead>
                   <tr>
-                    <th>Crop</th>
-                    <th>Disease</th>
-                    <th>Date</th>
-                    <th>Status</th>
+                    <th data-i18n="dash_col_crop">Crop</th>
+                    <th data-i18n="dash_col_disease">Disease</th>
+                    <th data-i18n="dash_col_date">Date</th>
+                    <th data-i18n="dash_col_status">Status</th>
                   </tr>
                 </thead>
                 <tbody id="recent-scans-body"></tbody>
@@ -1288,9 +1291,9 @@
 
             <div id="recent-scans-empty" class="empty-state" style="display: none; padding: 20px; text-align: center;">
               <div style="font-size: 32px; margin-bottom: 12px;">🌱</div>
-              <h4 style="font-family: var(--font-display); font-size: 16px; margin-bottom: 6px;">No Scans Yet</h4>
-              <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Run your first scan to see your farm health metrics.</p>
-              <a href="/detect.html" class="btn btn-orange btn-sm">🔬 Scan a Crop</a>
+              <h4 style="font-family: var(--font-display); font-size: 16px; margin-bottom: 6px;" data-i18n="dash_no_scans_title">No Scans Yet</h4>
+              <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;" data-i18n="dash_no_scans_desc">Run your first scan to see your farm health metrics.</p>
+              <a href="/detect.html" class="btn btn-orange btn-sm">🔬 <span data-i18n="dash_quick_scan">Quick Scan</span></a>
             </div>
 
             <!-- Slide-in Details panel -->
@@ -1305,7 +1308,7 @@
                 <img src="" alt="Crop leaf" class="sh-img" id="sh-img">
               </div>
               <div class="sh-stats">
-                <span style="font-size: 13px; font-weight: 500; color: var(--text-muted);">Confidence</span>
+                <span style="font-size: 13px; font-weight: 500; color: var(--text-muted);" data-i18n="dash_confidence">Confidence</span>
                 <div class="sh-ring-wrap">
                   <svg class="sh-ring-svg" viewBox="0 0 28 28">
                     <circle stroke="var(--border)" stroke-width="2" fill="transparent" r="10" cx="14" cy="14"></circle>
@@ -1314,7 +1317,7 @@
                   <span class="sh-ring-pct" id="sh-ring-pct">--%</span>
                 </div>
               </div>
-              <a href="/reports.html" class="sh-footer-link">View full report →</a>
+              <a href="/reports.html" class="sh-footer-link" data-i18n="dash_view_report">View full report →</a>
             </div>
           </div>
         </div>
@@ -1327,8 +1330,8 @@
             <span class="carousel-icon" id="carousel-icon">💡</span>
           </div>
           <div class="carousel-content">
-            <span class="carousel-tag">Agri-Advisory Telemetry</span>
-            <div class="carousel-text" id="carousel-text">
+            <span class="carousel-tag" data-i18n="dash_advisory_tag">Agri-Advisory Telemetry</span>
+            <div class="carousel-text" id="carousel-text" data-i18n="dash_loading_tips">
               Loading agricultural advisory tips...
             </div>
           </div>
@@ -1342,6 +1345,7 @@
       </div>
   </main>
 
+  <script src="/static/js/lang.js"></script>
   <script src="/static/js/api.js"></script>
   <script src="/static/js/auth-guard.js"></script>
   <script src="/static/js/utils.js"></script>
@@ -1359,14 +1363,32 @@
     }
 
     // Rotating Crop Health Care Tips
-    const FARMING_TIPS = [
-      { icon: "💡", text: "Rotate crops regularly to improve soil health and break pest cycles." },
-      { icon: "💧", text: "Water plants early in the morning to reduce evaporation and prevent fungal leaf diseases." },
-      { icon: "🌿", text: "Inspect the undersides of leaves weekly; pests often hide there before spreading." },
-      { icon: "🧪", text: "Get your soil tested annually to choose the perfect fertilizer mix for your crop type." },
-      { icon: "🍃", text: "Prune dead or diseased leaves immediately to prevent infections from spreading." },
-      { icon: "☀️", text: "Ensure proper spacing between crops to allow air circulation and sunlight penetration." }
-    ];
+    const FARMING_TIPS = {
+      en: [
+        { icon: "💡", text: "Rotate crops regularly to improve soil health and break pest cycles." },
+        { icon: "💧", text: "Water plants early in the morning to reduce evaporation and prevent fungal leaf diseases." },
+        { icon: "🌿", text: "Inspect the undersides of leaves weekly; pests often hide there before spreading." },
+        { icon: "🧪", text: "Get your soil tested annually to choose the perfect fertilizer mix for your crop type." },
+        { icon: "🍃", text: "Prune dead or diseased leaves immediately to prevent infections from spreading." },
+        { icon: "☀️", text: "Ensure proper spacing between crops to allow air circulation and sunlight penetration." }
+      ],
+      hi: [
+        { icon: "💡", text: "मिट्टी के स्वास्थ्य में सुधार और कीट चक्र को तोड़ने के लिए फसलों को नियमित रूप से बदलें।" },
+        { icon: "💧", text: "वाष्पीकरण को कम करने और पत्ती के कवक रोगों को रोकने के लिए सुबह जल्दी पौधों को पानी दें।" },
+        { icon: "🌿", text: "पत्तियों के निचले हिस्सों का साप्ताहिक निरीक्षण करें; कीट अक्सर फैलने से पहले वहां छिपते हैं।" },
+        { icon: "🧪", text: "अपनी फसल के प्रकार के लिए सही उर्वरक मिश्रण चुनने के लिए सालाना मिट्टी का परीक्षण करवाएं।" },
+        { icon: "🍃", text: "संक्रमण को फैलने से रोकने के लिए मृत या रोगग्रस्त पत्तियों की तुरंत छंटाई करें।" },
+        { icon: "☀️", text: "हवा के संचलन और धूप के प्रवेश की अनुमति देने के लिए फसलों के बीच उचित दूरी सुनिश्चित करें।" }
+      ],
+      mr: [
+        { icon: "💡", text: "मातीचे आरोग्य सुधारण्यासाठी आणि कीटक चक्र खंडित करण्यासाठी पिकांची नियमितपणे फिरवाफिरव करा." },
+        { icon: "💧", text: "बाष्पीभवन कमी करण्यासाठी आणि पानावरील बुरशीजन्य रोग रोखण्यासाठी पिकांना पहाटे पाणी द्या." },
+        { icon: "🌿", text: "पानांच्या खालच्या बाजूची साप्ताहिक तपासणी करा; कीटक अनेकदा पसरण्यापूर्वी तिथे लपतात." },
+        { icon: "🧪", text: "पिकाच्या प्रकारासाठी योग्य खत मिश्रण निवडण्यासाठी मातीची दरवर्षी चाचणी करा." },
+        { icon: "🍃", text: "संसर्ग पसरू नये म्हणून सुकलेली किंवा रोगट पाने ताबडतोब छाटून टाका." },
+        { icon: "☀️", text: "हवेचे खेळते राहणे आणि सूर्यप्रकाश मिळण्यासाठी पिकांमध्ये योग्य अंतर ठेवा." }
+      ]
+    };
 
     const CROP_THUMBNAILS = {
       apple: 'https://images.unsplash.com/photo-1619546813926-a78fa6372cd2?w=300&auto=format&fit=crop&q=60',
@@ -1443,7 +1465,8 @@
       
       const greetingHeader = document.getElementById('greeting-header');
       if (greetingHeader) {
-        greetingHeader.textContent = `Welcome back, ${name} 👋`;
+        const welcomeBackStr = window.Lang ? Lang.t('dash_greeting') : 'Welcome back';
+        greetingHeader.textContent = `${welcomeBackStr}, ${name} 👋`;
       }
       
       const greetingHero = document.getElementById('greeting');
@@ -1474,20 +1497,20 @@
       });
 
       if (totalScans === 0) {
-        if (label) label.textContent = 'No Data';
+        if (label) label.textContent = window.Lang ? Lang.t('dash_no_scans_label') : 'No Data';
         return;
       }
 
       const activeCount = Math.max(0, Math.min(10, Math.round(percentage / 10)));
       let activeClass = 'active-green';
-      let statusText = 'Optimal';
+      let statusText = window.Lang ? Lang.t('dash_optimal') : 'Optimal';
 
       if (percentage < 50) {
         activeClass = 'active-red';
-        statusText = 'Critical';
+        statusText = window.Lang ? Lang.t('dash_critical') : 'Critical';
       } else if (percentage < 80) {
         activeClass = 'active-orange';
-        statusText = 'Warning';
+        statusText = window.Lang ? Lang.t('dash_moderate') : 'Moderate';
       }
 
       if (label) label.textContent = statusText;
@@ -1537,13 +1560,13 @@
           const labelEl = document.getElementById('chart-label');
           if (labelEl) {
             if (total === 0) {
-              labelEl.textContent = 'No Scans';
+              labelEl.textContent = window.Lang ? Lang.t('dash_no_scans_label') : 'No Scans';
             } else if (percentage >= 80) {
-              labelEl.textContent = 'Excellent';
+              labelEl.textContent = window.Lang ? Lang.t('dash_excellent') : 'Excellent';
             } else if (percentage >= 50) {
-              labelEl.textContent = 'Moderate';
+              labelEl.textContent = window.Lang ? Lang.t('dash_moderate') : 'Moderate';
             } else {
-              labelEl.textContent = 'Needs Care';
+              labelEl.textContent = window.Lang ? Lang.t('dash_needs_care') : 'Needs Care';
             }
           }
 
@@ -1603,6 +1626,9 @@
             // Clean scan object to inject in data attribute safely
             const dataStr = JSON.stringify(scan).replace(/"/g, '&quot;');
             
+            const statusVal = isHealthy 
+              ? (window.Lang ? Lang.t('dash_healthy') : 'Healthy')
+              : (window.Lang ? Lang.t('dash_diseased') : 'Diseased');
             return `
               <tr tabindex="0" 
                   onmouseenter="showHoverPanel(${dataStr})" 
@@ -1613,8 +1639,8 @@
                 <td>${parsed.disease}</td>
                 <td>${relativeDate}</td>
                 <td>
-                  <span class="badge ${isHealthy ? 'badge-green' : 'badge-red'}">
-                    ${isHealthy ? 'Healthy' : 'Diseased'}
+                  <span class="badge ${isHealthy ? 'badge-green' : 'badge-red'}" data-i18n="${isHealthy ? 'dash_healthy' : 'dash_diseased'}">
+                    ${statusVal}
                   </span>
                 </td>
               </tr>
@@ -1776,7 +1802,7 @@
         const now = new Date();
         const diffMs = past.getTime() - now.getTime();
         const diffSecs = Math.round(diffMs / 1000);
-        const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+        const rtf = new Intl.RelativeTimeFormat(window.Lang ? Lang.get() : 'en', { numeric: 'auto' });
         
         if (Math.abs(diffSecs) < 60) {
           return rtf.format(diffSecs, 'second');
@@ -1909,18 +1935,75 @@
       }
     }
 
+    const WEATHER_TEXTS = {
+      en: {
+        humidity: "Humidity",
+        wind: "Wind",
+        pune: "Pune",
+        your_location: "Your Location"
+      },
+      hi: {
+        humidity: "आर्द्रता",
+        wind: "हवा",
+        pune: "पुणे",
+        your_location: "आपका स्थान"
+      },
+      mr: {
+        humidity: "आर्द्रता",
+        wind: "वारा",
+        pune: "पुणे",
+        your_location: "तुमचे स्थान"
+      }
+    };
+
+    const WEATHER_ADVISORY = {
+      en: {
+        prefix: "Farming advice: ",
+        stable: "Stable climate conditions: ideal for general crop growth and routine maintenance.",
+        heat: "Extreme heat warning: irrigate crops extensively during cooler hours to prevent transpiration shock.",
+        rain: "Rain detected: postpone manual irrigation. Monitor fields for waterlogging and root rot risks.",
+        humidity: "High humidity: elevated fungal outbreak risk. Inspect leaves closely for signs of blight or mildew.",
+        cold: "Cool climate conditions: monitor temperature-sensitive crops (e.g. tomatoes) for cold stress."
+      },
+      hi: {
+        prefix: "कृषि सलाह: ",
+        stable: "स्थिर जलवायु परिस्थितियां: सामान्य फसल विकास और नियमित रखरखाव के लिए आदर्श।",
+        heat: "अत्यधिक गर्मी की चेतावनी: वाष्पोत्सर्जन के झटके को रोकने के लिए ठंडे घंटों के दौरान फसलों की बड़े पैमाने पर सिंचाई करें।",
+        rain: "बारिश का पता चला: मैनुअल सिंचाई स्थगित करें। जलभराव और जड़ सड़न के जोखिमों के लिए खेतों की निगरानी करें।",
+        humidity: "उच्च आर्द्रता: कवक के प्रकोप का खतरा बढ़ गया है। ब्लाइट या फफूंदी के संकेतों के लिए पत्तियों का बारीकी से निरीक्षण करें।",
+        cold: "ठंडी जलवायु परिस्थितियां: ठंड के तनाव के लिए तापमान-संवेदनशील फसलों (जैसे टमाटर) की निगरानी करें।"
+      },
+      mr: {
+        prefix: "कृषी सल्ला: ",
+        stable: "स्थिर हवामान परिस्थिती: पिकांच्या सामान्य वाढीसाठी आणि नियमित देखभालीसाठी आदर्श.",
+        heat: "अति उष्णतेचा इशारा: पाण्याचे बाष्पीभवन रोखण्यासाठी थंड वेळेत पिकांना भरपूर पाणी द्या.",
+        rain: "पाऊस सुरू आहे: हाताने पाणी देणे पुढे ढकला. शेतात पाणी साचणे आणि मुळे कुजण्याच्या धोक्यांवर लक्ष ठेवा.",
+        humidity: "जास्त आर्द्रता: बुरशीजन्य प्रादुर्भावाचा धोका वाढला आहे. करपा किंवा भुरी रोगाच्या लक्षणांसाठी पानांची बारकाईने तपासणी करा.",
+        cold: "थंड हवामान परिस्थिती: थंड ताणासाठी तापमान-संवेदनशील पिकांवर (उदा. टोमॅटो) लक्ष ठेवा."
+      }
+    };
+
     function displayWeather(weather, label) {
+      const lang = window.Lang ? Lang.get() : 'en';
+      const wt = WEATHER_TEXTS[lang] || WEATHER_TEXTS.en;
+      const adv = WEATHER_ADVISORY[lang] || WEATHER_ADVISORY.en;
+
       const loc = document.getElementById('weather-location');
-      if (loc) loc.textContent = weather.name || label;
+      if (loc) {
+        let displayLabel = weather.name || label;
+        if (displayLabel === 'Pune') displayLabel = wt.pune;
+        else if (displayLabel === 'Your Location') displayLabel = wt.your_location;
+        loc.textContent = displayLabel;
+      }
       
       const temp = document.getElementById('weather-temp');
       if (temp) temp.innerHTML = `${Math.round(weather.main.temp)}<sup>°C</sup>`;
       
       const humidity = document.getElementById('weather-humidity');
-      if (humidity) humidity.textContent = `💧 ${weather.main.humidity}% Humidity`;
+      if (humidity) humidity.textContent = `💧 ${weather.main.humidity}% ${wt.humidity}`;
       
       const wind = document.getElementById('weather-wind');
-      if (wind) wind.textContent = `💨 ${Math.round(weather.wind.speed * 3.6)} km/h Wind`;
+      if (wind) wind.textContent = `💨 ${Math.round(weather.wind.speed * 3.6)} km/h ${wt.wind}`;
       
       let conditionId = 800;
       if (weather.weather && weather.weather[0]) {
@@ -1935,17 +2018,17 @@
       const humidVal = weather.main.humidity;
       const advisoryEl = document.getElementById('weather-advisory');
       if (advisoryEl) {
-        let advice = "Stable climate conditions: ideal for general crop growth and routine maintenance.";
+        let advice = adv.stable;
         if (tempVal > 35) {
-          advice = "Extreme heat warning: irrigate crops extensively during cooler hours to prevent transpiration shock.";
+          advice = adv.heat;
         } else if (conditionId >= 200 && conditionId < 600) {
-          advice = "Rain detected: postpone manual irrigation. Monitor fields for waterlogging and root rot risks.";
+          advice = adv.rain;
         } else if (humidVal > 80) {
-          advice = "High humidity: elevated fungal outbreak risk. Inspect leaves closely for signs of blight or mildew.";
+          advice = adv.humidity;
         } else if (tempVal < 15) {
-          advice = "Cool climate conditions: monitor temperature-sensitive crops (e.g. tomatoes) for cold stress.";
+          advice = adv.cold;
         }
-        advisoryEl.textContent = `Farming advice: ${advice}`;
+        advisoryEl.textContent = `${adv.prefix}${advice}`;
       }
     }
 
@@ -2018,7 +2101,8 @@
     function renderCarouselDots() {
       const dotsContainer = document.getElementById('carousel-dots');
       if (!dotsContainer) return;
-      dotsContainer.innerHTML = FARMING_TIPS.map((_, idx) => `
+      const tips = FARMING_TIPS[window.Lang ? Lang.get() : 'en'] || FARMING_TIPS.en;
+      dotsContainer.innerHTML = tips.map((_, idx) => `
         <button class="carousel-dot ${idx === 0 ? 'active' : ''}" 
                 onclick="setTip(${idx})" 
                 aria-label="Go to advisory tip ${idx + 1}"></button>
@@ -2054,7 +2138,10 @@
       
       if (!textEl || !iconEl) return;
       
-      const tip = FARMING_TIPS[idx];
+      const tips = FARMING_TIPS[window.Lang ? Lang.get() : 'en'] || FARMING_TIPS.en;
+      const tip = tips[idx];
+      if (!tip) return;
+      
       textEl.style.opacity = '0';
       setTimeout(() => {
         iconEl.textContent = tip.icon;
@@ -2067,12 +2154,45 @@
     }
 
     function nextTip() {
-      tipIndex = (tipIndex + 1) % FARMING_TIPS.length;
+      const tips = FARMING_TIPS[window.Lang ? Lang.get() : 'en'] || FARMING_TIPS.en;
+      tipIndex = (tipIndex + 1) % tips.length;
       setTip(tipIndex);
     }
 
     renderCarouselDots();
     setTip(0);
+
+    // Live updates on language changes
+    window.addEventListener('langchange', function() {
+      // Re-localize greeting
+      const userStr = sessionStorage.getItem('agritech_user');
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        const greeting = GreetingHelper.get();
+        const name = user.first_name || 'User';
+        
+        const greetingHeader = document.getElementById('greeting-header');
+        if (greetingHeader) {
+          const welcomeBackStr = window.Lang ? Lang.t('dash_greeting') : 'Welcome back';
+          greetingHeader.textContent = `${welcomeBackStr}, ${name} 👋`;
+        }
+        
+        const greetingHero = document.getElementById('greeting');
+        if (greetingHero) {
+          greetingHero.innerHTML = `${greeting}, <span class="name">${name}</span>`;
+        }
+      }
+      
+      const dateEl = document.getElementById('today-date');
+      if (dateEl) {
+        dateEl.textContent = DateFormatter.today();
+      }
+
+      loadDashboardData();
+      initWeather();
+      renderCarouselDots();
+      setTip(tipIndex);
+    });
   </script>
 </body>
 </html>

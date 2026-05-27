@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    (function(){
+      var l = localStorage.getItem('lang');
+      if (l === 'hi' || l === 'mr') document.documentElement.setAttribute('lang', l);
+    })();
+  </script>
   <script src="/static/js/theme.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,6 +27,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="/static/css/base.css">
   <link rel="stylesheet" href="/static/css/components.css">
@@ -33,12 +40,12 @@
     <a href="/dashboard.html" class="sidebar-logo">🌿 Smart Crop Detective</a>
     
     <nav class="sidebar-nav">
-      <a href="/dashboard.html" class="sidebar-link">🏠 Dashboard</a>
-      <a href="/detect.html" class="sidebar-link active">🔬 Detect</a>
-      <a href="/weather.html" class="sidebar-link">🌤 Weather</a>
-      <a href="/library.html" class="sidebar-link">📚 Library</a>
-      <a href="/reports.html" class="sidebar-link">📋 Reports</a>
-      <a href="/profile.html" class="sidebar-link">👤 Profile</a>
+      <a href="/dashboard.html" class="sidebar-link">🏠 <span data-i18n="nav_dashboard">Dashboard</span></a>
+      <a href="/detect.html" class="sidebar-link active">🔬 <span data-i18n="nav_detect">Detect</span></a>
+      <a href="/weather.html" class="sidebar-link">🌤 <span data-i18n="nav_weather">Weather</span></a>
+      <a href="/library.html" class="sidebar-link">📚 <span data-i18n="nav_library">Library</span></a>
+      <a href="/reports.html" class="sidebar-link">📋 <span data-i18n="nav_reports">Reports</span></a>
+      <a href="/profile.html" class="sidebar-link">👤 <span data-i18n="nav_profile">Profile</span></a>
     </nav>
     
     <div class="sidebar-user">
@@ -46,7 +53,7 @@
       <div class="sidebar-user-info">
         <div class="sidebar-user-name" id="sidebar-name">User</div>
         <div class="sidebar-user-email" id="sidebar-email">user@example.com</div>
-        <a href="#" class="sidebar-logout" onclick="handleLogout(event)">Logout</a>
+        <a href="#" class="sidebar-logout" onclick="handleLogout(event)"><span data-i18n="nav_logout">Logout</span></a>
       </div>
     </div>
   </aside>
@@ -56,23 +63,23 @@
     <div class="mobile-nav-inner">
       <a href="/dashboard.html" class="mobile-nav-link">
         <span>🏠</span>
-        <span>Home</span>
+        <span data-i18n="nav_home">Home</span>
       </a>
       <a href="/detect.html" class="mobile-nav-link active">
         <span>🔬</span>
-        <span>Detect</span>
+        <span data-i18n="nav_detect">Detect</span>
       </a>
       <a href="/weather.html" class="mobile-nav-link">
         <span>🌤</span>
-        <span>Weather</span>
+        <span data-i18n="nav_weather">Weather</span>
       </a>
       <a href="/library.html" class="mobile-nav-link">
         <span>📚</span>
-        <span>Library</span>
+        <span data-i18n="nav_library">Library</span>
       </a>
       <a href="/profile.html" class="mobile-nav-link">
         <span>👤</span>
-        <span>Profile</span>
+        <span data-i18n="nav_profile">Profile</span>
       </a>
     </div>
   </nav>
@@ -107,7 +114,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-svg" style="color: var(--accent-from); margin-right: 6px;"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
           <span>AI Disease Diagnostic Engine</span>
         </div>
-        <h1>Instant <span>Crop Diagnosis</span></h1>
+        <h1 data-i18n="detect_title">Instant Crop Diagnosis</h1>
         <p class="hero-subtitle">Upload a photo of your crop's leaf to detect diseases, analyze symptoms, and get immediate treatment recommendations in English or Hindi.</p>
         <div class="trust-strip">
           <span>⚡ Real-Time Analysis</span>
@@ -126,7 +133,7 @@
         <div class="detect-upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
           <div id="upload-default">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="upload-icon-svg"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></svg>
-            <h3>Drag & drop a leaf photo here</h3>
+            <h3 data-i18n="detect_upload">Upload a leaf photo</h3>
             <p>or click to browse</p>
             <small>JPEG · PNG · Max 10MB</small>
           </div>
@@ -166,7 +173,7 @@
         <div class="crop-select-container" style="margin-top: 24px;">
           <button class="btn-premium-gradient" id="analyze-btn" disabled>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-svg" style="margin-right: 6px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-            <span>Analyze Crop</span>
+            <span data-i18n="detect_btn_analyze">Analyze</span>
           </button>
         </div>
 
@@ -234,12 +241,207 @@
               
               <div class="detail-grid">
                 <div class="detail-block">
-                  <h4>Treatment Steps</h4>
+                  <h4 data-i18n="detect_treatment">Treatment Steps</h4>
+                  <ol class="advice-steps" id="advice-treatment"></ol>
+                </div>
+      <div class="sidebar-avatar" id="sidebar-avatar">U</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebar-name">User</div>
+        <div class="sidebar-user-email" id="sidebar-email">user@example.com</div>
+        <a href="#" class="sidebar-logout" onclick="handleLogout(event)"><span data-i18n="nav_logout">Logout</span></a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Mobile Nav -->
+  <nav class="mobile-nav">
+    <div class="mobile-nav-inner">
+      <a href="/dashboard.html" class="mobile-nav-link">
+        <span>🏠</span>
+        <span data-i18n="nav_home">Home</span>
+      </a>
+      <a href="/detect.html" class="mobile-nav-link active">
+        <span>🔬</span>
+        <span data-i18n="nav_detect">Detect</span>
+      </a>
+      <a href="/weather.html" class="mobile-nav-link">
+        <span>🌤</span>
+        <span data-i18n="nav_weather">Weather</span>
+      </a>
+      <a href="/library.html" class="mobile-nav-link">
+        <span>📚</span>
+        <span data-i18n="nav_library">Library</span>
+      </a>
+      <a href="/profile.html" class="mobile-nav-link">
+        <span>👤</span>
+        <span data-i18n="nav_profile">Profile</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-with-sidebar">
+    <!-- Top Navigation Bar -->
+    <div class="detect-top-nav">
+      <a href="/dashboard.html" class="top-nav-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="inline-svg" style="color: var(--accent-from);"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 3.5 0 9.5C17 17 15 19 11 20z"/><path d="M19 2c-2.26 4.33-5.27 7.14-8 10"/></svg>
+        <span>Smart Crop Detective</span>
+      </a>
+      <div class="top-nav-links">
+        <a href="/dashboard.html" class="top-nav-link">Dashboard</a>
+        <a href="/detect.html" class="top-nav-link active">Detect</a>
+        <a href="/weather.html" class="top-nav-link">Weather</a>
+        <a href="/library.html" class="top-nav-link">Library</a>
+        <a href="/reports.html" class="top-nav-link">Reports</a>
+      </div>
+      <div class="top-nav-actions">
+        <button data-theme-toggle onclick="ThemeManager.toggle()" title="Toggle Theme">
+          <span class="tt-icon">🌙</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Hero Header -->
+    <div class="detect-hero-wrap">
+      <div class="hero-glow"></div>
+      <div class="detect-hero">
+        <div class="hero-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-svg" style="color: var(--accent-from); margin-right: 6px;"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+          <span>AI Disease Diagnostic Engine</span>
+        </div>
+        <h1 data-i18n="detect_title">Instant Crop Diagnosis</h1>
+        <p class="hero-subtitle">Upload a photo of your crop's leaf to detect diseases, analyze symptoms, and get immediate treatment recommendations in English or Hindi.</p>
+        <div class="trust-strip">
+          <span>⚡ Real-Time Analysis</span>
+          <span>•</span>
+          <span>🌿 Accurate Recognition</span>
+          <span>•</span>
+          <span>🔒 Secure Database</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Card Wrap -->
+    <div class="detect-card-wrap">
+      <div class="detect-card">
+        <!-- Upload Zone -->
+        <div class="detect-upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+          <div id="upload-default">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="upload-icon-svg"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></svg>
+            <h3 data-i18n="detect_upload">Upload a leaf photo</h3>
+            <p>or click to browse</p>
+            <small>JPEG · PNG · Max 10MB</small>
+          </div>
+          <div class="upload-preview" id="upload-preview">
+            <div class="preview-img-container">
+              <img id="preview-image" src="" alt="Preview">
+            </div>
+            <p class="upload-preview-info" id="preview-info"></p>
+            <button class="upload-remove" onclick="removeImage(event)">✕ Remove</button>
+          </div>
+          <input type="file" id="file-input" accept="image/jpeg,image/png" style="display: none;">
+        </div>
+
+        <!-- Crop Selector -->
+        <div class="crop-select-container">
+          <label class="select-label" for="crop-select">Crop Type (optional)</label>
+          <select id="crop-select" class="detect-select">
+            <option value="">All Crops</option>
+            <option value="Tomato">🍅 Tomato</option>
+            <option value="Potato">🥔 Potato</option>
+            <option value="Apple">🍎 Apple</option>
+            <option value="Corn">🌽 Corn</option>
+            <option value="Grape">🍇 Grape</option>
+            <option value="Pepper">🫑 Pepper</option>
+            <option value="Peach">🍑 Peach</option>
+            <option value="Cherry">🍒 Cherry</option>
+            <option value="Strawberry">🍓 Strawberry</option>
+            <option value="Blueberry">🫐 Blueberry</option>
+            <option value="Orange">🍊 Orange</option>
+            <option value="Raspberry">🍃 Raspberry</option>
+            <option value="Squash">🎃 Squash</option>
+            <option value="Soybean">🟫 Soybean</option>
+          </select>
+        </div>
+
+        <!-- Analyze Button -->
+        <div class="crop-select-container" style="margin-top: 24px;">
+          <button class="btn-premium-gradient" id="analyze-btn" disabled>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-svg" style="margin-right: 6px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+            <span data-i18n="detect_btn_analyze">Analyze</span>
+          </button>
+        </div>
+
+        <!-- Detection Results -->
+        <div class="detection-results" id="detection-results">
+          <div class="detection-card" id="detection-card">
+            <div class="detection-header">
+              <div class="detection-header-top">
+                <span class="pill" id="result-crop">🍅 Tomato</span>
+                <h2 id="result-disease">Early Blight</h2>
+                <span class="badge-status" id="result-status">Diseased</span>
+              </div>
+              <div class="detection-confidence">
+                <div class="confidence-info">
+                  <span id="result-confidence-text">Confidence: 92%</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill" id="result-confidence-bar"></div>
+                </div>
+              </div>
+              <span class="badge-severity" id="result-severity">High Urgency</span>
+            </div>
+            
+            <div class="detection-body">
+              <p class="detection-description" id="result-description">
+                Loading description...
+              </p>
+              
+              <div class="detail-grid">
+                <div class="detail-block" id="symptoms-section">
+                  <h4>Symptoms:</h4>
+                  <ul class="symptom-list" id="result-symptoms"></ul>
+                </div>
+              </div>
+              
+              <div class="immediate-action" id="immediate-action">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="immediate-action-icon-svg"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <p id="result-action">Take immediate action to prevent spread.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <button class="btn-advice-primary" id="get-advice-btn" onclick="getAdvice()">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-svg" style="margin-right: 6px;"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+              <span>Get AI Advice</span>
+            </button>
+            <button class="btn-premium-ghost" onclick="resetDetection()">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-svg" style="margin-right: 6px;"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              <span>Scan Another Crop</span>
+            </button>
+          </div>
+
+          <!-- AI Advice Panel -->
+          <div class="advice-panel" id="advice-panel">
+            <div class="advice-card">
+              <div class="advice-header">
+                <div class="language-toggle">
+                  <button data-lang="en" class="active">English</button>
+                  <button data-lang="hi">Hindi</button>
+                </div>
+                <span class="badge-severity" id="advice-urgency">High Urgency</span>
+              </div>
+              
+              <div class="detail-grid">
+                <div class="detail-block">
+                  <h4 data-i18n="detect_treatment">Treatment Steps</h4>
                   <ol class="advice-steps" id="advice-treatment"></ol>
                 </div>
                 
                 <div class="detail-block">
-                  <h4>Prevention Tips</h4>
+                  <h4 data-i18n="detect_prevention">Prevention Tips</h4>
                   <ul class="prevention-tips" id="advice-prevention"></ul>
                 </div>
               </div>
@@ -256,10 +458,10 @@
     </footer>
   </main>
 
+  <script src="/static/js/lang.js"></script>
   <script src="/static/js/api.js"></script>
   <script src="/static/js/auth-guard.js"></script>
   <script src="/static/js/utils.js"></script>
-  <script src="/static/js/lang.js"></script>
   <script>
     let selectedFile = null;
     let detectionResult = null;
@@ -317,21 +519,15 @@
     }
 
     function handleFile(file) {
-      // Validate file type
       if (!file.type.match(/^image\/(jpeg|png)$/)) {
-        Toast.error('Please upload a JPEG or PNG image');
+        Toast.error(Lang.t('toast_file_type'));
         return;
       }
-
-      // Validate file size (10MB)
       if (file.size > 10 * 1024 * 1024) {
-        Toast.error('File size must be less than 10MB');
+        Toast.error(Lang.t('toast_file_size'));
         return;
       }
-
       selectedFile = file;
-      
-      // Show preview
       const reader = new FileReader();
       reader.onload = (e) => {
         document.getElementById('preview-image').src = e.target.result;
@@ -364,14 +560,13 @@
         formData.append('crop_type', cropType);
       }
 
-      analyzeBtn.innerHTML = '<div class="spinner"></div> Analyzing with AI...';
+      analyzeBtn.innerHTML = `<div class="spinner"></div> ${Lang.t('detect_analyzing')}`;
       analyzeBtn.disabled = true;
 
       try {
         const result = await API.postForm('/detect', formData);
         
         if (result.status === 'success') {
-          // Normalize Flask response fields → what displayResults expects
           const normalized = {
             status: 'success',
             predicted_class: result.raw_class || result.disease_detected || 'Unknown',
@@ -385,12 +580,12 @@
           displayResults(normalized);
         } else {
           Toast.error(result.message || 'Detection failed');
-          analyzeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-svg" style="margin-right: 6px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg><span>Analyze Crop</span>';
+          analyzeBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-svg" style="margin-right: 6px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg><span data-i18n="detect_btn_analyze">Analyze</span>`;
           analyzeBtn.disabled = false;
         }
       } catch (error) {
-        Toast.error('Something went wrong. Please try again.');
-        analyzeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-svg" style="margin-right: 6px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg><span>Analyze Crop</span>';
+        Toast.error(Lang.t('toast_generic_err'));
+        analyzeBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-svg" style="margin-right: 6px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg><span data-i18n="detect_btn_analyze">Analyze</span>`;
         analyzeBtn.disabled = false;
       }
     });
@@ -400,11 +595,9 @@
       const isHealthy = DiseaseParser.isHealthy(result.predicted_class);
       const confidence = result.confidence || 0;
 
-      // Update card styling
       const card = document.getElementById('detection-card');
       card.className = `detection-card ${isHealthy ? 'healthy' : 'diseased'}`;
 
-      // Update content
       document.getElementById('result-crop').textContent = getCropEmoji(parsed.crop) + ' ' + parsed.crop;
       document.getElementById('result-disease').textContent = parsed.disease;
       
@@ -417,16 +610,13 @@
       const bar = document.getElementById('result-confidence-bar');
       bar.style.setProperty('--confidence', confidence);
 
-      // Severity
       const severity = result.severity || (isHealthy ? 'None' : (confidence >= 0.8 ? 'High' : confidence >= 0.6 ? 'Moderate' : 'Low'));
       const severityBadge = document.getElementById('result-severity');
       severityBadge.textContent = severity + ' Urgency';
       severityBadge.className = `badge-severity ${severity === 'High' ? 'badge-red' : severity === 'Moderate' ? 'badge-yellow' : 'badge-green'}`;
 
-      // Description
       document.getElementById('result-description').textContent = result.description || 'Disease detected. Get AI advice for treatment recommendations.';
 
-      // Symptoms
       const symptomsSection = document.getElementById('symptoms-section');
       const symptomsList = document.getElementById('result-symptoms');
       if (result.symptoms && result.symptoms.length > 0) {
@@ -439,7 +629,6 @@
         symptomsSection.style.display = 'none';
       }
 
-      // Immediate action
       const actionSection = document.getElementById('immediate-action');
       if (isHealthy) {
         actionSection.style.display = 'none';
@@ -448,15 +637,12 @@
         document.getElementById('result-action').textContent = result.immediate_action || 'Take immediate action to prevent spread to other plants.';
       }
 
-      // Show/hide advice button based on health status
       document.getElementById('get-advice-btn').style.display = isHealthy ? 'none' : 'inline-flex';
 
-      // Show results
       document.getElementById('detection-results').classList.add('show');
-      analyzeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-svg" style="margin-right: 6px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg><span>Analyze Crop</span>';
+      analyzeBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-svg" style="margin-right: 6px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg><span data-i18n="detect_btn_analyze">Analyze</span>`;
       analyzeBtn.disabled = false;
 
-      // Scroll to results
       document.getElementById('detection-results').scrollIntoView({ behavior: 'smooth' });
     }
 
@@ -496,7 +682,6 @@
         });
 
         if (response.status === 'success') {
-          // Normalize Flask advice response → what displayAdvice expects
           const a = response.advice || {};
           const normalized = {
             urgency: (a.english?.urgency || 'Moderate').charAt(0).toUpperCase() + (a.english?.urgency || 'moderate').slice(1),
@@ -511,7 +696,7 @@
           Toast.error(response.message || 'Failed to get advice');
         }
       } catch (error) {
-        Toast.error('Something went wrong. Please try again.');
+        Toast.error(Lang.t('toast_generic_err'));
       }
 
       btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-svg" style="margin-right: 6px;"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg><span>Get AI Advice</span>';
@@ -519,19 +704,13 @@
     }
 
     function displayAdvice(data) {
-      // Store both language versions
       adviceData = data;
-
-      // Urgency
       const urgency = data.urgency || 'Moderate';
       const urgencyBadge = document.getElementById('advice-urgency');
       urgencyBadge.textContent = urgency + ' Urgency';
       urgencyBadge.className = `badge-severity ${urgency === 'High' ? 'badge-red' : urgency === 'Moderate' ? 'badge-yellow' : 'badge-green'}`;
 
-      // Render based on current language
       renderAdviceContent();
-
-      // Show panel
       document.getElementById('advice-panel').classList.add('show');
       document.getElementById('advice-panel').scrollIntoView({ behavior: 'smooth' });
     }
@@ -540,10 +719,9 @@
       if (!adviceData) return;
 
       const lang = Lang.get();
-      const treatment = lang === 'hi' ? adviceData.treatment_hi : adviceData.treatment_en;
-      const prevention = lang === 'hi' ? adviceData.prevention_hi : adviceData.prevention_en;
+      const treatment = lang === 'en' ? adviceData.treatment_en : (adviceData[`treatment_${lang}`] ?? adviceData.treatment_hi);
+      const prevention = lang === 'en' ? adviceData.prevention_en : (adviceData[`prevention_${lang}`] ?? adviceData.prevention_hi);
 
-      // Treatment steps
       const treatmentEl = document.getElementById('advice-treatment');
       if (treatment && treatment.length > 0) {
         treatmentEl.innerHTML = treatment.map((step, i) => `
@@ -552,26 +730,22 @@
             <p>${step}</p>
           </li>
         `).join('');
-      } else {
-        treatmentEl.innerHTML = '<li class="advice-step"><span class="advice-step-number">1</span><p>Consult a local agricultural expert for specific treatment.</p></li>';
       }
 
-      // Prevention tips
       const preventionEl = document.getElementById('advice-prevention');
       if (prevention && prevention.length > 0) {
         preventionEl.innerHTML = prevention.map(tip => `<li>${tip}</li>`).join('');
-      } else {
-        preventionEl.innerHTML = '<li>Maintain good crop hygiene</li><li>Monitor plants regularly</li>';
       }
     }
 
-    // Language toggle
     document.querySelectorAll('.language-toggle button').forEach(btn => {
       btn.addEventListener('click', function() {
         Lang.set(this.dataset.lang);
         renderAdviceContent();
       });
     });
+
+    window.addEventListener('langchange', renderAdviceContent);
 
     function resetDetection() {
       selectedFile = null;

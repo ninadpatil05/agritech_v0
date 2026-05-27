@@ -16,10 +16,22 @@
   <meta name="twitter:image" content="/assets/images/og-banner.jpg">
   <link rel="icon" href="/static/favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/css/base.css">
   <link rel="stylesheet" href="/static/css/components.css">
   <link rel="stylesheet" href="/static/css/pages.css">
-    <script src="/static/js/theme.js"></script>
+  <script>
+    (function() {
+      const lang = localStorage.getItem('lang') || 'en';
+      document.documentElement.setAttribute('lang', lang);
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <script src="/static/js/theme.js"></script>
     <style>
       /* Aurora KPI section */
       .kpi-section {
@@ -239,19 +251,213 @@
         animation: fadeSlideUp 0.35s ease both;
       }
 
-      /* Responsive */
-      @media (max-width:900px) {
-        .kpi-zone { grid-template-columns: 1fr; }
-        .kpi-hero { flex-direction: row; }
-        .charts-row { grid-template-columns: 1fr; }
-        .scan-row { grid-template-columns: 32px 1fr 1fr auto 24px; }
-        .scan-row > :nth-child(4),
-        .scan-row > :nth-child(5) { display: none; }
-        .scan-row > :nth-child(7) { display: none; }
+      /* Header & Actions Layout */
+      .reports-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+        gap: 16px;
       }
-      @media (max-width:600px) {
-        .kpi-stack { flex-direction: row; flex-wrap: wrap; }
-        .kpi-card { flex: 1 1 calc(50% - 5px); }
+      .reports-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+
+      /* Upgraded Layouts (Grid for exact alignment) */
+      .kpi-stack {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      .skel-stack {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+
+      /* Modern Responsive Filter Bar */
+      .reports-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: flex-end;
+        padding: 8px 4px;
+      }
+      .reports-filters .form-group {
+        margin-bottom: 0;
+        flex: 1 1 140px;
+      }
+      .reports-filters .form-group.search-group {
+        flex: 2 1 200px;
+      }
+      .reports-filters .form-input,
+      .reports-filters .form-select {
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .reports-filters .count-chip-wrapper {
+        margin-left: auto;
+        align-self: flex-end;
+        padding-bottom: 4px;
+      }
+
+      /* Responsive Breakpoints */
+      @media (max-width: 900px) {
+        .kpi-zone {
+          grid-template-columns: 1fr;
+        }
+        .skel-kpi-zone {
+          grid-template-columns: 1fr;
+        }
+        .charts-row {
+          grid-template-columns: 1fr;
+        }
+        .skel-charts {
+          flex-direction: column;
+          height: auto;
+          gap: 20px;
+        }
+        .skel-charts > * {
+          height: 220px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 16px 12px !important;
+        }
+        
+        .reports-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        
+        .reports-actions {
+          width: 100%;
+          justify-content: flex-start;
+        }
+        
+        /* Mobile Card/Row layout for Scans list */
+        .scan-row {
+          display: grid !important;
+          grid-template-columns: 1.2fr 1fr !important;
+          grid-template-rows: auto auto auto !important;
+          gap: 8px 12px !important;
+          padding: 14px 16px !important;
+          align-items: center !important;
+          border-radius: var(--radius) !important;
+        }
+        
+        .scan-col-idx {
+          display: none !important; /* Hide index entirely to save width */
+        }
+        
+        .scan-col-crop {
+          grid-column: 1;
+          grid-row: 1;
+          font-weight: 600;
+          font-size: 0.95rem;
+        }
+        
+        .scan-col-disease {
+          grid-column: 1;
+          grid-row: 2;
+          font-size: 0.85rem;
+          color: var(--text-muted);
+        }
+        
+        .scan-col-conf {
+          grid-column: 1;
+          grid-row: 3;
+          display: flex !important;
+          margin-top: 4px;
+        }
+        
+        .scan-col-date {
+          grid-column: 2;
+          grid-row: 1;
+          display: block !important;
+          text-align: right;
+          font-size: 0.8rem;
+          color: var(--text-muted);
+          justify-self: end;
+        }
+        
+        .scan-col-status {
+          grid-column: 2;
+          grid-row: 2;
+          justify-self: end;
+        }
+        
+        .scan-col-delete {
+          grid-column: 2;
+          grid-row: 3;
+          display: block !important;
+          justify-self: end;
+          margin-top: 4px;
+        }
+        
+        .scan-col-chevron {
+          display: none !important; /* Hide chevron on tablet/mobile to save space */
+        }
+
+        .scan-detail.open {
+          max-height: 400px;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .kpi-stack {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .skel-stack {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .reports-actions {
+          flex-direction: column;
+          align-items: stretch;
+          width: 100%;
+        }
+        .export-group,
+        .export-group button,
+        .reports-actions > button {
+          width: 100%;
+        }
+        .export-menu {
+          width: 100%;
+          left: 0;
+          right: 0;
+        }
+        
+        .kpi-stack {
+          grid-template-columns: 1fr;
+        }
+        .skel-stack {
+          grid-template-columns: 1fr;
+        }
+        
+        .reports-filters {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        
+        .reports-filters .form-group {
+          flex: 1 1 auto;
+          width: 100%;
+        }
+        
+        .reports-filters .count-chip-wrapper {
+          margin-left: 0;
+          width: 100%;
+          text-align: center;
+          margin-top: 8px;
+        }
       }
     </style>
 </head>
@@ -261,12 +467,12 @@
     <a href="/dashboard.html" class="sidebar-logo">🌿 Smart Crop Detective</a>
     
     <nav class="sidebar-nav">
-      <a href="/dashboard.html" class="sidebar-link">🏠 Dashboard</a>
-      <a href="/detect.html" class="sidebar-link">🔬 Detect</a>
-      <a href="/weather.html" class="sidebar-link">🌤 Weather</a>
-      <a href="/library.html" class="sidebar-link">📚 Library</a>
-      <a href="/reports.html" class="sidebar-link active">📋 Reports</a>
-      <a href="/profile.html" class="sidebar-link">👤 Profile</a>
+      <a href="/dashboard.html" class="sidebar-link">🏠 <span data-i18n="nav_dashboard">Dashboard</span></a>
+      <a href="/detect.html" class="sidebar-link">🔬 <span data-i18n="nav_detect">Detect</span></a>
+      <a href="/weather.html" class="sidebar-link">🌤 <span data-i18n="nav_weather">Weather</span></a>
+      <a href="/library.html" class="sidebar-link">📚 <span data-i18n="nav_library">Library</span></a>
+      <a href="/reports.html" class="sidebar-link active">📋 <span data-i18n="nav_reports">Reports</span></a>
+      <a href="/profile.html" class="sidebar-link">👤 <span data-i18n="nav_profile">Profile</span></a>
     </nav>
     
     <div class="sidebar-user">
@@ -274,7 +480,7 @@
       <div class="sidebar-user-info">
         <div class="sidebar-user-name" id="sidebar-name">User</div>
         <div class="sidebar-user-email" id="sidebar-email">user@example.com</div>
-        <a href="#" class="sidebar-logout" onclick="handleLogout(event)">Logout</a>
+        <a href="#" class="sidebar-logout" onclick="handleLogout(event)" data-i18n="nav_logout">Logout</a>
       </div>
     </div>
   </aside>
@@ -284,23 +490,23 @@
     <div class="mobile-nav-inner">
       <a href="/dashboard.html" class="mobile-nav-link">
         <span>🏠</span>
-        <span>Home</span>
+        <span data-i18n="nav_dashboard">Home</span>
       </a>
       <a href="/detect.html" class="mobile-nav-link">
         <span>🔬</span>
-        <span>Detect</span>
+        <span data-i18n="nav_detect">Detect</span>
       </a>
       <a href="/weather.html" class="mobile-nav-link">
         <span>🌤</span>
-        <span>Weather</span>
+        <span data-i18n="nav_weather">Weather</span>
       </a>
       <a href="/library.html" class="mobile-nav-link">
         <span>📚</span>
-        <span>Library</span>
+        <span data-i18n="nav_library">Library</span>
       </a>
       <a href="/profile.html" class="mobile-nav-link">
         <span>👤</span>
-        <span>Profile</span>
+        <span data-i18n="nav_profile">Profile</span>
       </a>
     </div>
   </nav>
@@ -308,19 +514,18 @@
   <!-- Main Content -->
   <main class="main-with-sidebar">
     <div class="container" style="padding: 32px 24px;">
-      <!-- Header -->
-      <div class="reports-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-        <h2>📋 Scan History</h2>
-        <div class="reports-actions" style="display: flex; gap: 12px; align-items: center;">
+      <div class="reports-header">
+        <h2>📋 <span data-i18n="reports_title">Scan History</span></h2>
+        <div class="reports-actions">
           <div class="export-group" id="export-group">
-            <button class="btn btn-ghost" id="export-btn" onclick="toggleExportMenu(event)">📥 Export ▼</button>
+            <button class="btn btn-ghost" id="export-btn" onclick="toggleExportMenu(event)">📥 <span data-i18n="reports_export">Export</span> ▼</button>
             <div class="export-menu" id="export-menu">
               <button onclick="exportCSV()">CSV (.csv)</button>
               <button onclick="exportJSON()">JSON (.json)</button>
-              <button onclick="window.print()">Print Report</button>
+              <button onclick="window.print()" data-i18n="reports_print">Print Report</button>
             </div>
           </div>
-          <button class="btn btn-danger btn-ghost" onclick="confirmClearAll()">🗑 Clear All</button>
+          <button class="btn btn-danger btn-ghost" onclick="confirmClearAll()">🗑 <span data-i18n="reports_clear_all">Clear All</span></button>
         </div>
       </div>
 
@@ -363,7 +568,7 @@
               </svg>
               <div class="kpi-hero-text">
                 <div class="kpi-value" id="kpi-health">--%</div>
-                <div class="kpi-label">Fleet Health Score</div>
+                <div class="kpi-label" data-i18n="reports_fleet_health">Fleet Health Score</div>
                 <div class="kpi-delta" id="kpi-health-delta"></div>
               </div>
             </div>
@@ -375,7 +580,7 @@
                   <div class="kpi-delta" id="kpi-scans-delta"></div>
                 </div>
                 <div class="kpi-value" id="kpi-scans">--</div>
-                <div class="kpi-label">Total Scans</div>
+                <div class="kpi-label" data-i18n="dash_total_scans">Total Scans</div>
                 <svg class="sparkline" id="spark-scans" viewBox="0 0 60 20" width="60" height="20" preserveAspectRatio="none"></svg>
               </div>
               <div class="kpi-card" style="--accent: var(--red)">
@@ -384,7 +589,7 @@
                   <div class="kpi-delta" id="kpi-diseased-delta"></div>
                 </div>
                 <div class="kpi-value" id="kpi-diseased">--</div>
-                <div class="kpi-label">Diseased Detections</div>
+                <div class="kpi-label" data-i18n="reports_diseased_detections">Diseased Detections</div>
                 <svg class="sparkline" id="spark-diseased" viewBox="0 0 60 20" width="60" height="20" preserveAspectRatio="none"></svg>
               </div>
               <div class="kpi-card" style="--accent: var(--orange)">
@@ -393,7 +598,7 @@
                   <div class="kpi-delta" id="kpi-conf-delta"></div>
                 </div>
                 <div class="kpi-value" id="kpi-conf">--%</div>
-                <div class="kpi-label">Avg. Confidence</div>
+                <div class="kpi-label" data-i18n="dash_avg_confidence">Avg. Confidence</div>
                 <svg class="sparkline" id="spark-conf" viewBox="0 0 60 20" width="60" height="20" preserveAspectRatio="none"></svg>
               </div>
             </div>
@@ -403,34 +608,34 @@
         <!-- Charts Row -->
         <div class="charts-row">
           <div class="chart-card" style="flex: 55;">
-            <h4>🔬 Disease Breakdown</h4>
+            <h4 data-i18n="reports_disease_breakdown">🔬 Disease Breakdown</h4>
             <div id="disease-breakdown-chart" style="display: flex; flex-direction: column; gap: 10px;">
               <!-- Dynamic disease bar rows will go here -->
             </div>
           </div>
           
           <div class="chart-card" style="flex: 45;">
-            <h4>📅 Scan Frequency Heatmap</h4>
+            <h4 data-i18n="reports_heatmap_title">📅 Scan Frequency Heatmap</h4>
             <div class="heatmap-wrap">
               <!-- Month labels row (12 cols, placed above grid) -->
               <div class="heatmap-months" id="heatmap-months"></div>
               <div class="heatmap-body">
                 <!-- Weekday labels (7 rows) -->
                 <div class="heatmap-days">
-                  <span>Mon</span><span></span><span>Wed</span>
-                  <span></span><span>Fri</span><span></span><span>Sun</span>
+                  <span data-i18n="day_mon">Mon</span><span></span><span data-i18n="day_wed">Wed</span>
+                  <span></span><span data-i18n="day_fri">Fri</span><span></span><span data-i18n="day_sun">Sun</span>
                 </div>
                 <!-- The grid -->
                 <div class="heatmap-grid" id="heatmap-grid"></div>
               </div>
               <!-- Legend strip -->
               <div class="heatmap-legend">
-                <span>Less</span>
+                <span data-i18n="reports_less">Less</span>
                 <span class="leg-cell" style="background: var(--border)"></span>
                 <span class="leg-cell" style="background: var(--green-pale)"></span>
                 <span class="leg-cell" style="background: var(--green-light)"></span>
                 <span class="leg-cell" style="background: var(--green-mid)"></span>
-                <span>More</span>
+                <span data-i18n="reports_more">More</span>
               </div>
             </div>
           </div>
@@ -440,26 +645,26 @@
         <div class="insight-card" id="insight-card" style="display:none">
           <div class="insight-icon">🤖</div>
           <div class="insight-body">
-            <div class="insight-label">Smart Insight</div>
+            <div class="insight-label" data-i18n="reports_insight_label">Smart Insight</div>
             <p class="insight-text" id="insight-text"></p>
           </div>
         </div>
 
         <!-- Sticky Filter Bar -->
         <div class="filter-sticky">
-          <div class="reports-filters" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; padding: 0 4px;">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label class="form-label">From</label>
-              <input type="date" class="form-input" id="date-from" style="width: 140px;">
+          <div class="reports-filters">
+            <div class="form-group">
+              <label class="form-label" data-i18n="reports_from">From</label>
+              <input type="date" class="form-input" id="date-from">
             </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label class="form-label">To</label>
-              <input type="date" class="form-input" id="date-to" style="width: 140px;">
+            <div class="form-group">
+              <label class="form-label" data-i18n="reports_to">To</label>
+              <input type="date" class="form-input" id="date-to">
             </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label class="form-label">Crop</label>
-              <select class="form-select" id="crop-filter" style="width: 130px;">
-                <option value="">All Crops</option>
+            <div class="form-group">
+              <label class="form-label" data-i18n="dash_col_crop">Crop</label>
+              <select class="form-select" id="crop-filter">
+                <option value="" data-i18n="reports_all_crops">All Crops</option>
                 <option value="Tomato">Tomato</option>
                 <option value="Potato">Potato</option>
                 <option value="Apple">Apple</option>
@@ -472,21 +677,21 @@
                 <option value="Orange">Orange</option>
               </select>
             </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label class="form-label">Status</label>
-              <select class="form-select" id="status-filter" style="width: 110px;">
-                <option value="">All</option>
-                <option value="diseased">Diseased</option>
-                <option value="healthy">Healthy</option>
+            <div class="form-group">
+              <label class="form-label" data-i18n="dash_col_status">Status</label>
+              <select class="form-select" id="status-filter">
+                <option value="" data-i18n="reports_all_status">All</option>
+                <option value="diseased" data-i18n="dash_diseased">Diseased</option>
+                <option value="healthy" data-i18n="dash_healthy">Healthy</option>
               </select>
             </div>
             <!-- Live Search -->
-            <div class="form-group" style="margin-bottom: 0; flex-grow: 1; min-width: 200px;">
-              <label class="form-label">Search Disease</label>
-              <input type="text" class="form-input" id="search-filter" placeholder="Search disease name..." style="width: 100%;">
+            <div class="form-group search-group">
+              <label class="form-label" data-i18n="reports_search_disease">Search Disease</label>
+              <input type="text" class="form-input" id="search-filter" placeholder="Search disease name..." data-i18n-placeholder="reports_search_ph">
             </div>
             <!-- Count Chip -->
-            <div class="count-chip-wrapper" style="margin-left: auto;">
+            <div class="count-chip-wrapper">
               <span class="count-chip" id="count-chip">Showing -- of -- scans</span>
             </div>
           </div>
@@ -521,11 +726,11 @@
               dur="2.5s" repeatCount="indefinite"/>
           </line>
         </svg>
-        <h3 style="margin-top: 16px; color: var(--text)">Your field journal is empty</h3>
-        <p style="color: var(--text-muted); max-width: 320px; text-align: center; margin: 8px auto 20px">
+        <h3 style="margin-top: 16px; color: var(--text)" data-i18n="reports_no_history_title">Your field journal is empty</h3>
+        <p style="color: var(--text-muted); max-width: 320px; text-align: center; margin: 8px auto 20px" data-i18n="reports_no_history_desc">
           Every scan you run appears here as a data point.<br>Start building your crop health record.
         </p>
-        <a href="/detect.html" class="btn btn-orange">🔬 Run Your First Scan</a>
+        <a href="/detect.html" class="btn btn-orange" data-i18n="reports_btn_first_scan">🔬 Run Your First Scan</a>
       </div>
 
     </div>
@@ -543,15 +748,15 @@
   <div class="modal-overlay" id="delete-modal" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
     <div class="modal" style="max-width: 360px;">
       <div class="modal-header">
-        <h3 class="modal-title" id="delete-modal-title">Delete this scan?</h3>
+        <h3 class="modal-title" id="delete-modal-title" data-i18n="reports_delete_title">Delete this scan?</h3>
         <button class="modal-close" onclick="Modal.hide('delete-modal'); deleteId = null;">×</button>
       </div>
       <div class="modal-body">
-        <p class="text-muted">This action cannot be undone.</p>
+        <p class="text-muted" data-i18n="reports_delete_desc">This action cannot be undone.</p>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-ghost" onclick="Modal.hide('delete-modal'); deleteId = null;">Cancel</button>
-        <button class="btn btn-danger" id="confirm-delete-btn">Delete</button>
+        <button class="btn btn-ghost" onclick="Modal.hide('delete-modal'); deleteId = null;" data-i18n="reports_btn_cancel">Cancel</button>
+        <button class="btn btn-danger" id="confirm-delete-btn" data-i18n="reports_btn_delete">Delete</button>
       </div>
     </div>
   </div>
@@ -560,19 +765,20 @@
   <div class="modal-overlay" id="clear-all-modal" role="dialog" aria-modal="true" aria-labelledby="clear-all-modal-title">
     <div class="modal" style="max-width: 360px;">
       <div class="modal-header">
-        <h3 class="modal-title" id="clear-all-modal-title">Clear all history?</h3>
+        <h3 class="modal-title" id="clear-all-modal-title" data-i18n="reports_clear_title">Clear all history?</h3>
         <button class="modal-close" onclick="Modal.hide('clear-all-modal')">×</button>
       </div>
       <div class="modal-body">
-        <p class="text-muted">This will permanently delete all your scan history. This action cannot be undone.</p>
+        <p class="text-muted" data-i18n="reports_clear_desc">This will permanently delete all your scan history. This action cannot be undone.</p>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-ghost" onclick="Modal.hide('clear-all-modal')">Cancel</button>
-        <button class="btn btn-danger" id="confirm-clear-all-btn">Clear All</button>
+        <button class="btn btn-ghost" onclick="Modal.hide('clear-all-modal')" data-i18n="reports_btn_cancel">Cancel</button>
+        <button class="btn btn-danger" id="confirm-clear-all-btn" data-i18n="reports_btn_clear">Clear All</button>
       </div>
     </div>
   </div>
 
+  <script src="/static/js/lang.js"></script>
   <script src="/static/js/api.js"></script>
   <script src="/static/js/auth-guard.js"></script>
   <script src="/static/js/utils.js"></script>
@@ -672,17 +878,27 @@
       requestAnimationFrame(update);
     }
 
+    const DELTA_TEXTS = {
+      en: { new: 'New', vs: 'vs last week' },
+      hi: { new: 'नया', vs: 'पिछले सप्ताह की तुलना में' },
+      mr: { new: 'नवीन', vs: 'मागील आठवड्याच्या तुलनेत' }
+    };
+
     // Render delta WoW change pills
     function renderDelta(elId, deltaPercent) {
       const el = document.getElementById(elId);
       if (!el) return;
+      
+      const lang = window.Lang ? Lang.get() : 'en';
+      const dt = DELTA_TEXTS[lang] || DELTA_TEXTS.en;
+
       if (deltaPercent === null) {
-        el.textContent = 'New';
+        el.textContent = dt.new;
         el.className = 'kpi-delta neutral';
         return;
       }
       const sign = deltaPercent >= 0 ? '↑' : '↓';
-      el.textContent = `${sign} ${Math.abs(deltaPercent)}% vs last week`;
+      el.textContent = `${sign} ${Math.abs(deltaPercent)}% ${dt.vs}`;
       el.className = `kpi-delta ${deltaPercent >= 0 ? 'positive' : 'negative'}`;
     }
 
@@ -810,7 +1026,14 @@
       if (!tip) return;
 
       cell.addEventListener('mouseenter', (e) => {
-        tip.textContent = `${count} scan${count !== 1 ? 's' : ''} · ${formattedDate}`;
+        const lang = window.Lang ? Lang.get() : 'en';
+        let scanText = '';
+        if (lang === 'en') {
+          scanText = count === 1 ? 'scan' : 'scans';
+        } else {
+          scanText = window.Lang ? Lang.t('dash_scans_suffix') : 'scans';
+        }
+        tip.textContent = `${count} ${scanText} · ${formattedDate}`;
         tip.style.opacity = '1';
       });
       cell.addEventListener('mousemove', (e) => {
@@ -861,7 +1084,7 @@
             : count <= 3 ? 'var(--green-light)'
             : 'var(--green-mid)';
           
-          const label = date.toLocaleDateString('en-IN', { weekday: 'short', month: 'short', day: 'numeric' });
+          const label = date.toLocaleDateString(window.Lang ? Lang.locale() : 'en-IN', { weekday: 'short', month: 'short', day: 'numeric' });
           attachHeatmapTooltip(cell, count, label);
           grid.appendChild(cell);
         });
@@ -876,7 +1099,7 @@
           d.setDate(startDate.getDate() + w * 7);
           const m = d.getMonth();
           const span = document.createElement('span');
-          span.textContent = m !== lastMonth ? d.toLocaleDateString('en-IN', { month: 'short' }) : '';
+          span.textContent = m !== lastMonth ? d.toLocaleDateString(window.Lang ? Lang.locale() : 'en-IN', { month: 'short' }) : '';
           monthsEl.appendChild(span);
           lastMonth = m;
         }
@@ -884,10 +1107,55 @@
     }
 
     // AI Insight Generator
+    const INSIGHT_TEXTS = {
+      en: {
+        clean: (total) => `All ${total} scans on record — no disease detections this week. Fields looking clean.`,
+        spike: 'a new spike in',
+        rise: (p) => `a ${p}% rise in`,
+        drop: (p) => `a ${p}% drop in`,
+        steady: 'steady',
+        cases: (c) => `${c} case${c !== 1 ? 's' : ''}`,
+        body: (trend, disease, topCrop, cases, advice) => `This week shows ${trend} ${disease} detections, mostly on ${topCrop} (${cases}). ${advice}`,
+        advice_blight: 'Review irrigation and apply copper-based fungicide if not yet done.',
+        advice_rust: 'Check for airflow issues and remove infected leaves promptly.',
+        advice_leaf: 'Inspect canopy density and consider targeted foliar spray.',
+        advice_other: 'Monitor affected plants closely and isolate if spreading.'
+      },
+      hi: {
+        clean: (total) => `रिकॉर्ड पर सभी ${total} स्कैन — इस सप्ताह कोई बीमारी नहीं पाई गई। खेत साफ दिख रहे हैं।`,
+        spike: 'एक नया उछाल',
+        rise: (p) => `${p}% की वृद्धि`,
+        drop: (p) => `${p}% की गिरावट`,
+        steady: 'स्थिरता',
+        cases: (c) => `${c} ${c === 1 ? 'मामला' : 'मामले'}`,
+        body: (trend, disease, topCrop, cases, advice) => `यह सप्ताह ${disease} के मामलों में ${trend} दर्शाता है, मुख्य रूप से ${topCrop} पर (${cases})। ${advice}`,
+        advice_blight: 'सिंचाई की समीक्षा करें और यदि अभी तक नहीं किया गया है तो तांबा आधारित कवकनाशी (copper-based fungicide) का प्रयोग करें।',
+        advice_rust: 'हवा के प्रवाह की जांच करें और संक्रमित पत्तियों को तुरंत हटा दें।',
+        advice_leaf: 'कैनोपी के घनत्व का निरीक्षण करें और लक्षित पर्णीय स्प्रे (foliar spray) पर विचार करें।',
+        advice_other: 'प्रभावित पौधों की बारीकी से निगरानी करें और यदि बीमारी फैल रही हो तो उन्हें अलग कर दें।'
+      },
+      mr: {
+        clean: (total) => `रेकॉर्डवरील सर्व ${total} स्कॅन — या आठवड्यात कोणताही रोग आढळला नाही. शेते निरोगी दिसत आहेत.`,
+        spike: 'एक नवीन वाढ',
+        rise: (p) => `${p}% वाढ`,
+        drop: (p) => `${p}% घट`,
+        steady: 'स्थिर',
+        cases: (c) => `${c} ${c === 1 ? 'केस' : 'केसेस'}`,
+        body: (trend, disease, topCrop, cases, advice) => `या आठवड्यात ${disease} केसेसमध्ये ${trend} दिसून येत आहे, प्रामुख्याने ${topCrop} वर (${cases})। ${advice}`,
+        advice_blight: 'जलसिंचनाचे पुनरावलोकन करा आणि अद्याप केले नसल्यास तांबे-आधारित बुरशीनाशक वापरा.',
+        advice_rust: 'हवेच्या प्रवाहाची तपासणी करा आणि बाधित पाने त्वरित काढून टाका.',
+        advice_leaf: 'कॅनोपीच्या घनतेची तपासणी करा आणि लक्ष्यित फवारणीचा विचार करा.',
+        advice_other: 'बाधित वनस्पतींचे बारकाईने निरीक्षण करा आणि प्रसार होत असल्यास त्यांना वेगळे करा.'
+      }
+    };
+
     function generateInsight() {
       const textEl = document.getElementById('insight-text');
       const cardEl = document.getElementById('insight-card');
       if (!textEl || !cardEl) return;
+
+      const lang = window.Lang ? Lang.get() : 'en';
+      const it = INSIGHT_TEXTS[lang] || INSIGHT_TEXTS.en;
 
       if (allHistory.length < 3) {
         cardEl.style.display = 'none';
@@ -912,7 +1180,7 @@
 
       const topDisease = Object.entries(freq).sort((a,b) => b[1]-a[1])[0];
       if (!topDisease) {
-        textEl.textContent = `All ${allHistory.length} scans on record — no disease detections this week. Fields looking clean.`;
+        textEl.textContent = it.clean(allHistory.length);
         cardEl.style.display = 'flex';
         return;
       }
@@ -931,20 +1199,21 @@
       ).length;
 
       let trend = '';
-      if (lastCount === 0 && count > 0) trend = 'a new spike in';
-      else if (count > lastCount) trend = `a ${Math.round(((count-lastCount)/lastCount)*100)}% rise in`;
-      else if (count < lastCount) trend = `a ${Math.round(((lastCount-count)/lastCount)*100)}% drop in`;
-      else trend = 'steady';
+      if (lastCount === 0 && count > 0) trend = it.spike;
+      else if (count > lastCount) trend = it.rise(Math.round(((count-lastCount)/lastCount)*100));
+      else if (count < lastCount) trend = it.drop(Math.round(((lastCount-count)/lastCount)*100));
+      else trend = it.steady;
 
       const advice = disease.toLowerCase().includes('blight')
-        ? 'Review irrigation and apply copper-based fungicide if not yet done.'
+        ? it.advice_blight
         : disease.toLowerCase().includes('rust')
-        ? 'Check for airflow issues and remove infected leaves promptly.'
+        ? it.advice_rust
         : disease.toLowerCase().includes('leaf')
-        ? 'Inspect canopy density and consider targeted foliar spray.'
-        : 'Monitor affected plants closely and isolate if spreading.';
+        ? it.advice_leaf
+        : it.advice_other;
 
-      textEl.textContent = `This week shows ${trend} ${disease} detections, mostly on ${topCrop} (${count} case${count>1?'s':''}). ${advice}`;
+      const casesText = it.cases(count);
+      textEl.textContent = it.body(trend, disease, topCrop, casesText, advice);
       cardEl.style.display = 'flex';
     }
 
@@ -1048,11 +1317,23 @@
       updateCountChip();
     }
 
+    const CONF_LEVELS = {
+      en: { high: 'High', medium: 'Medium', low: 'Low', at: 'at' },
+      hi: { high: 'उच्च', medium: 'मध्यम', low: 'कम', at: 'को' },
+      mr: { high: 'उच्च', medium: 'मध्यम', low: 'कमी', at: 'रोजी' }
+    };
+
     // Update count chip text
     function updateCountChip() {
       const countChip = document.getElementById('count-chip');
       if (countChip) {
-        countChip.textContent = `Showing ${filteredHistory.length} of ${allHistory.length} scans`;
+        if (window.Lang) {
+          countChip.textContent = Lang.t('reports_showing_of')
+            .replace('{showing}', filteredHistory.length)
+            .replace('{total}', allHistory.length);
+        } else {
+          countChip.textContent = `Showing ${filteredHistory.length} of ${allHistory.length} scans`;
+        }
       }
     }
 
@@ -1076,6 +1357,9 @@
       const end = start + perPage;
       const pageData = filteredHistory.slice(start, end);
 
+      const lang = window.Lang ? Lang.get() : 'en';
+      const confLevels = CONF_LEVELS[lang] || CONF_LEVELS.en;
+
       if (scanList) {
         scanList.innerHTML = pageData.map((scan, index) => {
           const parsed = DiseaseParser.parse(scan.predicted_class);
@@ -1093,47 +1377,55 @@
           const rowId = `scan-row-${scan.id}`;
           const detailId = `scan-detail-${scan.id}`;
 
+          const statusVal = isHealthy 
+            ? (window.Lang ? Lang.t('dash_healthy') : 'Healthy')
+            : (window.Lang ? Lang.t('dash_diseased') : 'Diseased');
+          const deleteTitle = window.Lang ? Lang.t('reports_btn_delete') : 'Delete';
+          const viewLibText = window.Lang ? Lang.t('reports_view_library') : 'View in Library';
+
+          const confText = confidence >= 0.85 ? confLevels.high : confidence >= 0.60 ? confLevels.medium : confLevels.low;
+
           return `
             <div class="scan-row" id="${rowId}" onclick="toggleRowExpand('${scan.id}')">
-              <div style="font-weight: 600; color: var(--text-muted);">${start + index + 1}</div>
-              <div style="font-weight: 600; color: var(--text);">${parsed.crop}</div>
-              <div style="color: var(--text-muted);">${parsed.disease}</div>
-              <div class="conf-bar-wrap">
+              <div class="scan-col-idx" style="font-weight: 600; color: var(--text-muted);">${start + index + 1}</div>
+              <div class="scan-col-crop" style="font-weight: 600; color: var(--text);">${parsed.crop}</div>
+              <div class="scan-col-disease" style="color: var(--text-muted);">${parsed.disease}</div>
+              <div class="scan-col-conf conf-bar-wrap">
                 <div class="conf-bar">
                   <div class="conf-fill" style="width: ${pct}%; background: ${confColor};"></div>
                 </div>
                 <span style="color: ${confColor}; font-weight: 600;">${pct}%</span>
               </div>
-              <div style="color: var(--text-muted);">${dateStr}</div>
-              <div>
-                <span class="badge ${isHealthy ? 'badge-green' : 'badge-red'}">
-                  ${isHealthy ? 'Healthy' : 'Diseased'}
+              <div class="scan-col-date" style="color: var(--text-muted);">${dateStr}</div>
+              <div class="scan-col-status">
+                <span class="badge ${isHealthy ? 'badge-green' : 'badge-red'}" data-i18n="${isHealthy ? 'dash_healthy' : 'dash_diseased'}">
+                  ${statusVal}
                 </span>
               </div>
-              <div>
-                <button class="delete-btn btn btn-danger btn-sm" onclick="event.stopPropagation(); confirmDelete('${scan.id}')" title="Delete this scan">🗑</button>
+              <div class="scan-col-delete">
+                <button class="delete-btn btn btn-danger btn-sm" onclick="event.stopPropagation(); confirmDelete('${scan.id}')" title="${deleteTitle}">🗑</button>
               </div>
-              <div style="text-align: right;">
+              <div class="scan-col-chevron" style="text-align: right;">
                 <span class="expand-chevron">›</span>
               </div>
             </div>
             <div class="scan-detail" id="${detailId}">
               <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
                 <div>
-                  <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; margin-bottom: 2px;">Scan ID</div>
+                  <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; margin-bottom: 2px;" data-i18n="reports_scan_id">Scan ID</div>
                   <div style="font-size: 0.85rem; font-family: monospace; color: var(--text);">${scan.id}</div>
                 </div>
                 <div>
-                  <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; margin-bottom: 2px;">Detection Time</div>
-                  <div style="font-size: 0.85rem; color: var(--text);">${DateFormatter.format(scan.timestamp, 'long')} at ${timeStr}</div>
+                  <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; margin-bottom: 2px;" data-i18n="reports_detection_time">Detection Time</div>
+                  <div style="font-size: 0.85rem; color: var(--text);">${DateFormatter.format(scan.timestamp, 'long')} ${confLevels.at} ${timeStr}</div>
                 </div>
                 <div>
-                  <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; margin-bottom: 2px;">Confidence Rating</div>
-                  <div style="font-size: 0.85rem; color: var(--text); font-weight: 600;">${ConfidenceHelper.formatPercent(confidence)} (${confidence >= 0.85 ? 'High' : confidence >= 0.60 ? 'Medium' : 'Low'})</div>
+                  <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; margin-bottom: 2px;" data-i18n="reports_conf_rating">Confidence Rating</div>
+                  <div style="font-size: 0.85rem; color: var(--text); font-weight: 600;">${ConfidenceHelper.formatPercent(confidence)} (${confText})</div>
                 </div>
                 <div style="display: flex; align-items: flex-end;">
-                  <a href="/library.html?crop=${formattedCropClass}" class="btn btn-ghost btn-sm" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; font-size: 0.8rem;" onclick="event.stopPropagation();">
-                    📚 View in Library
+                  <a href="/library.html?crop=${formattedCropClass}" class="btn btn-ghost btn-sm" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; font-size: 0.8rem;" onclick="event.stopPropagation();" data-i18n="reports_view_library">
+                    📚 ${viewLibText}
                   </a>
                 </div>
               </div>
@@ -1146,9 +1438,11 @@
       if (pagination) {
         if (totalPages > 1) {
           pagination.style.display = 'flex';
+          const prevText = window.Lang ? Lang.t('btn_prev') : 'Previous';
+          const nextText = window.Lang ? Lang.t('btn_next') : 'Next';
           let paginationHTML = `
             <button class="pagination-btn" onclick="goToPage(event, ${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
-              Previous
+              ${prevText}
             </button>
           `;
           
@@ -1166,7 +1460,7 @@
 
           paginationHTML += `
             <button class="pagination-btn" onclick="goToPage(event, ${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
-              Next
+              ${nextText}
             </button>
           `;
           
@@ -1367,6 +1661,16 @@
 
       // Initialize modals
       Modal.init();
+    });
+
+    // Listen to language change to instantly update telemetry, heatmap, and insights
+    window.addEventListener('langchange', function () {
+      if (allHistory && allHistory.length > 0) {
+        renderKPIs(false);     // update KPIs directly without re-animation
+        renderHeatmap();       // update heatmap
+        generateInsight();     // update insights
+        filterHistory();       // update list and chart
+      }
     });
   </script>
 </body>

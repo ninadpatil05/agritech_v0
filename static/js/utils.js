@@ -185,9 +185,10 @@ window.Modal = Modal;
 const DateFormatter = {
   format: function(date, format = 'short') {
     const d = new Date(date);
+    const loc = window.Lang ? Lang.locale() : 'en-IN';
     
     if (format === 'short') {
-      return d.toLocaleDateString('en-IN', {
+      return d.toLocaleDateString(loc, {
         day: 'numeric',
         month: 'short',
         year: 'numeric'
@@ -195,7 +196,7 @@ const DateFormatter = {
     }
     
     if (format === 'long') {
-      return d.toLocaleDateString('en-IN', {
+      return d.toLocaleDateString(loc, {
         weekday: 'long',
         day: 'numeric',
         month: 'long',
@@ -204,14 +205,14 @@ const DateFormatter = {
     }
     
     if (format === 'time') {
-      return d.toLocaleTimeString('en-IN', {
+      return d.toLocaleTimeString(loc, {
         hour: '2-digit',
         minute: '2-digit'
       });
     }
     
     if (format === 'datetime') {
-      return d.toLocaleDateString('en-IN', {
+      return d.toLocaleDateString(loc, {
         day: 'numeric',
         month: 'short',
         year: 'numeric',
@@ -312,9 +313,10 @@ window.ConfidenceHelper = ConfidenceHelper;
 const GreetingHelper = {
   get: function() {
     const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 17) return 'Good afternoon';
-    return 'Good evening';
+    const t = window.Lang ? Lang.t.bind(Lang) : (k) => k;
+    if (hour < 12) return t('greeting_morning');
+    if (hour < 17) return t('greeting_afternoon');
+    return t('greeting_evening');
   }
 };
 

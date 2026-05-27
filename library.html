@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    (function(){
+      var l = localStorage.getItem('lang');
+      if (l === 'hi' || l === 'mr') document.documentElement.setAttribute('lang', l);
+    })();
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Disease Library - Smart Crop Detective</title>
@@ -15,6 +21,7 @@
   <meta name="twitter:image" content="/assets/images/og-banner.jpg">
   <link rel="icon" href="/static/favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/css/base.css">
   <link rel="stylesheet" href="/static/css/components.css">
   <link rel="stylesheet" href="/static/css/pages.css">
@@ -1152,19 +1159,19 @@
   <aside class="sidebar" id="sidebar">
     <a href="/dashboard.html" class="sidebar-logo">🌿 Smart Crop Detective</a>
     <nav class="sidebar-nav">
-      <a href="/dashboard.html" class="sidebar-link">🏠 Dashboard</a>
-      <a href="/detect.html" class="sidebar-link">🔬 Detect</a>
-      <a href="/weather.html" class="sidebar-link">🌤 Weather</a>
-      <a href="/library.html" class="sidebar-link active">📚 Library</a>
-      <a href="/reports.html" class="sidebar-link">📋 Reports</a>
-      <a href="/profile.html" class="sidebar-link">👤 Profile</a>
+      <a href="/dashboard.html" class="sidebar-link">🏠 <span data-i18n="nav_dashboard">Dashboard</span></a>
+      <a href="/detect.html" class="sidebar-link">🔬 <span data-i18n="nav_detect">Detect</span></a>
+      <a href="/weather.html" class="sidebar-link">🌤 <span data-i18n="nav_weather">Weather</span></a>
+      <a href="/library.html" class="sidebar-link active">📚 <span data-i18n="nav_library">Library</span></a>
+      <a href="/reports.html" class="sidebar-link">📋 <span data-i18n="nav_reports">Reports</span></a>
+      <a href="/profile.html" class="sidebar-link">👤 <span data-i18n="nav_profile">Profile</span></a>
     </nav>
     <div class="sidebar-user">
       <div class="sidebar-avatar" id="sidebar-avatar">U</div>
       <div class="sidebar-user-info">
         <div class="sidebar-user-name" id="sidebar-name">User</div>
         <div class="sidebar-user-email" id="sidebar-email">user@example.com</div>
-        <a href="#" class="sidebar-logout" onclick="handleLogout(event)">Logout</a>
+        <a href="#" class="sidebar-logout" onclick="handleLogout(event)"><span data-i18n="nav_logout">Logout</span></a>
       </div>
     </div>
   </aside>
@@ -1172,11 +1179,11 @@
   <!-- Mobile Nav -->
   <nav class="mobile-nav">
     <div class="mobile-nav-inner">
-      <a href="/dashboard.html" class="mobile-nav-link"><span>🏠</span><span>Home</span></a>
-      <a href="/detect.html" class="mobile-nav-link"><span>🔬</span><span>Detect</span></a>
-      <a href="/weather.html" class="mobile-nav-link"><span>🌤</span><span>Weather</span></a>
-      <a href="/library.html" class="mobile-nav-link active"><span>📚</span><span>Library</span></a>
-      <a href="/profile.html" class="mobile-nav-link"><span>👤</span><span>Profile</span></a>
+      <a href="/dashboard.html" class="mobile-nav-link"><span>🏠</span><span data-i18n="nav_home">Home</span></a>
+      <a href="/detect.html" class="mobile-nav-link"><span>🔬</span><span data-i18n="nav_detect">Detect</span></a>
+      <a href="/weather.html" class="mobile-nav-link"><span>🌤</span><span data-i18n="nav_weather">Weather</span></a>
+      <a href="/library.html" class="mobile-nav-link active"><span>📚</span><span data-i18n="nav_library">Library</span></a>
+      <a href="/profile.html" class="mobile-nav-link"><span>👤</span><span data-i18n="nav_profile">Profile</span></a>
     </div>
   </nav>
 
@@ -1187,7 +1194,7 @@
     <div class="library-hero">
       <div class="library-hero-inner">
         <span class="library-hero-eyebrow">Field Reference</span>
-        <h1>A library of every disease<br>that <em>touches your field.</em></h1>
+        <h1 data-i18n="lib_title">Disease Library</h1>
         <p class="library-hero-sub">Identify, understand, and act — before the season turns.</p>
         <button class="library-hero-cta" onclick="document.querySelector('.library-tabs-container').scrollIntoView({behavior:'smooth'})">
           Browse 38 diseases
@@ -1210,7 +1217,7 @@
           <svg class="toolbar-search-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
           </svg>
-          <input type="text" id="search-input" placeholder="Search disease or crop…" autocomplete="off">
+          <input type="text" id="search-input" data-i18n-placeholder="lib_search_ph" placeholder="Search disease or crop…" autocomplete="off">
           <span class="toolbar-search-kbd">⌘K</span>
         </div>
 
@@ -1360,6 +1367,7 @@
     </div>
   </dialog>
 
+  <script src="/static/js/lang.js"></script>
   <script src="/static/js/api.js"></script>
   <script src="/static/js/auth-guard.js"></script>
   <script src="/static/js/utils.js"></script>

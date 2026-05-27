@@ -1278,6 +1278,313 @@
       height: 220px;
       border-radius: 16px;
     }
+
+    /* ── NEW COLLAPSIBLE CARD STYLES (Farming Advice) ── */
+    .agri-details-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.2s ease;
+      margin-bottom: 8px;
+    }
+    .agri-details-card[open] {
+      box-shadow: var(--shadow-sm);
+      border-color: var(--green-pale);
+    }
+    .agri-summary-header {
+      padding: 14px 18px;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      outline: none;
+      user-select: none;
+    }
+    .agri-summary-header::-webkit-details-marker {
+      display: none;
+    }
+    .agri-summary-header::after {
+      content: '▾';
+      font-size: 12px;
+      transition: transform 0.2s ease;
+    }
+    .agri-details-card[open] > .agri-summary-header::after {
+      transform: rotate(180deg);
+    }
+    .agri-details-content {
+      padding: 0 18px 14px;
+      font-size: 13.5px;
+      color: var(--text);
+    }
+    .agri-badge {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 2px 9px;
+      border-radius: var(--radius-pill);
+    }
+    .agri-badge-high {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+    .agri-badge-medium {
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fde68a;
+    }
+    .agri-badge-low {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    /* ── NEW SCHEME CARD STYLES (Government Support) ── */
+    .agri-scheme-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      border-left: 5px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+    .agri-scheme-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .agri-scheme-card.category-crop_insurance { border-left-color: #2563eb !important; }
+    .agri-scheme-card.category-subsidy { border-left-color: #16a34a !important; }
+    .agri-scheme-card.category-relief { border-left-color: #ea580c !important; }
+    .agri-scheme-card.category-loan { border-left-color: #9333ea !important; }
+    .agri-scheme-card.category-market { border-left-color: #0d9488 !important; }
+
+    .agri-scheme-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+      gap: 12px;
+    }
+    .agri-scheme-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .agri-scheme-icon {
+      font-size: 20px;
+    }
+    .agri-scheme-name {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .agri-scheme-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .agri-scheme-badge {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+    }
+    .agri-scheme-badge.badge-crop_insurance { background: #dbeafe; color: #1e40af; }
+    .agri-scheme-badge.badge-subsidy { background: #dcfce7; color: #15803d; }
+    .agri-scheme-badge.badge-relief { background: #ffedd5; color: #c2410c; }
+    .agri-scheme-badge.badge-loan { background: #f3e8ff; color: #6b21a8; }
+    .agri-scheme-badge.badge-market { background: #ccfbf1; color: #0f766e; }
+
+    .agri-scheme-relevance {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+    .agri-scheme-toggle-btn {
+      background: none;
+      border: none;
+      color: var(--green-primary);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0;
+      font-family: var(--font);
+      outline: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .agri-scheme-toggle-btn:hover { color: var(--green-mid); }
+    
+    .agri-scheme-expand-details {
+      display: none;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border);
+      font-size: 12.5px;
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .agri-scheme-expand-details.open {
+      display: block;
+      animation: fadeUp 0.2s ease both;
+    }
+    .agri-scheme-apply-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: linear-gradient(135deg, #1b4332, #2d6a4f);
+      color: #fff !important;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .agri-scheme-apply-btn:hover {
+      box-shadow: 0 4px 10px rgba(27,67,50,0.3);
+      transform: translateY(-1px);
+    }
+    .agri-grid-2col-irr {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .agri-advisory-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .agri-irr-decision-badge-rich {
+      display: inline-block;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      padding: 6px 16px;
+      border-radius: var(--radius-pill);
+      text-transform: uppercase;
+      color: #fff;
+    }
+    .agri-irr-decision-badge-rich.irrigate { background-color: #2d6a4f !important; }
+    .agri-irr-decision-badge-rich.skip { background-color: #1d3557 !important; }
+    .agri-irr-decision-badge-rich.reduce { background-color: #e9a219 !important; }
+
+    /* ── MEDIA QUERIES OVERRIDES ── */
+    @media (max-width: 480px) {
+      #agri-hero-card {
+        padding: 20px 16px;
+      }
+      .agri-hero-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .agri-last-updated {
+        text-align: left;
+        margin-top: 4px;
+      }
+      .agri-temp-display {
+        font-size: clamp(28px, 8vw, 64px);
+        letter-spacing: -1px;
+      }
+      .agri-hero-stats {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px;
+      }
+      .agri-stat-pill {
+        justify-content: flex-start;
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+      .agri-forecast-card, .agri-forecast-day {
+        min-width: clamp(100px, 22vw, 140px) !important;
+      }
+      .agri-tab-panel {
+        padding: 16px 12px;
+      }
+      .agri-tab-panel button,
+      .agri-tab-panel .btn,
+      .agri-refresh-btn,
+      #agri-copy-advice-btn {
+        width: 100% !important;
+        margin-bottom: 6px;
+      }
+      .agri-grid-2col-irr, .agri-sowing-info {
+        grid-template-columns: 1fr !important;
+      }
+      .agri-irrigation-layout {
+        grid-template-columns: 1fr !important;
+        gap: 20px;
+      }
+      .agri-location-bar {
+        flex-wrap: wrap;
+        border-radius: 16px;
+        padding: 8px 12px;
+        gap: 8px;
+      }
+      .agri-location-bar input {
+        min-width: 100%;
+        margin-bottom: 6px;
+        border-bottom: 1px solid var(--border);
+        padding: 8px 0;
+      }
+      .agri-location-bar button {
+        flex: 1 1 calc(50% - 4px);
+        min-width: 44px;
+        height: 44px;
+        padding: 8px;
+        font-size: 12px;
+      }
+      .agri-activity-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    @media (min-width: 481px) and (max-width: 768px) {
+      .agri-hero-stats {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 10px;
+      }
+      .agri-temp-display {
+        font-size: 72px;
+      }
+      .agri-location-bar {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .agri-location-bar input {
+        min-width: 180px;
+      }
+      .agri-location-bar button {
+        min-width: 44px;
+      }
+      .agri-activity-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .agri-hero-stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+    }
   </style>
 </head>
 <body class="auth-protected">
@@ -1465,34 +1772,134 @@
             <div class="agri-skel" style="height:60px;"></div>
           </div>
           <div id="farming-content" style="display:none;">
-            <div class="agri-advice-card" id="farming-advice">Analysing weather conditions…</div>
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-              <h4 style="font-size:14px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Today's Tips</h4>
-              <button class="agri-refresh-btn" onclick="refreshAdvice()">↻ Refresh Advice</button>
+            <!-- Today's Farming Advisory Header + Confidence Badge + Copy Button -->
+            <div class="agri-advisory-header">
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <h3 style="font-family: 'DM Sans', sans-serif; font-size: 18px; font-weight: 700; margin: 0;">🌾 Today's Farming Advisory</h3>
+                <span id="agri-advice-confidence" class="agri-badge agri-badge-high">High</span>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="btn btn-ghost btn-sm" id="agri-copy-advice-btn" onclick="copyAdviceToClipboard()" style="font-size: 12px; padding: 6px 12px; height: auto;">📋 Copy Advice</button>
+                <button class="agri-refresh-btn" onclick="refreshAdvice()" style="font-size: 12px; padding: 6px 12px; height: auto;">↻ Refresh</button>
+              </div>
             </div>
-            <div class="agri-tips-list" id="farming-tips"></div>
+
+            <!-- Crop block -->
+            <div id="agri-crop-specific-block" class="agri-advice-card" style="margin-bottom: 16px; border-left: 4px solid var(--green-primary); background: var(--green-tint); padding: 12px 16px; border-radius: 12px;">
+              <strong>🌱 Current crop based on season/region:</strong> <span id="agri-current-crop-name" style="font-weight: 700; color: var(--green-primary);">--</span>
+            </div>
+
+            <!-- Collapsible sections -->
+            <div class="agri-collapsible-group" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+              
+              <details class="agri-details-card" open>
+                <summary class="agri-summary-header">✅ Immediate Actions (next 24h)</summary>
+                <div class="agri-details-content">
+                  <ul id="agri-immediate-actions-list" style="margin: 0; padding-left: 20px; line-height: 1.65;">
+                    <!-- Populated by JS -->
+                  </ul>
+                </div>
+              </details>
+
+              <details class="agri-details-card" open>
+                <summary class="agri-summary-header">📅 This Week</summary>
+                <div class="agri-details-content">
+                  <ul id="agri-this-week-list" style="margin: 0; padding-left: 20px; line-height: 1.65;">
+                    <!-- Populated by JS -->
+                  </ul>
+                </div>
+              </details>
+
+              <details class="agri-details-card" open>
+                <summary class="agri-summary-header">⚠️ Risk Factors</summary>
+                <div class="agri-details-content">
+                  <ul id="agri-risk-factors-list" style="margin: 0; padding-left: 20px; line-height: 1.65;">
+                    <!-- Populated by JS -->
+                  </ul>
+                </div>
+              </details>
+
+              <details class="agri-details-card" open>
+                <summary class="agri-summary-header">💡 Pro Tip</summary>
+                <div class="agri-details-content" style="font-style: italic; font-weight: 500; color: var(--green-dark); line-height: 1.6;" id="agri-pro-tip-val">
+                  <!-- Populated by JS -->
+                </div>
+              </details>
+
+            </div>
+
+            <!-- Legacy compatibility block (hidden) -->
+            <div id="farming-legacy-view" style="display: none;">
+              <div class="agri-advice-card" id="farming-advice">Analysing weather conditions…</div>
+              <div class="agri-tips-list" id="farming-tips"></div>
+            </div>
           </div>
         </div>
 
         <!-- ── Irrigation Tab ── -->
         <div class="agri-tab-panel" id="panel-irrigation">
-          <div class="agri-irrigation-layout">
-            <!-- Water gauge -->
-            <div class="agri-water-gauge">
-              <div class="agri-water-tube">
-                <div class="agri-water-fill" id="agri-water-fill"></div>
-              </div>
-              <div class="agri-water-label" id="agri-water-amount">-- mm</div>
-              <div class="agri-water-unit">Suggested</div>
+          <div id="irrigation-loading">
+            <div class="agri-skel" style="height:80px;margin-bottom:12px;"></div>
+            <div class="agri-skel" style="height:60px;margin-bottom:12px;"></div>
+            <div class="agri-skel" style="height:60px;"></div>
+          </div>
+          <div id="irrigation-content" style="display:none;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+              <h3 style="font-family: 'DM Sans', sans-serif; font-size: 18px; font-weight: 700; margin: 0;">💧 Irrigation Intelligence</h3>
+              <div class="agri-irr-decision-badge-rich" id="agri-irr-decision" style="font-size: 14px; font-weight: 800; padding: 6px 16px; border-radius: var(--radius-pill); text-transform: uppercase; color: #fff;">--</div>
             </div>
-            <!-- Decision -->
-            <div>
-              <div class="agri-irr-decision-badge" id="irrigation-decision">LOADING…</div>
-              <p class="agri-irr-reason" id="irrigation-reason">Analysing weather conditions for irrigation need…</p>
-              <div style="margin-top:20px;padding:14px 18px;background:var(--bg);border-radius:14px;border:1px solid var(--border);">
-                <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:6px;">Suggested Amount</div>
-                <div style="font-size:28px;font-weight:800;font-family:'DM Sans',sans-serif;color:#0077b6;" id="irrigation-amount">-- mm</div>
+
+            <div class="agri-irrigation-layout">
+              <!-- Water gauge & budget visualizer -->
+              <div class="agri-water-gauge" style="display: flex; flex-direction: column; align-items: center; gap: 10px; min-width: 120px;">
+                <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Water Budget</div>
+                <div class="agri-water-tube" style="width: 52px; height: 160px; border: 3px solid #0077b6; border-radius: 26px; background: rgba(0, 119, 182, 0.08); overflow: hidden; position: relative;">
+                  <div class="agri-water-fill" id="agri-water-fill" style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(180deg, #4cc9f0, #0077b6); border-radius: 0 0 22px 22px; transition: height 1.2s cubic-bezier(0.4, 0, 0.2, 1); height: 0%;"></div>
+                </div>
+                <div style="text-align: center;">
+                  <div class="agri-water-label" id="agri-soil-moisture-val" style="font-family: 'DM Sans', sans-serif; font-size: 20px; font-weight: 800; color: #0077b6;">--%</div>
+                  <div class="agri-water-unit">Soil Moisture Est.</div>
+                </div>
               </div>
+
+              <!-- Recommendation details -->
+              <div style="display: flex; flex-direction: column; gap: 14px; width: 100%;">
+                
+                <div class="agri-grid-2col-irr">
+                  <div style="padding: 14px; background: var(--bg); border-radius: 12px; border: 1px solid var(--border);">
+                    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">Recommended Amount</div>
+                    <div style="font-size: 22px; font-weight: 800; color: #0077b6;" id="agri-irr-recommended-amount">-- mm</div>
+                  </div>
+                  <div style="padding: 14px; background: var(--bg); border-radius: 12px; border: 1px solid var(--border);">
+                    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">Best Time to Irrigate</div>
+                    <div style="font-size: 15px; font-weight: 700; color: var(--text); text-transform: capitalize;" id="agri-irr-best-time">--</div>
+                  </div>
+                </div>
+
+                <div style="padding: 16px; background: var(--bg); border-radius: 12px; border: 1px solid var(--border);">
+                  <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">Why this decision:</div>
+                  <p id="agri-irr-explanation" style="margin: 0; font-size: 13.5px; color: var(--text); line-height: 1.5;">--</p>
+                </div>
+
+                <div style="padding: 16px; background: var(--bg); border-radius: 12px; border: 1px solid var(--border);">
+                  <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">Crop-specific Notes:</div>
+                  <p id="agri-irr-crop-notes" style="margin: 0; font-size: 13.5px; color: var(--text); line-height: 1.5; font-style: italic;">--</p>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--green-tint); border-radius: 10px;">
+                  <span style="font-size: 12px; font-weight: 600; color: var(--green-dark);">📅 Next Check-in:</span>
+                  <span style="font-size: 12px; font-weight: 700; color: var(--green-dark);" id="agri-irr-next-checkin">--</span>
+                </div>
+
+              </div>
+            </div>
+            
+            <!-- Legacy hidden compatibility fields -->
+            <div id="irrigation-legacy-hidden" style="display: none;">
+              <span id="irrigation-decision">--</span>
+              <span id="irrigation-reason">--</span>
+              <span id="irrigation-amount">--</span>
+              <span id="agri-water-amount">--</span>
             </div>
           </div>
         </div>
@@ -1617,12 +2024,31 @@
             <div class="agri-sev-seg" id="agri-sev-medium" title="Medium severity"></div>
             <div class="agri-sev-seg" id="agri-sev-high" title="High severity"></div>
           </div>
-          <div id="alerts-content">
-            <div class="agri-no-alerts" id="no-alerts">
-              <div class="agri-na-icon">✅</div>
-              <p>No weather alerts for your area. Conditions look good!</p>
+          
+          <div style="display: grid; grid-template-columns: 1fr; gap: 24px;">
+            <!-- Live Alerts -->
+            <div>
+              <div class="agri-section-label">⚠️ Active Weather Alerts</div>
+              <div id="alerts-content">
+                <div class="agri-no-alerts" id="no-alerts">
+                  <div class="agri-na-icon">✅</div>
+                  <p>No weather alerts for your area. Conditions look good!</p>
+                </div>
+                <div id="alerts-list" style="display:none;"></div>
+              </div>
             </div>
-            <div id="alerts-list" style="display:none;"></div>
+
+            <!-- Government Support Schemes -->
+            <div id="agri-govt-schemes-section" style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 24px;">
+              <div class="agri-section-label">🏛️ Government Support & Schemes Available Near You</div>
+              <p id="agri-schemes-context" style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Loading relevant schemes for your location…</p>
+              
+              <div id="agri-schemes-list" style="display: flex; flex-direction: column; gap: 12px;">
+                <!-- populated by JS -->
+                <div class="agri-skel" style="height: 80px; border-radius: 12px;"></div>
+                <div class="agri-skel" style="height: 80px; border-radius: 12px;"></div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -2075,70 +2501,209 @@
        ADVISORY (backend API — existing logic preserved)
     ═══════════════════════════════════════════════════ */
 
+    /* ── Clipboard formatting utility ── */
+    function copyAdviceToClipboard() {
+      const cropName = document.getElementById('agri-current-crop-name').textContent;
+      const confidence = document.getElementById('agri-advice-confidence').textContent;
+      
+      const immediateList = Array.from(document.querySelectorAll('#agri-immediate-actions-list li'))
+        .map(li => `• ${li.textContent}`).join('\n');
+      
+      const thisWeekList = Array.from(document.querySelectorAll('#agri-this-week-list li'))
+        .map(li => `• ${li.textContent}`).join('\n');
+        
+      const riskList = Array.from(document.querySelectorAll('#agri-risk-factors-list li'))
+        .map(li => `• ${li.textContent}`).join('\n');
+        
+      const proTip = document.getElementById('agri-pro-tip-val').textContent.trim();
+      
+      const textToCopy = `🌾 TODAY'S FARMING ADVISORY FOR ${currentCity.toUpperCase()}
+--------------------------------------------------
+🌱 Recommended Crop: ${cropName}
+✨ Confidence level: ${confidence}
+
+✅ IMMEDIATE ACTIONS (Next 24h):
+${immediateList || 'No immediate actions listed.'}
+
+📅 THIS WEEK:
+${thisWeekList || 'No weekly actions listed.'}
+
+⚠️ RISK FACTORS:
+${riskList || 'No active risk factors.'}
+
+💡 PRO TIP:
+${proTip || 'No expert tip available.'}
+--------------------------------------------------
+Generated by Smart Crop Detective AgriTech`;
+
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        Toast.success('Advisory copied to clipboard!');
+      }).catch(err => {
+        Toast.error('Failed to copy text: ' + err);
+      });
+    }
+
     async function loadAdvisory(weather) {
       document.getElementById('farming-loading').style.display = 'block';
       document.getElementById('farming-content').style.display = 'none';
+      document.getElementById('irrigation-loading').style.display = 'block';
+      document.getElementById('irrigation-content').style.display = 'none';
 
+      const cityVal = weather.name || currentCity;
+      const stateVal = deriveState(cityVal);
+
+      // We make parallel requests to the 3 upgraded API endpoints
+      const advicePromise = API.post('/weather-advisory', {
+        lat:         weather.coord?.lat,
+        lon:         weather.coord?.lon,
+        city:        cityVal,
+        temperature: weather.main.temp,
+        humidity:    weather.main.humidity,
+        description: weather.weather?.[0]?.description || '',
+        wind_speed:  weather.wind.speed
+      });
+
+      const irrigationPromise = API.post('/irrigation-advice', {
+        lat:         weather.coord?.lat,
+        lon:         weather.coord?.lon,
+        city:        cityVal,
+        crop:        'general crop',
+        soil_type:   'loam',
+        crop_stage:  'vegetative'
+      });
+
+      let alertsUrl = `/weather-alerts?city=${encodeURIComponent(cityVal)}&state=${encodeURIComponent(stateVal)}`;
+      if (weather.coord?.lat && weather.coord?.lon) {
+        alertsUrl += `&lat=${weather.coord.lat}&lon=${weather.coord.lon}`;
+      }
+      const alertsPromise = API.get(alertsUrl);
+
+      // 1. Handle Farming Advice
       try {
-        const advisory = await API.post('/weather-advisory', {
-          lat:         weather.coord?.lat,
-          lon:         weather.coord?.lon,
-          city:        weather.name || currentCity,
-          temperature: weather.main.temp,
-          humidity:    weather.main.humidity,
-          description: weather.weather?.[0]?.description || '',
-          wind_speed:  weather.wind.speed
-        });
+        const advisory = await advicePromise;
+        if (advisory && advisory.status === 'success') {
+          const adv = advisory.advice || advisory;
+          
+          // Crop Name
+          document.getElementById('agri-current-crop-name').textContent = adv.crop_name || 'General Crops';
+          
+          // Confidence Badge
+          const confidence = (adv.confidence || 'High').toLowerCase();
+          const confEl = document.getElementById('agri-advice-confidence');
+          confEl.textContent = adv.confidence || 'High';
+          confEl.className = `agri-badge agri-badge-${confidence}`;
 
-        if (advisory) {
-          // Farming advice
-          const advText = advisory.farming_advice || 'Weather conditions are suitable for general farming activities.';
-          document.getElementById('farming-advice').textContent = advText;
+          // Immediate Actions
+          const immediate = adv.immediate_actions || adv.do_today || [];
+          document.getElementById('agri-immediate-actions-list').innerHTML = immediate.length > 0
+            ? immediate.map(a => `<li>${escHtml(a)}</li>`).join('')
+            : '<li>No immediate actions required today. Check forecast.</li>';
 
-          const tips = advisory.tips || ['Monitor crop health regularly', 'Check soil moisture before irrigation', 'Watch for pest activity'];
-          document.getElementById('farming-tips').innerHTML = tips.map(t =>
-            `<div class="agri-tip-item"><div class="agri-tip-dot"></div><span>${t}</span></div>`
+          // This Week
+          const weekly = adv.this_week || [];
+          document.getElementById('agri-this-week-list').innerHTML = weekly.length > 0
+            ? weekly.map(a => `<li>${escHtml(a)}</li>`).join('')
+            : '<li>Monitor weather changes and plan standard fieldwork.</li>';
+
+          // Risk Factors
+          const risks = adv.risk_factors || adv.avoid_today || [];
+          document.getElementById('agri-risk-factors-list').innerHTML = risks.length > 0
+            ? risks.map(r => `<li>${escHtml(r)}</li>`).join('')
+            : '<li>No high weather-related risks active.</li>';
+
+          // Pro Tip
+          document.getElementById('agri-pro-tip-val').textContent = adv.pro_tip || 'Rotate crops and check soil moisture regularly.';
+
+          // Legacy fields mapping
+          document.getElementById('farming-advice').textContent = adv.farming_advice || adv.summary || '';
+          document.getElementById('farming-tips').innerHTML = (adv.tips || adv.do_today || []).map(t =>
+            `<div class="agri-tip-item"><div class="agri-tip-dot"></div><span>${escHtml(t)}</span></div>`
           ).join('');
-
-          // Irrigation
-          const irrigate = advisory.irrigation || {};
-          const decision = (irrigate.decision || 'SKIP').toUpperCase();
-          const decEl = document.getElementById('irrigation-decision');
-          decEl.textContent  = decision;
-          decEl.className    = 'agri-irr-decision-badge ' + decision.toLowerCase();
-          document.getElementById('irrigation-reason').textContent = irrigate.reason || 'Based on current weather conditions.';
-          const amtRaw = irrigate.amount || '25 mm';
-          document.getElementById('irrigation-amount').textContent = amtRaw;
-          document.getElementById('agri-water-amount').textContent = amtRaw;
-
-          // Animate water gauge
-          const mmVal = parseFloat(amtRaw) || 0;
-          const fillPct = Math.min(Math.max((mmVal / 60) * 100, 5), 95);
-          setTimeout(() => {
-            document.getElementById('agri-water-fill').style.height = fillPct + '%';
-          }, 300);
-
-          // Alerts
-          updateAlerts(advisory.alerts || []);
         }
       } catch (error) {
-        console.error('Failed to load advisory:', error);
-        // Set sensible defaults
-        document.getElementById('farming-advice').textContent = 'Unable to fetch advisory data. Please try again.';
-        document.getElementById('farming-tips').innerHTML =
-          `<div class="agri-tip-item"><div class="agri-tip-dot"></div><span>Monitor crop health regularly</span></div>
-           <div class="agri-tip-item"><div class="agri-tip-dot"></div><span>Check soil moisture before irrigation</span></div>
-           <div class="agri-tip-item"><div class="agri-tip-dot"></div><span>Watch for pest activity in the field</span></div>`;
+        console.error('Farming advice load error:', error);
+        document.getElementById('agri-current-crop-name').textContent = 'General Crops';
+        document.getElementById('agri-immediate-actions-list').innerHTML = '<li>Monitor crop health regularly</li>';
+        document.getElementById('agri-this-week-list').innerHTML = '<li>Check soil moisture before irrigation</li>';
+        document.getElementById('agri-risk-factors-list').innerHTML = '<li>Watch for pest activity</li>';
+        document.getElementById('agri-pro-tip-val').textContent = 'Maintain proper field drainage.';
+      } finally {
+        document.getElementById('farming-loading').style.display = 'none';
+        document.getElementById('farming-content').style.display = 'block';
       }
 
-      document.getElementById('farming-loading').style.display = 'none';
-      document.getElementById('farming-content').style.display = 'block';
+      // 2. Handle Irrigation Intelligence
+      try {
+        const irrResult = await irrigationPromise;
+        if (irrResult && irrResult.status === 'success') {
+          const irr = irrResult.irrigation || irrResult;
+
+          // Decision Badge
+          const decision = (irr.decision || 'SKIP').toUpperCase();
+          const badgeEl = document.getElementById('agri-irr-decision');
+          badgeEl.textContent = decision;
+          badgeEl.className = `agri-irr-decision-badge-rich ${decision.toLowerCase()}`;
+
+          // Recommended Amount
+          const amountMm = irr.recommended_amount_mm !== null && irr.recommended_amount_mm !== undefined 
+            ? `${irr.recommended_amount_mm} mm` 
+            : '0 mm (Skip)';
+          document.getElementById('agri-irr-recommended-amount').textContent = amountMm;
+
+          // Best Time
+          document.getElementById('agri-irr-best-time').textContent = irr.best_time || 'morning/evening';
+
+          // Explanation & Crop Notes
+          document.getElementById('agri-irr-explanation').textContent = irr.reason || 'Based on current humidity, temperature and precipitation factors.';
+          document.getElementById('agri-irr-crop-notes').textContent = irr.crop_note || 'Maintain appropriate weeding to reduce evapotranspiration losses.';
+          document.getElementById('agri-irr-next-checkin').textContent = irr.next_checkin || 'Tomorrow Evening';
+
+          // Visual Tube Animated Gauge (soil moisture estimate 0-100%)
+          const moisture = Math.min(Math.max(Number(irr.soil_moisture_estimate) || 0, 0), 100);
+          document.getElementById('agri-soil-moisture-val').textContent = `${moisture}%`;
+          
+          const fillEl = document.getElementById('agri-water-fill');
+          fillEl.style.setProperty('--fill-height', moisture + '%');
+          setTimeout(() => {
+            fillEl.style.height = moisture + '%';
+          }, 200);
+
+          // Legacy fields mapping
+          const decLegacyEl = document.getElementById('irrigation-decision');
+          decLegacyEl.textContent = decision;
+          decLegacyEl.className = 'agri-irr-decision-badge ' + decision.toLowerCase();
+          document.getElementById('irrigation-reason').textContent = irr.reason || '';
+          document.getElementById('irrigation-amount').textContent = amountMm;
+          document.getElementById('agri-water-amount').textContent = amountMm;
+        }
+      } catch (error) {
+        console.error('Irrigation load error:', error);
+        document.getElementById('agri-irr-decision').textContent = 'SKIP';
+        document.getElementById('agri-irr-decision').className = 'agri-irr-decision-badge-rich skip';
+        document.getElementById('agri-irr-recommended-amount').textContent = '--';
+        document.getElementById('agri-soil-moisture-val').textContent = '50%';
+        document.getElementById('agri-water-fill').style.height = '50%';
+      } finally {
+        document.getElementById('irrigation-loading').style.display = 'none';
+        document.getElementById('irrigation-content').style.display = 'block';
+      }
+
+      // 3. Handle Alerts & Schemes
+      try {
+        const alertsData = await alertsPromise;
+        if (alertsData && (alertsData.status === 'success' || alertsData.alerts)) {
+          updateAlerts(alertsData.alerts || []);
+          renderGovtSchemes(alertsData.govt_schemes || [], alertsData.schemes_context || '');
+        }
+      } catch (error) {
+        console.error('Alerts load error:', error);
+        updateAlerts([]);
+        renderGovtSchemes([], 'Failed to load dynamic schemes context. Showing default local policies.');
+      }
     }
 
     function refreshAdvice() {
       if (currentWeather) {
-        document.getElementById('farming-loading').style.display = 'block';
-        document.getElementById('farming-content').style.display = 'none';
         loadAdvisory(currentWeather);
       }
     }
@@ -2162,19 +2727,101 @@
 
       let maxSev = 'low';
       alertsListEl.innerHTML = alerts.map(alert => {
-        const sev = alert.severity || 'low';
-        if (sev === 'high')                            maxSev = 'high';
-        else if (sev === 'medium' && maxSev !== 'high') maxSev = 'medium';
+        const sev = alert.severity || alert.level || 'low';
+        if (sev === 'high' || sev === 'red')                  maxSev = 'high';
+        else if ((sev === 'medium' || sev === 'orange') && maxSev !== 'high') maxSev = 'medium';
         return `
-          <div class="agri-alert-card severity-${sev}">
-            <span class="agri-alert-sev-badge agri-sev-${sev}">${sev.toUpperCase()}</span>
-            <div class="agri-alert-title">${alert.title || 'Weather Alert'}</div>
-            <div class="agri-alert-msg">${alert.message || ''}</div>
+          <div class="agri-alert-card severity-${sev === 'red' ? 'high' : sev === 'orange' ? 'medium' : 'low'}">
+            <span class="agri-alert-sev-badge agri-sev-${sev === 'red' ? 'high' : sev === 'orange' ? 'medium' : 'low'}">${(alert.level || sev).toUpperCase()}</span>
+            <div class="agri-alert-title">${escHtml(alert.title || 'Weather Alert')}</div>
+            <div class="agri-alert-msg">${escHtml(alert.message || '')}</div>
           </div>`;
       }).join('');
 
       const idx = { none:0, low:1, medium:2, high:3 }[maxSev] || 0;
       if(segs[idx]) segs[idx].className = `agri-sev-seg active-${maxSev}`;
+    }
+
+    /* ── Government Support Schemes Rendering ── */
+    function renderGovtSchemes(schemes, context) {
+      document.getElementById('agri-schemes-context').textContent = context || 'Government schemes available for your location based on current weather.';
+      const listEl = document.getElementById('agri-schemes-list');
+      
+      if (!schemes || schemes.length === 0) {
+        listEl.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); text-align: center; padding: 12px;">No schemes found for your region.</p>';
+        return;
+      }
+      
+      const icons = {
+        crop_insurance: '🛡️',
+        subsidy: '💸',
+        relief: '🚨',
+        loan: '💳',
+        market: '📈'
+      };
+      
+      const categoryLabels = {
+        crop_insurance: 'Crop Insurance',
+        subsidy: 'Subsidy',
+        relief: 'Relief Support',
+        loan: 'Agricultural Loan',
+        market: 'Market Linkage'
+      };
+
+      listEl.innerHTML = schemes.map((s, idx) => {
+        const cat = s.category || 'subsidy';
+        const icon = icons[cat] || '🏛️';
+        const label = categoryLabels[cat] || 'Subsidy';
+        const detailId = `scheme-detail-${idx}`;
+        const toggleId = `scheme-toggle-${idx}`;
+        
+        let applyUrl = s.portal || 'https://pmkisan.gov.in';
+        if (!applyUrl.startsWith('http://') && !applyUrl.startsWith('https://')) {
+          applyUrl = 'https://' + applyUrl;
+        }
+
+        return `
+          <div class="agri-scheme-card category-${cat}">
+            <div class="agri-scheme-header">
+              <div class="agri-scheme-title-wrap">
+                <span class="agri-scheme-icon">${icon}</span>
+                <span class="agri-scheme-name">${escHtml(s.scheme_name)}</span>
+              </div>
+              <a href="${applyUrl}" target="_blank" class="agri-scheme-apply-btn">Apply →</a>
+            </div>
+            
+            <div class="agri-scheme-meta">
+              <span class="agri-scheme-badge badge-${cat}">${label}</span>
+              ${s.ministry ? `<span class="cp-meta-pill" style="font-size:10px;">🏛️ ${escHtml(s.ministry)}</span>` : ''}
+              ${s.helpline ? `<span class="cp-meta-pill" style="font-size:10px;">📞 Helpline: ${escHtml(s.helpline)}</span>` : ''}
+            </div>
+            
+            <div class="agri-scheme-relevance">
+              <strong>🎯 Relevance:</strong> ${escHtml(s.relevance)}
+            </div>
+            
+            <button class="agri-scheme-toggle-btn" id="${toggleId}" onclick="toggleSchemeDetails('${detailId}', this)">
+              ℹ️ Details & Eligibility ▾
+            </button>
+            
+            <div class="agri-scheme-expand-details" id="${detailId}">
+              <div style="margin-bottom: 8px;">
+                <strong>📋 Eligibility:</strong> ${escHtml(s.eligibility)}
+              </div>
+              <div>
+                <strong>💻 How to Apply:</strong> Register online at the official portal: 
+                <a href="${applyUrl}" target="_blank" style="color: var(--green-primary); font-weight: 600; text-decoration: underline;">${escHtml(s.portal || 'Official Website')}</a>.
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleSchemeDetails(id, btn) {
+      const el = document.getElementById(id);
+      const open = el.classList.toggle('open');
+      btn.innerHTML = open ? 'ℹ️ Hide Details ▴' : 'ℹ️ Details & Eligibility ▾';
     }
 
     /* ══════════════════════════════════════════════════════

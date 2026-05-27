@@ -105,17 +105,75 @@ def _weather_summary(w: dict) -> str:
 # Body: { "lat": float, "lon": float, "city": str, "crop": str (optional) }
 # ═══════════════════════════════════════════════════════════════════════════════
 
+_CITY_TO_STATE = {
+    'pune':'Maharashtra','nashik':'Maharashtra','aurangabad':'Maharashtra',
+    'nagpur':'Maharashtra','amravati':'Maharashtra','solapur':'Maharashtra',
+    'kolhapur':'Maharashtra','sangli':'Maharashtra','latur':'Maharashtra',
+    'nanded':'Maharashtra','jalgaon':'Maharashtra','ahmednagar':'Maharashtra','mumbai':'Maharashtra',
+    'ludhiana':'Punjab','amritsar':'Punjab','jalandhar':'Punjab','patiala':'Punjab',
+    'bathinda':'Punjab','gurdaspur':'Punjab','hoshiarpur':'Punjab','chandigarh':'Punjab',
+    'karnal':'Haryana','hisar':'Haryana','rohtak':'Haryana','panipat':'Haryana',
+    'ambala':'Haryana','sirsa':'Haryana','fatehabad':'Haryana',
+    'lucknow':'Uttar Pradesh','varanasi':'Uttar Pradesh','agra':'Uttar Pradesh',
+    'kanpur':'Uttar Pradesh','allahabad':'Uttar Pradesh','meerut':'Uttar Pradesh',
+    'gorakhpur':'Uttar Pradesh','moradabad':'Uttar Pradesh','muzaffarnagar':'Uttar Pradesh',
+    'patna':'Bihar','gaya':'Bihar','muzaffarpur':'Bihar','bhagalpur':'Bihar',
+    'darbhanga':'Bihar','purnia':'Bihar','samastipur':'Bihar',
+    'bhopal':'Madhya Pradesh','indore':'Madhya Pradesh','jabalpur':'Madhya Pradesh',
+    'gwalior':'Madhya Pradesh','ujjain':'Madhya Pradesh','sagar':'Madhya Pradesh',
+    'raipur':'Chhattisgarh','bilaspur':'Chhattisgarh','durg':'Chhattisgarh',
+    'jaipur':'Rajasthan','jodhpur':'Rajasthan','udaipur':'Rajasthan',
+    'ajmer':'Rajasthan','kota':'Rajasthan','bikaner':'Rajasthan','barmer':'Rajasthan',
+    'ahmedabad':'Gujarat','surat':'Gujarat','vadodara':'Gujarat','rajkot':'Gujarat',
+    'bhavnagar':'Gujarat','junagadh':'Gujarat','anand':'Gujarat','mehsana':'Gujarat',
+    'hyderabad':'Telangana','warangal':'Telangana','nizamabad':'Telangana','karimnagar':'Telangana',
+    'vijayawada':'Andhra Pradesh','visakhapatnam':'Andhra Pradesh','guntur':'Andhra Pradesh',
+    'kurnool':'Andhra Pradesh','nellore':'Andhra Pradesh','tirupati':'Andhra Pradesh',
+    'bangalore':'Karnataka','mysore':'Karnataka','hubli':'Karnataka','belgaum':'Karnataka',
+    'davangere':'Karnataka','shimoga':'Karnataka','tumkur':'Karnataka','hassan':'Karnataka',
+    'chennai':'Tamil Nadu','coimbatore':'Tamil Nadu','madurai':'Tamil Nadu',
+    'salem':'Tamil Nadu','trichy':'Tamil Nadu','tirunelveli':'Tamil Nadu',
+    'thiruvananthapuram':'Kerala','kochi':'Kerala','kozhikode':'Kerala','thrissur':'Kerala',
+    'kolkata':'West Bengal','asansol':'West Bengal','siliguri':'West Bengal',
+    'burdwan':'West Bengal','midnapore':'West Bengal','nadia':'West Bengal',
+    'bhubaneswar':'Odisha','cuttack':'Odisha','berhampur':'Odisha','sambalpur':'Odisha',
+    'guwahati':'Assam','dibrugarh':'Assam','silchar':'Assam','jorhat':'Assam',
+    'shimla':'Himachal Pradesh','dharamsala':'Himachal Pradesh','kullu':'Himachal Pradesh',
+    'dehradun':'Uttarakhand','haridwar':'Uttarakhand','nainital':'Uttarakhand',
+    'srinagar':'Jammu & Kashmir','jammu':'Jammu & Kashmir',
+    'delhi':'Delhi','new delhi':'Delhi'
+}
+
+def _get_state(city: str) -> str:
+    if not city:
+        return 'India'
+    city_lower = city.lower().strip()
+    for k, v in _CITY_TO_STATE.items():
+        if k in city_lower or city_lower in k:
+            return v
+    return 'India'
+
+
 _WEATHER_ADVICE_PROMPT = """You are an expert agricultural advisor for Indian farmers.
-Given the current weather conditions below, provide practical farming guidance.
+Given the current weather conditions, the current month, and the farming region, provide practical farming guidance tailored for small-scale Indian farmers in this specific region. Consider kharif/rabi seasons.
+
+Region/State: {state} (City: {city})
+Current Month: {month}
+Farmer's crop (if provided): {crop}
 
 Weather data:
 {weather_summary}
 
-Farmer's crop (if provided): {crop}
-
-Respond ONLY with this exact JSON (no markdown, no preamble):
+Respond ONLY with this exact JSON structure (no markdown, no preamble):
 {{
-  "summary": "One sentence describing what today's weather means for farming",
+  "crop_name": "string — likely crop for this region/season (e.g. Rice, Wheat, Cotton, Sugarcane)",
+  "immediate_actions": ["array of 3-5 specific actions for next 24 hours"],
+  "this_week": ["array of 2-4 actions for the next 7 days"],
+  "risk_factors": ["array of 2-3 weather-based risks to watch"],
+  "pro_tip": "one expert tip specific to local farming practice",
+  "confidence": "High" | "Medium" | "Low",
+  
+  "summary": "One sentence describing what today's weather means for farming (fallback field)",
   "do_today": ["action 1", "action 2", "action 3"],
   "avoid_today": ["thing to avoid 1", "thing to avoid 2"],
   "spray_window": "good" | "avoid" | "marginal",
@@ -126,11 +184,15 @@ Respond ONLY with this exact JSON (no markdown, no preamble):
 }}
 
 Rules:
-- All advice must be practical for a small Indian farmer
-- do_today: 3 specific, actionable steps (not vague)
-- spray_window: "avoid" if humidity > 80% or rain > 0 or wind > 6 m/s
-- field_work: "avoid" if rain last 1h > 2mm or wind > 10 m/s
-- urgency: "alert" if temperature > 40°C or wind > 12 m/s or heavy rain
+- All advice must be practical for a small Indian farmer.
+- immediate_actions: 3 to 5 specific, actionable steps (not vague).
+- this_week: 2 to 4 actions for the next 7 days.
+- risk_factors: 2 to 3 weather-based risks to watch.
+- pro_tip: one expert farming tip.
+- confidence: "High" if weather data is complete and conditions are typical, "Medium" if weather data has slight gaps, "Low" if severe anomalies exist.
+- spray_window: "avoid" if humidity > 80% or rain > 0 or wind > 6 m/s.
+- field_work: "avoid" if rain last 1h > 2mm or wind > 10 m/s.
+- urgency: "alert" if temperature > 40°C or wind > 12 m/s or heavy rain.
 """
 
 
@@ -173,7 +235,7 @@ def get_weather_advice():
     cached = _cache_get(ck)
     if cached:
         logger.info("weather_advice: cache hit")
-        return jsonify({"status": "success", "advice": cached, "cached": True})
+        return jsonify(cached)
 
     weather = None
     if (lat and lon) or city:
@@ -198,9 +260,18 @@ def get_weather_advice():
         else:
             return jsonify({"status": "error", "message": "Could not fetch weather data. Check OPENWEATHER_KEY."}), 502
 
+    import datetime
+    now = datetime.datetime.now()
+    month_name = now.strftime("%B")
+    city_name = weather.get("name", city or "Unknown Location")
+    state_name = _get_state(city_name)
+
     prompt = _WEATHER_ADVICE_PROMPT.format(
         weather_summary=_weather_summary(weather),
-        crop=crop
+        crop=crop,
+        state=state_name,
+        city=city_name,
+        month=month_name
     )
 
     try:
@@ -217,11 +288,28 @@ def get_weather_advice():
         "humidity": weather.get("main", {}).get("humidity"),
         "wind_speed": weather.get("wind", {}).get("speed"),
         "description": weather.get("weather", [{}])[0].get("description", ""),
-        "location": weather.get("name", city or f"{lat},{lon}"),
+        "location": city_name,
     }
 
-    _cache_set(ck, advice)
-    return jsonify({"status": "success", "advice": advice})
+    # Add root level attributes for compatibility
+    response_data = {
+        "status": "success",
+        "advice": advice,
+        
+        # Root level fields for backward compatibility / direct access
+        "farming_advice": advice.get("farming_advice") or advice.get("summary") or (f"Likely crop: {advice.get('crop_name')}. {advice.get('pro_tip')}" if advice.get('crop_name') else 'Weather conditions are suitable for general farming.'),
+        "tips": advice.get("tips") or advice.get("immediate_actions") or advice.get("do_today") or [],
+        "crop_name": advice.get("crop_name"),
+        "immediate_actions": advice.get("immediate_actions") or advice.get("do_today") or [],
+        "this_week": advice.get("this_week") or [],
+        "risk_factors": advice.get("risk_factors") or advice.get("avoid_today") or [],
+        "pro_tip": advice.get("pro_tip") or "",
+        "confidence": advice.get("confidence") or "High",
+        "weather_snapshot": advice.get("weather_snapshot")
+    }
+
+    _cache_set(ck, response_data)
+    return jsonify(response_data)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -239,27 +327,39 @@ Current weather:
 Crop: {crop}
 Soil type: {soil_type}
 Crop growth stage: {crop_stage}
+Current Month: {month}
+Region/State: {state} (City: {city})
 
 Based on the weather, decide the optimal irrigation action for today.
 
-Respond ONLY with this exact JSON (no markdown, no preamble):
+Respond ONLY with this exact JSON structure (no markdown, no preamble):
 {{
-  "decision": "irrigate" | "skip" | "reduce",
+  "decision": "IRRIGATE" | "SKIP" | "REDUCE",
+  "recommended_amount_mm": number_or_null,
+  "best_time": "morning" | "afternoon" | "evening" | "night",
+  "soil_moisture_estimate": number_0_to_100,
+  "reason": "2-3 sentence explanation explaining the decision in simple language",
+  "crop_note": "crop-specific irrigation note for the season",
+  "next_checkin": "human-readable time like 'Tomorrow evening' or 'In 2 days'",
+  
   "confidence": "high" | "medium" | "low",
-  "reason": "2-3 sentences explaining the decision in simple language",
-  "timing": "Best time to irrigate if recommended (e.g. 'Early morning 5-7 AM')",
-  "amount": "Suggested water amount (e.g. '25mm' or 'skip today')",
-  "next_check": "When to re-evaluate (e.g. 'Check again tomorrow morning')",
-  "water_saving_tip": "One practical tip to save water for this crop and weather"
+  "timing": "Best time to irrigate if recommended (e.g. 'Early morning 5-7 AM') (fallback field)",
+  "amount": "Suggested water amount (e.g. '25mm' or 'skip today') (fallback field)",
+  "next_check": "When to re-evaluate (e.g. 'Check again tomorrow morning') (fallback field)",
+  "water_saving_tip": "One practical tip to save water for this crop and weather (fallback field)"
 }}
 
 Rules:
-- decision "skip" if: rainfall last 1h > 5mm OR humidity > 85% OR rain_probability > 70%
-- decision "reduce" if: recent rain 2-5mm OR humidity 75-85%
-- decision "irrigate" if: no rain + humidity < 70% + temperature > 30°C
-- For sandy soil: recommend more frequent but smaller amounts
-- For clay soil: recommend less frequent but deeper irrigation
-- timing: always prefer early morning (before 8 AM) or evening (after 6 PM) to minimize evaporation
+- decision: must be exactly one of "IRRIGATE", "SKIP", "REDUCE" in uppercase.
+- decision "SKIP" if: rainfall last 1h > 5mm OR humidity > 85% OR rain_probability > 70%
+- decision "REDUCE" if: recent rain 2-5mm OR humidity 75-85%
+- decision "IRRIGATE" if: no rain + humidity < 70% + temperature > 30°C
+- For sandy soil: recommend more frequent but smaller amounts.
+- For clay soil: recommend less frequent but deeper irrigation.
+- best_time: always prefer morning or evening to minimize evaporation.
+- recommended_amount_mm: number in mm, e.g., 25, or null if SKIP today.
+- soil_moisture_estimate: an integer from 0 to 100 representing soil moisture level under current conditions.
+- Base your decision on actual agronomic principles for Indian small farmers.
 """
 
 
@@ -285,17 +385,26 @@ def irrigation_advice():
     )
     cached = _cache_get(ck)
     if cached:
-        return jsonify({"status": "success", "irrigation": cached, "cached": True})
+        return jsonify(cached)
 
     weather = _fetch_owm(lat=lat, lon=lon, city=city)
     if not weather:
         return jsonify({"status": "error", "message": "Could not fetch weather data. Check OPENWEATHER_KEY."}), 502
 
+    import datetime
+    now = datetime.datetime.now()
+    month_name = now.strftime("%B")
+    city_name = weather.get("name", city or "Unknown Location")
+    state_name = _get_state(city_name)
+
     prompt = _IRRIGATION_PROMPT.format(
         weather_summary=_weather_summary(weather),
         crop=crop,
         soil_type=soil_type,
-        crop_stage=crop_stage
+        crop_stage=crop_stage,
+        state=state_name,
+        city=city_name,
+        month=month_name
     )
 
     try:
@@ -306,9 +415,32 @@ def irrigation_advice():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-    result["location"] = weather.get("name", city or f"{lat},{lon}")
-    _cache_set(ck, result)
-    return jsonify({"status": "success", "irrigation": result})
+    result["location"] = city_name
+    
+    # Root level fields for backward compatibility
+    response_data = {
+        "status": "success",
+        "irrigation": result,
+        
+        # Root level fields
+        "decision": result.get("decision") or "SKIP",
+        "recommended_amount_mm": result.get("recommended_amount_mm"),
+        "best_time": result.get("best_time") or "morning",
+        "soil_moisture_estimate": result.get("soil_moisture_estimate") or 50,
+        "reason": result.get("reason") or "Based on current weather conditions.",
+        "crop_note": result.get("crop_note") or "",
+        "next_checkin": result.get("next_checkin") or "Tomorrow",
+        
+        # Legacy fields
+        "confidence": result.get("confidence") or "medium",
+        "timing": result.get("timing") or result.get("best_time") or "Early morning",
+        "amount": result.get("amount") or (f"{result.get('recommended_amount_mm')} mm" if result.get('recommended_amount_mm') else "skip today"),
+        "next_check": result.get("next_check") or result.get("next_checkin") or "Check again tomorrow morning",
+        "water_saving_tip": result.get("water_saving_tip") or ""
+    }
+
+    _cache_set(ck, response_data)
+    return jsonify(response_data)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -472,6 +604,77 @@ def _evaluate_alerts(weather: dict) -> list:
     return alerts
 
 
+_FALLBACK_SCHEMES = [
+    {
+        "scheme_name": "Pradhan Mantri Fasal Bima Yojana (PMFBY)",
+        "category": "crop_insurance",
+        "ministry": "Ministry of Agriculture & Farmers Welfare",
+        "relevance": "Provides comprehensive insurance coverage against crop failure due to non-preventable natural risks.",
+        "eligibility": "All farmers growing notified crops in notified areas, including sharecroppers and tenant farmers.",
+        "portal": "https://pmfby.gov.in",
+        "helpline": "1800-180-1551"
+    },
+    {
+        "scheme_name": "PM-KISAN (Pradhan Mantri Kisan Samman Nidhi)",
+        "category": "subsidy",
+        "ministry": "Ministry of Agriculture & Farmers Welfare",
+        "relevance": "Provides direct income support of Rs. 6,000 per year in three equal installments to landholding farmer families.",
+        "eligibility": "All landholding farmer families across the country.",
+        "portal": "https://pmkisan.gov.in",
+        "helpline": "155261"
+    },
+    {
+        "scheme_name": "Kisan Credit Card (KCC) Loan Scheme",
+        "category": "loan",
+        "ministry": "Ministry of Agriculture & Farmers Welfare / RBI",
+        "relevance": "Provides timely credit to farmers to meet their cultivation and other general credit needs at subsidized interest rates.",
+        "eligibility": "All farmers, owner-cultivators, tenant farmers, and oral lessees.",
+        "portal": "https://agri-insurance.gov.in",
+        "helpline": "1800-11-2244"
+    }
+]
+
+
+def _fetch_govt_schemes(location: str, weather_context: str, alert_type: str) -> dict:
+    """Fetch relevant Indian government schemes from Gemini based on location and weather."""
+    if not config.GEMINI_API_KEY:
+        return {"govt_schemes": [], "schemes_context": ""}
+        
+    state_name = _get_state(location)
+    
+    prompt = (
+        "You are an Indian agricultural policy expert. Given:\n"
+        f"- Location: {location}, {state_name}, India\n"
+        f"- Current weather situation: {weather_context}\n"
+        f"- Active alert type: {alert_type} (e.g., drought, flood, frost, heatwave, pest, or none)\n\n"
+        f"List 3–5 relevant Indian government schemes that a farmer at this location could benefit from RIGHT NOW.\n"
+        "For each scheme return a JSON object inside an array. Respond ONLY with valid raw JSON — no markdown, no preamble:\n"
+        "{\n"
+        "  \"govt_schemes\": [\n"
+        "    {\n"
+        "      \"scheme_name\": \"string\",\n"
+        "      \"category\": \"crop_insurance|subsidy|relief|loan|market\",\n"
+        "      \"ministry\": \"string\",\n"
+        "      \"relevance\": \"one sentence why relevant to current conditions\",\n"
+        "      \"eligibility\": \"brief eligibility note\",\n"
+        "      \"portal\": \"official website URL or portal name\",\n"
+        "      \"helpline\": \"phone number if available\"\n"
+        "    }\n"
+        "  ],\n"
+        "  \"schemes_context\": \"brief note explaining why these schemes are relevant now\"\n"
+        "}\n\n"
+        f"Focus on: PM Fasal Bima Yojana, PM-KISAN, PMFBY, National Disaster Relief Fund, state-specific schemes for {state_name}, KCC (Kisan Credit Card), and any drought/flood relief programs currently active."
+    )
+    
+    try:
+        raw, _ = call_gemini(prompt, max_tokens=1024)
+        data = extract_json(raw)
+        return data
+    except Exception as e:
+        logger.error(f"Failed to fetch govt schemes: {e}")
+        return {"govt_schemes": [], "schemes_context": ""}
+
+
 @weather_advice_bp.route("/weather-alerts", methods=["GET"])
 def weather_alerts():
     lat = request.args.get("lat")
@@ -481,11 +684,18 @@ def weather_alerts():
     if not (lat and lon) and not city:
         return jsonify({"status": "error", "message": "Provide lat+lon or city query parameter"}), 400
 
+    ck = _cache_key("alerts", lat or city.lower(), lon or "")
+    cached = _cache_get(ck)
+    if cached:
+        return jsonify(cached)
+
     weather = _fetch_owm(lat=lat, lon=lon, city=city)
     if not weather:
         return jsonify({
             "status": "unavailable",
             "alerts": [],
+            "govt_schemes": _FALLBACK_SCHEMES,
+            "schemes_context": "Showing general government agricultural schemes for your area.",
             "message": "Weather service unavailable. Check OPENWEATHER_KEY.",
         }), 200  # 200 so frontend degrades gracefully
 
@@ -493,19 +703,37 @@ def weather_alerts():
     location = weather.get("name", city or f"{lat},{lon}")
     country = weather.get("sys", {}).get("country", "")
 
-    return jsonify({
+    weather_context = _weather_summary(weather)
+    alert_type = "none"
+    if alerts:
+        alert_type = alerts[0]["title"]
+        
+    schemes_data = _fetch_govt_schemes(location, weather_context, alert_type)
+    govt_schemes = schemes_data.get("govt_schemes")
+    schemes_context = schemes_data.get("schemes_context")
+    
+    if not govt_schemes:
+        govt_schemes = _FALLBACK_SCHEMES
+        schemes_context = "Showing general government agricultural support programs for your location."
+
+    response_data = {
         "status": "success",
         "location": f"{location}, {country}".strip(", "),
         "alert_count": len(alerts),
         "has_critical": any(a["level"] == "red" for a in alerts),
         "alerts": alerts,
+        "govt_schemes": govt_schemes,
+        "schemes_context": schemes_context,
         "weather_snapshot": {
             "temp": weather.get("main", {}).get("temp"),
             "humidity": weather.get("main", {}).get("humidity"),
             "wind_speed": weather.get("wind", {}).get("speed"),
             "rain_1h": weather.get("rain", {}).get("1h", 0),
         },
-    })
+    }
+
+    _cache_set(ck, response_data)
+    return jsonify(response_data)
 
 
 # ── /weather-advisory alias (used by new frontend) ────────────────────────────
@@ -596,5 +824,3 @@ def crop_recommendations():
     except Exception as e:
         logger.error(f"crop_recommendations error: {e}")
         return jsonify({"status": "error", "message": str(e)}), 502
-
-

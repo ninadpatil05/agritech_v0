@@ -31,24 +31,32 @@ const NavComponent = {
     }
   },
 
+  setLang: function(lang) {
+    const root = document.getElementById('nav-root');
+    if (!root) return;
+    const cached = sessionStorage.getItem('agritech_user');
+    this.render(root, cached ? JSON.parse(cached) : null, window.location.pathname);
+  },
+
   render: function(root, user, currentPath) {
     const isLoggedIn = !!user;
     const initial = user ? (user.first_name || user.email || 'U')[0].toUpperCase() : '';
     const themeIcon = (document.documentElement.getAttribute('data-theme') || 'light') === 'dark' ? '☀️' : '🌙';
+    const t = (key, fb) => (window.Lang ? Lang.t(key) : fb);
 
     const publicLinks = [
-      { href: '/index.html', label: 'Home' },
-      { href: '/about.html', label: 'About' },
-      { href: '/library.html', label: 'Library' },
-      { href: '/contact.html', label: 'Contact' }
+      { href: '/index.html',   label: t('nav_home',    'Home') },
+      { href: '/about.html',   label: t('nav_about',   'About') },
+      { href: '/library.html', label: t('nav_library', 'Library') },
+      { href: '/contact.html', label: t('nav_contact', 'Contact') }
     ];
 
     const protectedLinks = [
-      { href: '/dashboard.html', label: 'Dashboard', icon: '🏠' },
-      { href: '/detect.html', label: 'Detect', icon: '🔬' },
-      { href: '/weather.html', label: 'Weather', icon: '🌤' },
-      { href: '/library.html', label: 'Library', icon: '📚' },
-      { href: '/reports.html', label: 'Reports', icon: '📋' }
+      { href: '/dashboard.html', label: t('nav_dashboard', 'Dashboard'), icon: '🏠' },
+      { href: '/detect.html',    label: t('nav_detect',    'Detect'),    icon: '🔬' },
+      { href: '/weather.html',   label: t('nav_weather',   'Weather'),   icon: '🌤' },
+      { href: '/library.html',   label: t('nav_library',   'Library'),   icon: '📚' },
+      { href: '/reports.html',   label: t('nav_reports',   'Reports'),   icon: '📋' }
     ];
 
     const links = isLoggedIn ? protectedLinks : publicLinks;
@@ -66,21 +74,21 @@ const NavComponent = {
     const actionsHTML = `
       <button class="theme-toggle-btn" data-theme-toggle
               onclick="ThemeManager && ThemeManager.toggle()"
-              title="Toggle dark mode" aria-label="Toggle dark mode">
+              title="${t('nav_toggle_theme', 'Toggle Theme')}" aria-label="${t('nav_toggle_theme', 'Toggle Theme')}">
         <span class="tt-icon">${themeIcon}</span>
       </button>
     ` + (isLoggedIn ? `
       <div class="navbar-avatar" onclick="this.querySelector('.navbar-dropdown').classList.toggle('show')">
         ${initial}
         <div class="navbar-dropdown">
-          <a href="/profile.html" class="navbar-dropdown-item">👤 Profile</a>
+          <a href="/profile.html" class="navbar-dropdown-item">👤 ${t('nav_profile', 'Profile')}</a>
           <div class="navbar-dropdown-divider"></div>
-          <a href="#" class="navbar-dropdown-item" onclick="NavComponent.logout(event)">🚪 Logout</a>
+          <a href="#" class="navbar-dropdown-item" onclick="NavComponent.logout(event)">🚪 ${t('nav_logout', 'Logout')}</a>
         </div>
       </div>
     ` : `
-      <a href="/auth.html" class="btn btn-ghost btn-sm">Login</a>
-      <a href="/auth.html#signup" class="btn btn-primary btn-sm">Sign Up</a>
+      <a href="/auth.html" class="btn btn-ghost btn-sm">${t('nav_login', 'Login')}</a>
+      <a href="/auth.html#signup" class="btn btn-primary btn-sm">${t('nav_signup', 'Sign Up')}</a>
     `);
 
     const mobileLinksHTML = links.map(link => {
@@ -96,14 +104,14 @@ const NavComponent = {
     const mobileActionsHTML = `
       <button class="navbar-mobile-link" style="background:none;border:none;text-align:left;cursor:pointer;font-family:inherit;font-size:16px;color:inherit;"
               data-theme-toggle onclick="ThemeManager && ThemeManager.toggle()">
-        <span class="tt-icon">${themeIcon}</span> Toggle Theme
+        <span class="tt-icon">${themeIcon}</span> ${t('nav_toggle_theme', 'Toggle Theme')}
       </button>
     ` + (isLoggedIn ? `
-      <a href="/profile.html" class="navbar-mobile-link">👤 Profile</a>
-      <a href="#" class="navbar-mobile-link" onclick="NavComponent.logout(event)">🚪 Logout</a>
+      <a href="/profile.html" class="navbar-mobile-link">👤 ${t('nav_profile', 'Profile')}</a>
+      <a href="#" class="navbar-mobile-link" onclick="NavComponent.logout(event)">🚪 ${t('nav_logout', 'Logout')}</a>
     ` : `
-      <a href="/auth.html" class="btn btn-ghost btn-full">Login</a>
-      <a href="/auth.html#signup" class="btn btn-primary btn-full">Sign Up</a>
+      <a href="/auth.html" class="btn btn-ghost btn-full">${t('nav_login', 'Login')}</a>
+      <a href="/auth.html#signup" class="btn btn-primary btn-full">${t('nav_signup', 'Sign Up')}</a>
     `);
 
     root.innerHTML = `

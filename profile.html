@@ -1,9 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    (function(){
+      var l = localStorage.getItem('lang');
+      if (l === 'hi' || l === 'mr') document.documentElement.setAttribute('lang', l);
+    })();
+  </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile — Smart Crop Detective</title>
+    <title>Profile - Smart Crop Detective</title>
+    <link rel="icon" href="/static/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
     <meta name="description" content="Manage your AgriTech account, update personal information, security settings, and preferences.">
     <link rel="stylesheet" href="/static/css/base.css">
     <link rel="stylesheet" href="/static/css/components.css">
@@ -934,7 +943,7 @@
                             <div class="form-actions hidden" id="personalActions">
                                 <button type="button" class="btn-cancel" id="cancelPersonalBtn">Cancel</button>
                                 <button type="submit" class="btn-save" id="savePersonalBtn">
-                                    <span>Save Changes</span>
+                                    <span data-i18n="btn_save">Save Changes</span>
                                 </button>
                             </div>
                         </form>
@@ -954,8 +963,8 @@
                     <div class="panel-body">
                         <div class="toggle-row" style="padding-bottom:20px;border-bottom:1px solid #f1f5f9;margin-bottom:16px;">
                             <div class="toggle-text">
-                                <div class="toggle-label-text">Language</div>
-                                <div class="toggle-desc-text">Interface language</div>
+                                <div class="toggle-label-text" data-i18n="pref_language">Language</div>
+                                <div class="toggle-desc-text" data-i18n="pref_language_desc">Interface language</div>
                             </div>
                             <select id="langSelect" class="field-select">
                                 <option value="en">🇬🇧 English</option>
@@ -965,8 +974,8 @@
                         </div>
                         <div class="toggle-row" style="padding-top:0;border-bottom:1px solid #f1f5f9;padding-bottom:20px;margin-bottom:16px;">
                             <div class="toggle-text">
-                                <div class="toggle-label-text">Theme</div>
-                                <div class="toggle-desc-text">Light or dark interface</div>
+                                <div class="toggle-label-text" data-i18n="pref_theme">Theme</div>
+                                <div class="toggle-desc-text" data-i18n="pref_theme_desc">Light or dark interface</div>
                             </div>
                             <select id="themeSelect" class="field-select">
                                 <option value="light">☀️ Light</option>
@@ -976,8 +985,8 @@
                         </div>
                         <div class="toggle-row" style="padding-top:0;">
                             <div class="toggle-text">
-                                <div class="toggle-label-text">Units</div>
-                                <div class="toggle-desc-text">Temperature & distance</div>
+                                <div class="toggle-label-text" data-i18n="pref_units">Units</div>
+                                <div class="toggle-desc-text" data-i18n="pref_units_desc">Temperature & distance</div>
                             </div>
                             <select id="unitsSelect" class="field-select">
                                 <option value="metric">🌡️ Metric (°C, km)</option>
@@ -1192,9 +1201,9 @@
     </div>
 
 
+    <script src="/static/js/lang.js"></script>
     <script src="/static/js/utils.js"></script>
     <script src="/static/js/api.js"></script>
-    <script src="/static/js/lang.js"></script>
     <script src="/static/js/nav.js"></script>
     <script>
     // ── Init nav ────────────────────────────────────────────────
@@ -1411,12 +1420,12 @@
                 ['fFirstName','fLastName','fPhone'].forEach(id => document.getElementById(id).disabled = true);
                 personalActions.classList.add('hidden');
                 editPersonalBtn.classList.remove('hidden');
-                Toast.success('Profile updated successfully!');
+                Toast.success(Lang.t('toast_profile_ok'));
             } else {
                 Toast.error(res.message || 'Update failed.');
             }
         } catch {
-            Toast.error('Network error. Please try again.');
+            Toast.error(Lang.t('toast_network_err'));
         } finally {
             saveBtn.disabled = false;
             saveBtn.innerHTML = '<span>Save Changes</span>';
@@ -1428,23 +1437,20 @@
     const themeSelect = document.getElementById('themeSelect');
     const unitsSelect = document.getElementById('unitsSelect');
 
-    langSelect.value  = localStorage.getItem('language') || 'en';
+    langSelect.value = Lang.get();
     themeSelect.value = localStorage.getItem('theme') || 'system';
     unitsSelect.value = localStorage.getItem('units')    || 'metric';
 
-    langSelect.addEventListener('change', e => {
-        localStorage.setItem('language', e.target.value);
-        Toast.success('Language preference saved.');
-    });
+    // langSelect change is handled automatically by lang.js
 
     themeSelect.addEventListener('change', e => {
         ThemeManager.apply(e.target.value);
-        Toast.success('Theme updated.');
+        Toast.success(Lang.t('toast_theme_saved'));
     });
 
     unitsSelect.addEventListener('change', e => {
         localStorage.setItem('units', e.target.value);
-        Toast.success('Units preference saved.');
+        Toast.success(Lang.t('toast_units_saved'));
     });
 
     // ThemeManager already applied the correct theme in <head> — no need to re-apply here
@@ -1499,7 +1505,7 @@
             }).then(r => r.json());
 
             if (res.status === 'success') {
-                Toast.success('Password updated successfully!');
+                Toast.success(Lang.t('toast_pw_ok'));
                 closeModal('passwordModal');
                 document.getElementById('passwordForm').reset();
                 document.getElementById('strengthFill').className = 'strength-fill';
@@ -1508,7 +1514,7 @@
                 Toast.error(res.message || 'Failed to update password.');
             }
         } catch {
-            Toast.error('Network error. Please try again.');
+            Toast.error(Lang.t('toast_network_err'));
         } finally {
             btn.disabled = false; btn.textContent = 'Update Password';
         }
@@ -1522,13 +1528,27 @@
         document.getElementById('confirmDeleteBtn').disabled = e.target.value !== 'DELETE';
     });
 
-    document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
-        // Clear session and redirect (real delete would call API)
-        sessionStorage.clear();
-        localStorage.removeItem('agritech_user');
-        fetch('/api/logout', { method: 'POST', credentials: 'include' });
-        Toast.warning('Account deletion requested. Redirecting…');
-        setTimeout(() => window.location.href = '/index.html', 1500);
+    document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+        const btn = document.getElementById('confirmDeleteBtn');
+        btn.disabled = true;
+        btn.textContent = 'Deleting…';
+        try {
+            const res = await API.del('/me');
+            if (res.status === 'success') {
+                sessionStorage.clear();
+                localStorage.removeItem('agritech_user');
+                Toast.success('Account successfully deleted. Redirecting…');
+                setTimeout(() => window.location.href = '/index.html', 1500);
+            } else {
+                Toast.error(res.message || 'Failed to delete account.');
+                btn.disabled = false;
+                btn.textContent = 'Delete Forever';
+            }
+        } catch (err) {
+            Toast.error('An error occurred. Please try again.');
+            btn.disabled = false;
+            btn.textContent = 'Delete Forever';
+        }
     });
 
     // Close modals on backdrop click
@@ -1555,7 +1575,7 @@
         const a    = Object.assign(document.createElement('a'), { href: url, download: 'agritech-data-export.json' });
         a.click();
         URL.revokeObjectURL(url);
-        Toast.success('Data exported successfully!');
+        Toast.success(Lang.t('toast_json_ok'));
     });
 
     // ── Logout ─────────────────────────────────────────────────

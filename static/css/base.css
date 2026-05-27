@@ -1084,3 +1084,29 @@ html[data-theme="dark"] .custom-scroll:hover::-webkit-scrollbar-thumb {
   background: var(--green-light);
 }
 
+/* ── Multilingual font support ────────────────────────────────────────────── */
+:root {
+  --font-devanagari: 'Noto Sans Devanagari', sans-serif;
+}
+
+/* Apply Devanagari font when Hindi or Marathi is active */
+[lang="hi"] body,
+[lang="mr"] body {
+  font-family: var(--font-devanagari), var(--font-body, sans-serif);
+}
+
+/* Prevent long Devanagari words from overflowing pill buttons and chips */
+[lang="hi"] .quick-action-pill,
+[lang="mr"] .quick-action-pill,
+[lang="hi"] .badge,
+[lang="mr"] .badge {
+  font-size: clamp(11px, 1.4vw, 13px);
+}
+
+/* Table cells: allow wrapping for longer Devanagari content */
+[lang="hi"] td,
+[lang="mr"] td {
+  word-break: break-word;
+}
+
+

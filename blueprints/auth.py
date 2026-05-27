@@ -31,6 +31,14 @@ def init_db():
             )
             """
         )
+        try:
+            conn.execute("ALTER TABLE users ADD COLUMN security_question TEXT;")
+        except sqlite3.OperationalError:
+            pass
+        try:
+            conn.execute("ALTER TABLE users ADD COLUMN security_answer_hash BLOB;")
+        except sqlite3.OperationalError:
+            pass
 
 
 def issue_token(email: str) -> str:
@@ -74,9 +82,15 @@ def signup():
     first_name = (data.get("first_name") or "").strip() or None
     last_name = (data.get("last_name") or "").strip() or None
     phone = (data.get("phone") or "").strip() or None
+    
+    security_question = data.get("security_question")
+    security_answer = data.get("security_answer")
 
     if not email or not password:
         return jsonify({"status": "error", "message": "Email and password are required."}), 400
+
+    if not security_question or not security_answer:
+        return jsonify({"status": "error", "message": "Security question and answer are required."}), 400
 
     if not re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
         return jsonify({"status": "error", "message": "Invalid email address format."}), 400
@@ -84,16 +98,17 @@ def signup():
         return jsonify({"status": "error", "message": "Password must be at least 8 characters."}), 400
 
     pw_hash = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+    ans_hash = bcrypt.hashpw(security_answer.strip().lower().encode("utf-8"), bcrypt.gensalt())
     created = datetime.now(timezone.utc).isoformat()
 
     try:
         with get_db_connection() as conn:
             conn.execute(
                 """
-                INSERT INTO users (email, password_hash, first_name, last_name, phone, created_at)
-                VALUES (?, ?, ?, ?, ?, ?)
+                INSERT INTO users (email, password_hash, first_name, last_name, phone, created_at, security_question, security_answer_hash)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """,
-                (email, pw_hash, first_name, last_name, phone, created),
+                (email, pw_hash, first_name, last_name, phone, created, security_question, ans_hash),
             )
     except sqlite3.IntegrityError:
         return jsonify({"status": "error", "message": "An account with this email already exists."}), 409
@@ -256,3 +271,141 @@ def logout():
     resp.set_cookie("agritech_token", "", expires=0)
     resp.set_cookie("logged_in", "", expires=0)
     return resp, 200
+
+
+@auth_bp.route("/me", methods=["DELETE"])
+@require_auth
+def delete_me():
+    email = request.user_email
+    try:
+        with get_db_connection() as conn:
+            # Retrieve user id
+            row = conn.execute("SELECT id FROM users WHERE email = ? COLLATE NOCASE", (email,)).fetchone()
+            if not row:
+                return jsonify({"status": "error", "message": "User account not found."}), 404
+            
+            user_id = row[0]
+            
+            # Delete user's detections history
+            conn.execute("DELETE FROM detections WHERE user_id = ?", (user_id,))
+            
+            # Delete user profile record
+            conn.execute("DELETE FROM users WHERE id = ?", (user_id,))
+            
+        # Outside transaction context, execute SQLite VACUUM to purge physical disk page remnants
+        try:
+            import sqlite3
+            vacuum_conn = sqlite3.connect(config.DB_PATH)
+            vacuum_conn.execute("VACUUM;")
+            vacuum_conn.close()
+            logger.info(f"Database successfully vacuumed after deleting user {email}")
+        except Exception as ve:
+            logger.warning(f"Database vacuum skipped or failed: {ve}")
+            
+        resp = make_response(jsonify({"status": "success", "message": "Account successfully deleted."}))
+        # Clear auth session cookies
+        resp.set_cookie("agritech_token", "", expires=0)
+        resp.set_cookie("logged_in", "", expires=0)
+        return resp, 200
+    except Exception as e:
+        logger.error(f"Error during account deletion for {email}: {e}")
+        return jsonify({"status": "error", "message": "An error occurred while deleting your account. Please try again."}), 500
+
+
+@auth_bp.route("/forgot-password/get-question", methods=["POST"])
+@limiter.limit("5 per minute")
+def forgot_password_get_question():
+    data = request.get_json(silent=True) or {}
+    email = (data.get("email") or "").strip().lower()
+    
+    if not email:
+        return jsonify({"status": "error", "message": "Email is required."}), 400
+        
+    try:
+        with get_db_connection() as conn:
+            row = conn.execute("SELECT security_question FROM users WHERE email = ? COLLATE NOCASE", (email,)).fetchone()
+            if not row:
+                return jsonify({"status": "error", "message": "No account found with this email."}), 404
+            
+            question = row[0]
+            if not question:
+                return jsonify({"status": "error", "message": "No security question set for this account."}), 400
+                
+            return jsonify({"status": "success", "question": question}), 200
+    except Exception as e:
+        logger.error(f"Error getting security question for {email}: {e}")
+        return jsonify({"status": "error", "message": "An error occurred. Please try again."}), 500
+
+
+@auth_bp.route("/forgot-password/verify-answer", methods=["POST"])
+@limiter.limit("5 per minute")
+def forgot_password_verify_answer():
+    data = request.get_json(silent=True) or {}
+    email = (data.get("email") or "").strip().lower()
+    answer = (data.get("answer") or "").strip().lower()
+    
+    if not email or not answer:
+        return jsonify({"status": "error", "message": "Email and answer are required."}), 400
+        
+    try:
+        with get_db_connection() as conn:
+            row = conn.execute("SELECT security_answer_hash FROM users WHERE email = ? COLLATE NOCASE", (email,)).fetchone()
+            if not row:
+                return jsonify({"status": "error", "message": "No account found with this email."}), 404
+                
+            stored_hash = row[0]
+            if not stored_hash:
+                return jsonify({"status": "error", "message": "No security question answer set for this account."}), 400
+                
+            if isinstance(stored_hash, str):
+                stored_hash = stored_hash.encode("utf-8")
+                
+            if not bcrypt.checkpw(answer.encode("utf-8"), stored_hash):
+                return jsonify({"status": "error", "message": "Incorrect answer. Please try again."}), 401
+                
+            # Create a 15-minute password reset token
+            payload = {
+                "sub": email,
+                "type": "password_reset",
+                "exp": datetime.now(timezone.utc) + timedelta(minutes=15)
+            }
+            reset_token = jwt.encode(payload, config.JWT_SECRET, algorithm=config.JWT_ALGORITHM)
+            
+            return jsonify({"status": "success", "reset_token": reset_token}), 200
+    except Exception as e:
+        logger.error(f"Error verifying security answer for {email}: {e}")
+        return jsonify({"status": "error", "message": "An error occurred. Please try again."}), 500
+
+
+@auth_bp.route("/forgot-password/reset", methods=["POST"])
+@limiter.limit("5 per minute")
+def forgot_password_reset():
+    data = request.get_json(silent=True) or {}
+    reset_token = data.get("reset_token")
+    new_password = data.get("new_password")
+    
+    if not reset_token or not new_password:
+        return jsonify({"status": "error", "message": "Reset token and new password are required."}), 400
+        
+    if len(new_password) < 8:
+        return jsonify({"status": "error", "message": "Password must be at least 8 characters."}), 400
+        
+    try:
+        payload = jwt.decode(reset_token, config.JWT_SECRET, algorithms=[config.JWT_ALGORITHM])
+        if payload.get("type") != "password_reset":
+            return jsonify({"status": "error", "message": "Invalid password reset token."}), 401
+            
+        email = payload["sub"]
+        pw_hash = bcrypt.hashpw(new_password.encode("utf-8"), bcrypt.gensalt())
+        
+        with get_db_connection() as conn:
+            conn.execute("UPDATE users SET password_hash = ? WHERE email = ? COLLATE NOCASE", (pw_hash, email))
+            
+        return jsonify({"status": "success", "message": "Password updated successfully."}), 200
+    except jwt.ExpiredSignatureError:
+        return jsonify({"status": "error", "message": "Reset link has expired. Please start over."}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({"status": "error", "message": "Invalid or tampered reset link. Please start over."}), 401
+    except Exception as e:
+        logger.error(f"Error resetting password: {e}")
+        return jsonify({"status": "error", "message": "An error occurred. Please try again."}), 500

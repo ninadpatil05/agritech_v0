@@ -63,3 +63,33 @@ def get_weather():
     except Exception as e:
         logger.error(f"Unexpected weather error: {e}", exc_info=True)
         return jsonify({"status": "error", "message": "Unexpected error fetching weather data."}), 500
+
+
+@weather_bp.route("/weather/forecast", methods=["GET"])
+@require_auth
+def get_forecast():
+    """Proxy for OWM 5-day forecast — keeps key server-side."""
+    if not config.OPENWEATHER_KEY:
+        return jsonify({"status": "error", "message": "Weather API key not configured."}), 503
+
+    city = request.args.get("city", "Pune")
+    lat = request.args.get("lat")
+    lon = request.args.get("lon")
+
+    params = {"appid": config.OPENWEATHER_KEY, "units": "metric", "cnt": 40}
+    if lat and lon:
+        params.update({"lat": lat, "lon": lon})
+    else:
+        params["q"] = city
+
+    try:
+        resp = requests.get(
+            "https://api.openweathermap.org/data/2.5/forecast",
+            params=params, timeout=10
+        )
+        resp.raise_for_status()
+        return jsonify(resp.json())
+    except requests.exceptions.RequestException as e:
+        logger.error(f"OWM forecast error: {e}")
+        return jsonify({"status": "error", "message": "Weather service unavailable."}), 502
+

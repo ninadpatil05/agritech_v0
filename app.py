@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from flask import Flask, jsonify, request, send_from_directory, redirect
 from flask_cors import CORS
 
-load_dotenv()
+load_dotenv(override=True)
 
 # ── Logging setup ─────────────────────────────────────────────────────────────
 logging.basicConfig(

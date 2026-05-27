@@ -123,19 +123,22 @@ window.FormValidator = FormValidator;
 
 // Modal Helper
 const Modal = {
-  show: function(id) {
+  show: function(id, triggerEl) {
     const modal = document.getElementById(id);
     if (modal) {
+      modal._trigger = triggerEl || document.activeElement;
       modal.classList.add('show');
       document.body.style.overflow = 'hidden';
+      const focusable = modal.querySelector('button, [href], input, select, textarea');
+      if (focusable) setTimeout(() => focusable.focus(), 50);
     }
   },
-
   hide: function(id) {
     const modal = document.getElementById(id);
     if (modal) {
       modal.classList.remove('show');
       document.body.style.overflow = '';
+      if (modal._trigger && modal._trigger.focus) modal._trigger.focus();
     }
   },
 
@@ -146,6 +149,7 @@ const Modal = {
         if (e.target === this) {
           this.classList.remove('show');
           document.body.style.overflow = '';
+          if (this._trigger) this._trigger.focus();
         }
       });
     });
@@ -157,18 +161,25 @@ const Modal = {
         if (modal) {
           modal.classList.remove('show');
           document.body.style.overflow = '';
+          if (modal._trigger) modal._trigger.focus();
         }
       });
+    });
+
+    // Keyboard Escape listener
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.show').forEach(m => {
+          m.classList.remove('show');
+          document.body.style.overflow = '';
+          if (m._trigger) m._trigger.focus();
+        });
+      }
     });
   }
 };
 
 window.Modal = Modal;
-
-// Auto-initialize modals on DOMContentLoaded
-document.addEventListener('DOMContentLoaded', function() {
-  Modal.init();
-});
 
 // Date Formatter
 const DateFormatter = {

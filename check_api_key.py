@@ -8,12 +8,12 @@ and how to fix the key if something is wrong.
 import os, sys, requests
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(override=True)
 API_KEY = os.environ.get("GEMINI_API_KEY", "")
 
 BASE = "https://generativelanguage.googleapis.com/v1beta/models"
 MODELS = [
-    "gemini-3.1-flash-lite-preview",
+    "gemini-3.1-flash-lite",
     "gemini-2.5-flash",
     "gemini-2.5-flash-preview-05-20",
     "gemini-2.0-flash",

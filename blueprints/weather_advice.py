@@ -513,3 +513,55 @@ def weather_alerts():
 def weather_advisory_alias():
     """Alias for /weather-advice used by the new frontend."""
     return get_weather_advice()
+
+
+@weather_advice_bp.route("/weather/chat", methods=["POST"])
+@require_auth
+def weather_chat():
+    """Proxy Gemini chat calls for the weather assistant — keeps key server-side."""
+    data = request.get_json(silent=True) or {}
+    user_message = data.get("message", "")
+    weather_context = data.get("weather", {})
+
+    if not user_message:
+        return jsonify({"status": "error", "message": "No message provided."}), 400
+
+    prompt = f"""You are an agricultural advisor for Indian farmers.
+Weather context: {json.dumps(weather_context)}
+Farmer's question: {user_message}
+Reply in plain, practical language."""
+
+    try:
+        from blueprints.gemini_client import call_gemini
+        raw, model = call_gemini(prompt, max_tokens=512)
+        return jsonify({"status": "success", "reply": raw, "model": model})
+    except Exception as e:
+        logger.error(f"Weather chat Gemini error: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 502
+
+
+@weather_advice_bp.route("/weather/crop-recommendations", methods=["POST"])
+@require_auth
+def weather_crop_recommendations():
+    """Proxy Gemini calls for crop planning recommendations — keeps key server-side."""
+    data = request.get_json(silent=True) or {}
+    prompt = data.get("prompt", "")
+
+    if not prompt:
+        return jsonify({"status": "error", "message": "No prompt provided."}), 400
+
+    try:
+        from blueprints.gemini_client import call_gemini, extract_json
+        raw, model = call_gemini(prompt, max_tokens=2048)
+        # Strip any markdown fences
+        raw_clean = raw.replace("```json", "").replace("```", "").strip()
+        try:
+            parsed = json.loads(raw_clean)
+        except json.JSONDecodeError:
+            parsed = extract_json(raw)
+        return jsonify({"status": "success", "data": parsed, "model": model})
+    except Exception as e:
+        logger.error(f"Crop recommendations Gemini error: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 502
+
+

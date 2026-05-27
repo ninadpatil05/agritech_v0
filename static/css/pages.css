@@ -549,20 +549,55 @@
 }
 
 .auth-left {
-  background: linear-gradient(135deg, var(--green-primary), var(--green-dark));
+  position: relative;
+  background: linear-gradient(135deg, rgba(27, 67, 50, 0.92), rgba(45, 106, 79, 0.88)),
+              url('../images/auth-left.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   padding: 60px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  color: var(--white);
+  color: #ffffff;
+  overflow: hidden;
+  animation: subtle-shift 45s ease-in-out infinite alternate;
+}
+
+@keyframes subtle-shift {
+  0%   { background-position: center 0%; }
+  100% { background-position: center 100%; }
+}
+
+/* Logo pinned to top-left, outside the centred content flow */
+.auth-logo {
+  position: absolute;
+  top: 36px;
+  left: 60px;
+  font-size: 15px;
+  opacity: 0.92;
+  text-decoration: none;
+  color: #ffffff;
+  animation: fadeInUp 0.5s ease-out;
 }
 
 .auth-left-content {
-  max-width: 400px;
+  max-width: 420px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .auth-left h2 {
-  margin-bottom: 32px;
+  font-size: clamp(2rem, 3vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 28px;
+  color: #ffffff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.5px;
+  animation: fadeInUp 0.6s ease-out;
 }
 
 .auth-left ul {
@@ -575,18 +610,94 @@
   gap: 12px;
   margin-bottom: 16px;
   font-size: 16px;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  animation: fadeInUp 0.6s ease-out both;
 }
+
+.auth-left ul li:nth-child(1) { animation-delay: 0.10s; }
+.auth-left ul li:nth-child(2) { animation-delay: 0.20s; }
+.auth-left ul li:nth-child(3) { animation-delay: 0.30s; }
+.auth-left ul li:nth-child(4) { animation-delay: 0.40s; }
 
 .auth-left li::before {
   content: '✓';
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   width: 24px;
   height: 24px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.25);
   border-radius: 50%;
   font-size: 12px;
+}
+
+/* Auth testimonial */
+.auth-testimonial {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  font-style: italic;
+  opacity: 0.9;
+  font-size: 15px;
+  line-height: 1.6;
+  animation: fadeInUp 0.6s 0.55s ease-out both;
+}
+
+.auth-testimonial span {
+  display: block;
+  margin-top: 10px;
+  font-size: 0.85rem;
+  font-style: normal;
+  opacity: 0.7;
+  letter-spacing: 0.2px;
+}
+
+/* Force all links inside .auth-left to stay white regardless of theme */
+.auth-left a {
+  color: #ffffff;
+}
+
+/* Auth floating stats badge */
+.auth-stats {
+  position: absolute;
+  bottom: 40px;
+  left: 60px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 16px 24px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: fadeInUp 0.6s 0.65s ease-out both;
+}
+
+.auth-stats .auth-stat-number {
+  display: block;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.auth-stats .auth-stat-label {
+  display: block;
+  font-size: 0.82rem;
+  opacity: 0.78;
+  margin-top: 2px;
+}
+
+/* Entrance animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .auth-right {
@@ -1918,24 +2029,24 @@
 }
 
 /* Modal — profile.html uses .modal wrapping .modal-overlay + .modal-content */
-.modal {
+#profile-modal-wrapper.modal {
   display: none;
   position: fixed;
   inset: 0;
   z-index: 9000;
 }
 
-.modal.open {
+#profile-modal-wrapper.modal.open {
   display: block;
 }
 
-.modal .modal-overlay {
+#profile-modal-wrapper.modal .modal-overlay {
   position: absolute;
   inset: 0;
   background-color: rgba(0,0,0,0.5);
 }
 
-.modal-content {
+#profile-modal-wrapper .modal-content {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -1954,7 +2065,7 @@
   to   { transform: translate(-50%, -50%) scale(1);    opacity: 1; }
 }
 
-.modal-header {
+#profile-modal-wrapper .modal-header {
   padding: 20px 24px;
   border-bottom: 1px solid var(--border);
   display: flex;
@@ -1962,9 +2073,9 @@
   justify-content: space-between;
 }
 
-.modal-header h3 { font-size: 18px; font-weight: 600; }
+#profile-modal-wrapper .modal-header h3 { font-size: 18px; font-weight: 600; }
 
-.modal-close {
+#profile-modal-wrapper .modal-close {
   background: none;
   border: none;
   cursor: pointer;
@@ -1975,11 +2086,11 @@
   border-radius: var(--radius-sm);
   transition: color 0.2s ease, background-color 0.2s ease;
 }
-.modal-close:hover { color: var(--text); background-color: var(--border); }
+#profile-modal-wrapper .modal-close:hover { color: var(--text); background-color: var(--border); }
 
-.modal-body { padding: 24px; }
+#profile-modal-wrapper .modal-body { padding: 24px; }
 
-.modal-footer {
+#profile-modal-wrapper .modal-footer {
   padding: 16px 24px;
   border-top: 1px solid var(--border);
   display: flex;

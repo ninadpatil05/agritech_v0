@@ -572,3 +572,14 @@ html[data-theme="dark"] .toast {
     display: block;
   }
 }
+
+/* Smooth modal entrance animation */
+.modal-overlay .modal {
+  transform: scale(0.95);
+  opacity: 0;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.modal-overlay.show .modal {
+  transform: scale(1);
+  opacity: 1;
+}

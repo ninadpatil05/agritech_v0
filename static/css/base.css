@@ -85,6 +85,22 @@ html[data-theme="dark"] .auth-right {
   background-color: var(--bg);
 }
 
+/* Auth page left-panel — deeper overlay in dark mode for contrast */
+html[data-theme="dark"] .auth-left {
+  background: linear-gradient(135deg, rgba(15, 40, 30, 0.94), rgba(25, 60, 45, 0.92)),
+              url('../images/auth-left.jpg');
+  background-size: cover;
+  background-position: center;
+  animation: subtle-shift 45s ease-in-out infinite alternate;
+}
+
+html[data-theme="dark"] .auth-left h2,
+html[data-theme="dark"] .auth-left li,
+html[data-theme="dark"] .auth-left a,
+html[data-theme="dark"] .auth-logo {
+  color: #ffffff;
+}
+
 
 *, *::before, *::after {
   box-sizing: border-box;

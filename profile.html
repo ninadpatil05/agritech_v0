@@ -1133,58 +1133,60 @@
     </div><!-- /profile-body -->
 
 
-    <!-- ═══ Change Password Modal ═══ -->
-    <div class="modal-backdrop" id="passwordModal">
-        <div class="modal-box">
-            <div class="modal-hd">
-                <h3>🔑 Change Password</h3>
-                <button class="modal-x" data-close="passwordModal">✕</button>
-            </div>
-            <div class="modal-bd">
-                <form id="passwordForm">
-                    <div class="field-group" style="margin-bottom:16px;">
-                        <label class="field-label">Current Password</label>
-                        <input type="password" id="pCurrent" class="field-input" placeholder="Enter current password" required>
-                    </div>
-                    <div class="field-group" style="margin-bottom:6px;">
-                        <label class="field-label">New Password</label>
-                        <input type="password" id="pNew" class="field-input" placeholder="Min 8 characters" required>
-                        <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
-                        <div class="strength-text" id="strengthText"></div>
-                    </div>
-                    <div class="field-group">
-                        <label class="field-label">Confirm New Password</label>
-                        <input type="password" id="pConfirm" class="field-input" placeholder="Repeat new password" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-ft">
-                <button class="btn-cancel" data-close="passwordModal">Cancel</button>
-                <button class="btn-save" id="savePasswordBtn">Update Password</button>
+    <div id="profile-modal-wrapper">
+        <!-- ═══ Change Password Modal ═══ -->
+        <div class="modal-backdrop" id="passwordModal">
+            <div class="modal-box">
+                <div class="modal-hd">
+                    <h3>🔑 Change Password</h3>
+                    <button class="modal-x" data-close="passwordModal">✕</button>
+                </div>
+                <div class="modal-bd">
+                    <form id="passwordForm">
+                        <div class="field-group" style="margin-bottom:16px;">
+                            <label class="field-label">Current Password</label>
+                            <input type="password" id="pCurrent" class="field-input" placeholder="Enter current password" required>
+                        </div>
+                        <div class="field-group" style="margin-bottom:6px;">
+                            <label class="field-label">New Password</label>
+                            <input type="password" id="pNew" class="field-input" placeholder="Min 8 characters" required>
+                            <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+                            <div class="strength-text" id="strengthText"></div>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Confirm New Password</label>
+                            <input type="password" id="pConfirm" class="field-input" placeholder="Repeat new password" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-ft">
+                    <button class="btn-cancel" data-close="passwordModal">Cancel</button>
+                    <button class="btn-save" id="savePasswordBtn">Update Password</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- ═══ Delete Account Modal ═══ -->
-    <div class="modal-backdrop" id="deleteModal">
-        <div class="modal-box">
-            <div class="modal-hd">
-                <h3 style="color:#991b1b;">⚠️ Delete Account</h3>
-                <button class="modal-x" data-close="deleteModal">✕</button>
-            </div>
-            <div class="modal-bd">
-                <div style="text-align:center;margin-bottom:20px;">
-                    <div style="font-size:52px;margin-bottom:12px;">🗑️</div>
-                    <p style="font-size:14px;color:#64748b;line-height:1.7;">This action is <strong>permanent and irreversible</strong>. All your scan history, reports, and settings will be lost forever.</p>
+        <!-- ═══ Delete Account Modal ═══ -->
+        <div class="modal-backdrop" id="deleteModal">
+            <div class="modal-box">
+                <div class="modal-hd">
+                    <h3 style="color:#991b1b;">⚠️ Delete Account</h3>
+                    <button class="modal-x" data-close="deleteModal">✕</button>
                 </div>
-                <div class="field-group">
-                    <label class="field-label">Type <strong>DELETE</strong> to confirm</label>
-                    <input type="text" id="deleteConfirmInput" class="field-input" placeholder="DELETE" autocomplete="off">
+                <div class="modal-bd">
+                    <div style="text-align:center;margin-bottom:20px;">
+                        <div style="font-size:52px;margin-bottom:12px;">🗑️</div>
+                        <p style="font-size:14px;color:#64748b;line-height:1.7;">This action is <strong>permanent and irreversible</strong>. All your scan history, reports, and settings will be lost forever.</p>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Type <strong>DELETE</strong> to confirm</label>
+                        <input type="text" id="deleteConfirmInput" class="field-input" placeholder="DELETE" autocomplete="off">
+                    </div>
                 </div>
-            </div>
-            <div class="modal-ft">
-                <button class="btn-cancel" data-close="deleteModal">Cancel</button>
-                <button class="btn-danger-sm" id="confirmDeleteBtn" disabled style="padding:10px 20px;font-size:14px;">Delete Forever</button>
+                <div class="modal-ft">
+                    <button class="btn-cancel" data-close="deleteModal">Cancel</button>
+                    <button class="btn-danger-sm" id="confirmDeleteBtn" disabled style="padding:10px 20px;font-size:14px;">Delete Forever</button>
+                </div>
             </div>
         </div>
     </div>

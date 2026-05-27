@@ -1640,10 +1640,6 @@
        AGRI-WEATHER DASHBOARD — Main Script
     ════════════════════════════════════════════════════════ */
 
-    const OWM_KEY  = 'REMOVED_OWM_KEY';
-    const GEMINI_KEY = 'REMOVED_GEMINI_KEY';
-    const GEMINI_MODELS = ['gemini-3.1-flash-lite', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite'];
-
     let currentWeather = null;
     let currentCity    = 'Pune';
     let chatHistory    = [];    // keep last 3 Q&As
@@ -1805,10 +1801,7 @@
       strip.innerHTML = Array(7).fill('<div class="agri-skel-day"></div>').join('');
 
       try {
-        const url = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&appid=${OWM_KEY}&units=metric`;
-        const res  = await fetch(url);
-        if (!res.ok) throw new Error('forecast failed');
-        const data = await res.json();
+        const data = await API.get(`/weather/forecast?city=${encodeURIComponent(city)}`);
         renderForecast(data.list || []);
       } catch(e) {
         strip.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:16px;">Forecast unavailable</div>';
@@ -1994,15 +1987,6 @@
       const question = input.value.trim();
       if (!question) return;
 
-      // Build context from weather
-      let weatherCtx = 'Weather data not available.';
-      if (currentWeather) {
-        const w = currentWeather;
-        weatherCtx = `Location: ${w.name || currentCity}, India. Temp: ${Math.round(w.main.temp)}°C, Humidity: ${w.main.humidity}%, Condition: ${w.weather?.[0]?.description || 'unknown'}, Wind: ${Math.round((w.wind.speed||0)*3.6)} km/h, Feels like: ${Math.round(w.main.feels_like)}°C.`;
-      }
-
-      const prompt = `You are an expert Indian agricultural advisor with deep knowledge of Indian farming conditions, crops like rice, wheat, sugarcane, cotton, and local weather patterns. Current weather: ${weatherCtx}\nFarmer's question: "${question}"\nGive a concise, practical answer in 3-4 sentences. Use simple language suitable for rural Indian farmers. End with one clear, actionable step they can take today.`;
-
       // Add Q to chat
       addChat(question, null);
       input.value = '';
@@ -2018,31 +2002,17 @@
       let reply = null;
       let success = false;
 
-      for (const model of GEMINI_MODELS) {
-        try {
-          const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_KEY}`;
-          const res = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: { temperature: 0.7, maxOutputTokens: 300 }
-            })
-          });
-
-          if (res.ok) {
-            const data = await res.json();
-            reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (reply) {
-              success = true;
-              break;
-            }
-          } else {
-            console.warn(`Gemini model ${model} failed with status: ${res.status}`);
-          }
-        } catch (e) {
-          console.error(`Error calling model ${model}:`, e);
+      try {
+        const response = await API.post('/weather/chat', {
+          message: question,
+          weather: currentWeather
+        });
+        if (response && response.status === 'success') {
+          reply = response.reply;
+          success = true;
         }
+      } catch (e) {
+        console.error('Error calling backend weather chat:', e);
       }
 
       document.getElementById(typingId)?.remove();
@@ -2582,41 +2552,14 @@ Return exactly 8 crops. Rank strictly by suitability for ${city}, ${state} right
       const prompt = cropAI_buildPrompt(season, landSize, soilType, waterAvail);
       let success  = false;
 
-      for (const model of GEMINI_MODELS) {
-        try {
-          const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_KEY}`;
-          const res = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: { temperature: 0.4, maxOutputTokens: 2048 }
-            })
-          });
-
-          if (!res.ok) { console.warn(`cropAI: model ${model} returned ${res.status}`); continue; }
-
-          const data = await res.json();
-          let raw = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-          // Strip any markdown fences
-          raw = raw.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
-
-          let parsed;
-          try {
-            parsed = JSON.parse(raw);
-          } catch(_) {
-            // Try to extract JSON object
-            const match = raw.match(/\{[\s\S]*\}/);
-            if (match) parsed = JSON.parse(match[0]);
-            else throw new Error('no JSON found');
-          }
-
-          cropAI_renderResults(parsed, false);
+      try {
+        const response = await API.post('/weather/crop-recommendations', { prompt });
+        if (response && response.status === 'success' && response.data) {
+          cropAI_renderResults(response.data, false);
           success = true;
-          break;
-        } catch(e) {
-          console.error(`cropAI: model ${model} error:`, e);
         }
+      } catch (e) {
+        console.error('cropAI: Error calling backend recommendations:', e);
       }
 
       if (!success) {

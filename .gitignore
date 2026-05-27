@@ -1,20 +1,28 @@
-__pycache__/
-*.pyc
-*.pyo
-*.h5
-*.keras
-models/
+# === SECRETS — never commit these ===
 .env
-.vscode/
-node_modules/
-*.log
-agritech.db
-dataset/
-.env
+.env.local
+.env.*.local
+*.key
+*.pem
+secrets.txt
+service-account*.json
+*credentials*.json
+
+# === Python ===
 __pycache__/
 *.py[cod]
 *.h5
-agritech.db
-agritech_users.db
+*.keras
 .venv/
 venv/
+
+# === App data ===
+models/
+agritech.db
+agritech_users.db
+
+# === Misc ===
+.vscode/
+node_modules/
+*.log
+dataset/

@@ -1,0 +1,60 @@
+services:
+  - type: web
+    name: smart-crop-detective
+    env: python
+    region: singapore        # Closest to India — lower latency than oregon
+    plan: free
+    buildCommand: "pip install -r requirements.txt && bash download_models.sh"
+    startCommand: "gunicorn app:app --workers 2 --timeout 120 --bind 0.0.0.0:$PORT"
+    healthCheckPath: /
+
+    envVars:
+      # ── Flask core ─────────────────────────────────────────────
+      - key: FLASK_APP
+        sync: false
+      - key: FLASK_DEBUG
+        value: "false"        # Always off in production
+      - key: SECRET_KEY
+        generateValue: true   # Render auto-generates a secure random value
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_HOURS
+        value: "72"
+
+      # ── AI / External APIs ─────────────────────────────────────
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: OPENWEATHER_KEY
+        sync: false
+
+      # ── Database ───────────────────────────────────────────────
+      - key: DB_PATH
+        value: /tmp/agritech.db   # Free tier has no persistent disk
+
+      # ── ML Models ─────────────────────────────────────────────
+      - key: MODEL_PATH
+        value: /tmp/models        # Download target at build time
+      - key: PLANT_MODEL_URL
+        sync: false               # Set to your hosted .h5 URL (HuggingFace / Drive)
+      - key: DISEASE_MODEL_URL
+        sync: false               # Set to your hosted .h5 URL (HuggingFace / Drive)
+      - key: BLUR_THRESHOLD
+        value: "100"
+      - key: CONFIDENCE_THRESHOLD
+        value: "0.65"
+
+      # ── Contact / SMTP ─────────────────────────────────────────
+      - key: CONTACT_SMTP_HOST
+        sync: false
+      - key: CONTACT_SMTP_PORT
+        value: "587"
+      - key: CONTACT_SMTP_USER
+        sync: false
+      - key: CONTACT_SMTP_PASSWORD
+        sync: false
+      - key: CONTACT_MAIL_TO
+        sync: false
+
+      # ── Admin ─────────────────────────────────────────────────
+      - key: LOGS_TOKEN
+        generateValue: true

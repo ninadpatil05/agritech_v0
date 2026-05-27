@@ -1,4 +1,4 @@
-# Secrets
+# Secrets & local config
 .env
 .env.local
 .env.*.local
@@ -10,18 +10,19 @@ secrets.txt
 # Python
 __pycache__/
 *.py[cod]
+*.pyo
 *.h5
 *.keras
 .venv/
 venv/
 
-# App data
+# App data & generated files
 models/
 agritech.db
 agritech_users.db
+agritech.log
 dataset/
 
-# Dev
+# Dev tooling
 .vscode/
 node_modules/
-*.log

@@ -16,9 +16,13 @@ def _abs_path(p: str) -> str:
     return str(ROOT / p)
 
 
-DB_PATH = _abs_path(os.environ.get("DB_PATH", "agritech.db"))
+# On Render free tier the project root is read-only; /tmp is always writable.
+# Locally the env var (or .env) overrides this to a convenient path.
+DB_PATH = os.environ.get("DB_PATH") or (
+    "/tmp/agritech.db" if os.environ.get("RENDER") else str(ROOT / "agritech.db")
+)
 
-_model_raw = os.environ.get("MODEL_PATH", "models").strip()
+_model_raw = os.environ.get("MODEL_PATH", "/tmp/models" if os.environ.get("RENDER") else "models").strip()
 if os.path.isabs(_model_raw):
     MODEL_DIR = Path(_model_raw)
 else:

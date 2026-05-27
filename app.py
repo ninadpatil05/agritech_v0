@@ -7,13 +7,15 @@ from flask_cors import CORS
 
 load_dotenv(override=True)
 
+LOG_FILE = "/tmp/agritech.log" if os.environ.get("RENDER") else "agritech.log"
+
 # ── Logging setup ─────────────────────────────────────────────────────────────
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
     handlers=[
-        logging.StreamHandler(),              # console
-        logging.FileHandler("agritech.log"),  # persistent file
+        logging.StreamHandler(),           # console (stdout → Render Logs tab)
+        logging.FileHandler(LOG_FILE),     # /tmp/agritech.log on Render, local file otherwise
     ],
 )
 logger = logging.getLogger("agritech")

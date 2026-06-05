@@ -33,7 +33,7 @@
   <link rel="stylesheet" href="/static/css/components.css">
   <link rel="stylesheet" href="/static/css/pages.css">
   <link rel="stylesheet" href="/static/css/detect.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/davidshimjs-qrcodejs@0.0.2/qrcode.min.js"></script>
 </head>
 <body class="auth-protected">
   <!-- Sidebar -->
@@ -434,47 +434,42 @@
     // Detect if running on a mobile/touch device
     function isMobileDevice() {
       return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
-             (navigator.maxTouchPoints > 1 && /Macintosh/i.test(navigator.userAgent) === false);
+             (navigator.maxTouchPoints > 1 && /Macintosh/i.test(navigator.userAgent));
     }
 
     // Generate QR code once, lazily
     let qrGenerated = false;
     function initQRCode() {
+      console.log("initQRCode: qrGenerated =", qrGenerated);
       if (qrGenerated) return;
       const el = document.getElementById('qr-code-canvas');
-      if (!el) return;
-      el.innerHTML = '';
-
-      // Force visible so QRCode.js can measure dimensions correctly
-      const panel = document.getElementById('camera-qr-panel');
-      const wasHidden = panel && panel.style.display === 'none';
-      if (wasHidden) {
-        panel.style.visibility = 'hidden';
-        panel.style.position = 'absolute';
-        panel.style.display = 'block';
-      }
-
-      new QRCode(el, {
-        text: 'https://agritech-v0.onrender.com/detect.html',
-        width: 124,
-        height: 124,
-        colorDark: '#000000',
-        colorLight: '#ffffff',
-        correctLevel: QRCode.CorrectLevel.M
-      });
-
-      if (wasHidden) {
-        panel.style.display = 'none';
-        panel.style.visibility = '';
-        panel.style.position = '';
-      }
-
-      const canvas = el.querySelector('canvas');
-      if (!canvas || canvas.width === 0) {
-        qrGenerated = false; // Allow retry
+      if (!el) {
+        console.warn("initQRCode: qr-code-canvas element not found!");
         return;
       }
-      qrGenerated = true;
+      el.innerHTML = '';
+      try {
+        new QRCode(el, {
+          text: 'https://agritech-v0.onrender.com/detect.html',
+          width: 124,
+          height: 124,
+          colorDark: '#000000',
+          colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      } catch (err) {
+        console.error("initQRCode: failed to construct QRCode:", err);
+      }
+      
+      // Check if camera zone tab is actually shown on screen
+      const canvas = el.querySelector('canvas');
+      const isTabActive = document.getElementById('camera-zone').style.display !== 'none';
+      console.log("initQRCode: canvas =", canvas, "canvas.width =", canvas ? canvas.width : "none", "isTabActive =", isTabActive);
+      
+      if (canvas && canvas.width > 0 && isTabActive) {
+        qrGenerated = true;
+        console.log("initQRCode: QR successfully marked as generated!");
+      }
     }
 
     // Show/hide QR panel based on device type
@@ -482,8 +477,10 @@
       const qrPanel = document.getElementById('camera-qr-panel');
       const mobileHint = document.getElementById('camera-mobile-hint');
       const openBtn = document.getElementById('btn-open-camera');
+      const isMobile = isMobileDevice();
+      console.log("updateCameraZoneForDevice: isMobile =", isMobile);
 
-      if (isMobileDevice()) {
+      if (isMobile) {
         // Mobile: hide QR, show normal hint, keep button
         if (qrPanel) qrPanel.style.display = 'none';
         if (mobileHint) mobileHint.style.display = 'inline-block';

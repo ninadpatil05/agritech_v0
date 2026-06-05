@@ -105,6 +105,13 @@ const TRANSLATIONS = {
     detect_prevention:  'Prevention Tips',
     detect_confidence:  'Confidence',
 
+    detect_opt_upload:    'Upload Photo',
+    detect_opt_camera:    'Take Photo',
+    detect_camera_title:  'Use your camera',
+    detect_camera_desc:   'Point at the affected leaf and tap capture',
+    detect_camera_btn:    'Open Camera',
+    detect_camera_hint:   'Opens rear camera on mobile · Works on any phone',
+
     // ── Auth ────────────────────────────────────────────────────────────────
     auth_welcome_back:  'Welcome back 👋',
     auth_create_acct:   'Create your account',
@@ -169,6 +176,117 @@ const TRANSLATIONS = {
 
     // ── Generic ──────────────────────────────────────────────────────────────
     loading:            'Loading…',
+
+    // ── Security Questions (auth.html signup + forgot-password flow) ─────────────
+    security_question_label:    'Security Question',
+    security_answer_label:      'Security Answer',
+    security_answer_placeholder:'Enter your answer',
+    err_select_question:        'Please select a security question',
+    q_pet:                      'What was the name of your first pet?',
+    q_school:                   'What primary school did you attend?',
+    q_city:                     'In which city were you born?',
+    q_mother:                   "What is your mother's maiden name?",
+    q_teacher:                  'Who was your favourite high school teacher?',
+    q_crop:                     'What was the first crop you ever harvested?',
+
+    // ── Forgot Password / Reset Flow ─────────────────────────────────────────────
+    forgot_password_title:      'Reset Your Password',
+    forgot_step_1_desc:         'Enter your registered email address and we will retrieve your security question.',
+    forgot_step_2_desc:         'Answer your security question to verify your identity.',
+    forgot_step_3_desc:         'Create a new strong password for your account.',
+    forgot_btn_get_question:    'Get Security Question →',
+    forgot_btn_verify_answer:   'Verify Answer →',
+    forgot_btn_reset:           'Reset Password →',
+    forgot_back_to_login:       '← Back to Login',
+    reset_new_pw_label:         'New Password',
+    reset_confirm_pw_label:     'Confirm Password',
+    reset_confirm_ph:           'Confirm your password',
+    reset_new_pw_ph:            'Create a new password',
+    toast_pw_mismatch:          'Passwords do not match',
+    toast_pw_short:             'Password must be at least 8 characters',
+    toast_forgot_invalid:       'Incorrect answer. Please try again.',
+    toast_forgot_sent:          'Security question retrieved successfully.',
+    toast_reset_ok:             'Password reset successfully! Please log in.',
+    err_email_required:         'Email is required',
+    err_answer_required:        'Please enter your answer',
+
+    // ── Landing Page (index.html) ─────────────────────────────────────────────────
+    hero_pill:                  '🌿 AI-Powered Crop Health',
+    hero_title_line1:           'Detect Crop Disease',
+    hero_title_line2:           'in Seconds',
+    hero_title_highlight:       'with AI',
+    hero_subtitle:              'Upload a leaf photo and get instant AI diagnosis + treatment advice in English, Hindi, and Marathi. Protect your harvest before it\'s too late.',
+    hero_cta_scan:              '🔬 Scan Your Crop',
+    hero_cta_how:               'See How It Works ↓',
+    hero_trust_free:            'Free',
+    hero_trust_noapp:           'No app download',
+    hero_trust_anyphone:        'Works on any phone',
+    stats_diseases:             'Diseases Detected',
+    stats_accuracy:             'Accuracy Rate',
+    stats_lang_support:         'Language Support',
+    stats_lang_value:           'EN + हिंदी + मराठी',
+    features_section_title:     'Everything you need to protect your crops',
+    features_section_desc:      'Comprehensive tools powered by AI to help Indian farmers detect diseases early and take action.',
+    feature_detect_title:       'AI Disease Detection',
+    feature_detect_desc:        'Identifies 38+ crop diseases from a single photo using advanced Gemini Vision AI.',
+    feature_detect_link:        'Start scanning →',
+    feature_weather_title:      'Weather Advisory',
+    feature_weather_desc:       'Irrigation, crop planning, and alerts based on live weather data for your location.',
+    feature_weather_link:       'Check weather →',
+    feature_lang_title:         'Trilingual Support',
+    feature_lang_desc:          'Treatment advice in English, Hindi, and Marathi for farmers across India.',
+    feature_lang_link:          'Learn more →',
+    feature_history_title:      'Scan History',
+    feature_history_desc:       'Track all detections and monitor crop health over time with detailed reports.',
+    feature_history_link:       'View reports →',
+    how_title:                  'Simple. Fast. Accurate.',
+    how_desc:                   'Get crop disease diagnosis in three easy steps.',
+    step1_title:                'Upload Photo',
+    step1_desc:                 'Take a photo of the affected leaf and upload it',
+    step2_title:                'AI Analyzes',
+    step2_desc:                 'Gemini Vision AI examines 38+ diseases instantly',
+    step3_title:                'Get Treatment',
+    step3_desc:                 'Step-by-step treatment + prevention in your language',
+    crops_title:                'Supports 14+ crops',
+    cta_banner_title:           'Start protecting your crops today — it\'s free',
+    cta_banner_btn:             '🔬 Get Started Free →',
+    footer_tagline:             'AI-powered crop health for every farmer',
+    footer_rights:              '© 2025 Smart Crop Detective',
+    footer_made:                'Made with ❤️ for Indian Farmers',
+
+    // ── About Page (about.html) ───────────────────────────────────────────────────
+    about_hero_title:           'About Smart Crop Detective',
+    about_hero_desc:            'Empowering Indian farmers with AI-powered crop health monitoring. Detect diseases early, get treatment advice in your language, protect your harvest.',
+    about_mission_title:        'Our Mission',
+    about_problem_label:        'The Problem:',
+    about_problem_desc:         'Crop diseases cause billions of dollars in losses annually for Indian farmers. Early detection is crucial, but most farmers lack access to expert diagnosis, leading to crop failure and economic hardship.',
+    about_solution_label:       'Our Solution:',
+    about_solution_desc:        'Smart Crop Detective uses advanced AI technology to bring instant disease diagnosis to every farmer\'s fingertips. Simply upload a photo of an affected leaf, and our system identifies the disease within seconds.',
+    about_impact_label:         'The Impact:',
+    about_impact_desc:          'By providing early detection and actionable treatment advice in English, Hindi, and Marathi, we help farmers save their crops, reduce losses, and increase yields.',
+    about_tech_title:           'Built with Modern AI',
+    about_tech_desc:            'Leveraging cutting-edge technology to deliver accurate and fast results.',
+    about_dev_title:            'Meet the Developer',
+    about_cta_title:            'Ready to protect your crops?',
+    about_cta_btn:              '🔬 Start Scanning Now →',
+
+    // ── Contact Page (contact.html) ───────────────────────────────────────────────
+    contact_page_title:         'Get in Touch',
+    contact_page_desc:          'Have questions about Smart Crop Detective? Want to report an issue or suggest a feature? We\'d love to hear from you!',
+    contact_label_email:        'Email',
+    contact_label_location:     'Location',
+    contact_label_response:     'Response Time',
+    contact_response_val:       'Within 24 hours',
+    contact_name_label:         'Name',
+    contact_name_ph:            'Your name',
+    contact_email_ph:           'Your email address',
+    contact_subject_label:      'Subject',
+    contact_subject_ph:         'What is this about?',
+    contact_message_label:      'Message',
+    contact_message_ph:         'Tell us more...',
+    contact_btn_send:           'Send Message',
+    contact_success_title:      'Message Sent! 🎉',
+    contact_success_desc:       'Thank you for reaching out. We\'ll get back to you within 24 hours.',
   },
 
   hi: {
@@ -270,6 +388,13 @@ const TRANSLATIONS = {
     detect_prevention:  'रोकथाम के उपाय',
     detect_confidence:  'विश्वास',
 
+    detect_opt_upload:    'फोटो अपलोड करें',
+    detect_opt_camera:    'फोटो लें',
+    detect_camera_title:  'कैमरा उपयोग करें',
+    detect_camera_desc:   'प्रभावित पत्ती पर कैमरा लगाएं',
+    detect_camera_btn:    'कैमरा खोलें',
+    detect_camera_hint:   'मोबाइल पर रियर कैमरा खुलेगा',
+
     auth_welcome_back:  'वापस स्वागत है 👋',
     auth_create_acct:   'अपना खाता बनाएं',
     auth_email:         'ईमेल',
@@ -327,6 +452,113 @@ const TRANSLATIONS = {
     greeting_evening:   'शुभ संध्या',
 
     loading:            'लोड हो रहा है…',
+
+    // ── Security Questions ─────────────
+    security_question_label:    'सुरक्षा प्रश्न',
+    security_answer_label:      'सुरक्षा उत्तर',
+    security_answer_placeholder:'अपना उत्तर दर्ज करें',
+    err_select_question:        'कृपया एक सुरक्षा प्रश्न चुनें',
+    q_pet:                      'आपके पहले पालतू जानवर का नाम क्या था?',
+    q_school:                   'आपने किस प्राथमिक विद्यालय में पढ़ाई की?',
+    q_city:                     'आपका जन्म किस शहर में हुआ था?',
+    q_mother:                   'आपकी माँ का मायके का नाम क्या है?',
+    q_teacher:                  'आपके पसंदीदा हाई स्कूल शिक्षक कौन थे?',
+    q_crop:                     'आपने पहली बार कौन सी फसल काटी थी?',
+
+    forgot_password_title:      'पासवर्ड रीसेट करें',
+    forgot_step_1_desc:         'अपना पंजीकृत ईमेल पता दर्ज करें और हम आपका सुरक्षा प्रश्न प्राप्त करेंगे।',
+    forgot_step_2_desc:         'अपनी पहचान सत्यापित करने के लिए अपने सुरक्षा प्रश्न का उत्तर दें।',
+    forgot_step_3_desc:         'अपने खाते के लिए एक नया मजबूत पासवर्ड बनाएं।',
+    forgot_btn_get_question:    'सुरक्षा प्रश्न प्राप्त करें →',
+    forgot_btn_verify_answer:   'उत्तर सत्यापित करें →',
+    forgot_btn_reset:           'पासवर्ड रीसेट करें →',
+    forgot_back_to_login:       '← लॉगिन पर वापस जाएं',
+    reset_new_pw_label:         'नया पासवर्ड',
+    reset_confirm_pw_label:     'पासवर्ड की पुष्टि करें',
+    reset_confirm_ph:           'अपना पासवर्ड पुष्टि करें',
+    reset_new_pw_ph:            'नया पासवर्ड बनाएं',
+    toast_pw_mismatch:          'पासवर्ड मेल नहीं खाते',
+    toast_pw_short:             'पासवर्ड कम से कम 8 अक्षरों का होना चाहिए',
+    toast_forgot_invalid:       'गलत उत्तर। कृपया पुनः प्रयास करें।',
+    toast_forgot_sent:          'सुरक्षा प्रश्न सफलतापूर्वक प्राप्त किया गया।',
+    toast_reset_ok:             'पासवर्ड सफलतापूर्वक रीसेट हो गया! कृपया लॉगिन करें।',
+    err_email_required:         'ईमेल आवश्यक है',
+    err_answer_required:        'कृपया अपना उत्तर दर्ज करें',
+
+    hero_pill:                  '🌿 AI-संचालित फसल स्वास्थ्य',
+    hero_title_line1:           'फसल रोग की पहचान करें',
+    hero_title_line2:           'सेकंडों में',
+    hero_title_highlight:       'AI से',
+    hero_subtitle:              'पत्ती की फोटो अपलोड करें और तुरंत AI निदान + उपचार सलाह पाएं — हिंदी, मराठी और अंग्रेजी में। अपनी फसल बचाएं।',
+    hero_cta_scan:              '🔬 अपनी फसल स्कैन करें',
+    hero_cta_how:               'यह कैसे काम करता है ↓',
+    hero_trust_free:            'मुफ्त',
+    hero_trust_noapp:           'कोई ऐप डाउनलोड नहीं',
+    hero_trust_anyphone:        'किसी भी फोन पर काम करता है',
+    stats_diseases:             'पहचाने गए रोग',
+    stats_accuracy:             'सटीकता दर',
+    stats_lang_support:         'भाषा समर्थन',
+    stats_lang_value:           'EN + हिंदी + मराठी',
+    features_section_title:     'आपकी फसलों की सुरक्षा के लिए सब कुछ',
+    features_section_desc:      'भारतीय किसानों को रोगों का जल्दी पता लगाने और कार्रवाई करने में मदद करने के लिए AI द्वारा संचालित व्यापक उपकरण।',
+    feature_detect_title:       'AI रोग पहचान',
+    feature_detect_desc:        'उन्नत Gemini Vision AI का उपयोग करके एक ही फोटो से 38+ फसल रोगों की पहचान करता है।',
+    feature_detect_link:        'स्कैन शुरू करें →',
+    feature_weather_title:      'मौसम सलाह',
+    feature_weather_desc:       'आपके स्थान के लिए लाइव मौसम डेटा के आधार पर सिंचाई, फसल योजना और अलर्ट।',
+    feature_weather_link:       'मौसम देखें →',
+    feature_lang_title:         'त्रिभाषी समर्थन',
+    feature_lang_desc:          'भारत भर के किसानों के लिए अंग्रेजी, हिंदी और मराठी में उपचार सलाह।',
+    feature_lang_link:          'और जानें →',
+    feature_history_title:      'स्कैन इतिहास',
+    feature_history_desc:       'विस्तृत रिपोर्ट के साथ समय के साथ सभी पहचानों को ट्रैक करें और फसल स्वास्थ्य की निगरानी करें।',
+    feature_history_link:       'रिपोर्ट देखें →',
+    how_title:                  'सरल। तेज़। सटीक।',
+    how_desc:                   'तीन आसान चरणों में फसल रोग निदान पाएं।',
+    step1_title:                'फोटो अपलोड करें',
+    step1_desc:                 'प्रभावित पत्ती की फोटो लें और अपलोड करें',
+    step2_title:                'AI विश्लेषण करता है',
+    step2_desc:                 'Gemini Vision AI तुरंत 38+ रोगों की जांच करता है',
+    step3_title:                'उपचार पाएं',
+    step3_desc:                 'आपकी भाषा में चरण-दर-चरण उपचार + रोकथाम',
+    crops_title:                '14+ फसलों को सपोर्ट करता है',
+    cta_banner_title:           'आज ही अपनी फसलों की सुरक्षा शुरू करें — यह मुफ्त है',
+    cta_banner_btn:             '🔬 मुफ्त में शुरू करें →',
+    footer_tagline:             'हर किसान के लिए AI-संचालित फसल स्वास्थ्य',
+    footer_rights:              '© 2025 स्मार्ट क्रॉप डिटेक्टिव',
+    footer_made:                '❤️ भारतीय किसानों के लिए बनाया गया',
+
+    about_hero_title:           'स्मार्ट क्रॉप डिटेक्टिव के बारे में',
+    about_hero_desc:            'AI-संचालित फसल स्वास्थ्य निगरानी के साथ भारतीय किसानों को सशक्त बनाना। रोगों का जल्दी पता लगाएं, अपनी भाषा में उपचार सलाह पाएं, अपनी फसल बचाएं।',
+    about_mission_title:        'हमारा मिशन',
+    about_problem_label:        'समस्या:',
+    about_problem_desc:         'फसल रोग भारतीय किसानों के लिए सालाना अरबों रुपये का नुकसान करते हैं। जल्दी पहचान महत्वपूर्ण है, लेकिन अधिकांश किसानों को विशेषज्ञ निदान तक पहुंच नहीं है।',
+    about_solution_label:       'हमारा समाधान:',
+    about_solution_desc:        'स्मार्ट क्रॉप डिटेक्टिव हर किसान की उंगलियों पर तत्काल रोग निदान लाने के लिए उन्नत AI तकनीक का उपयोग करता है।',
+    about_impact_label:         'प्रभाव:',
+    about_impact_desc:          'अंग्रेजी, हिंदी और मराठी में जल्दी पहचान और कार्रवाई योग्य उपचार सलाह प्रदान करके, हम किसानों को अपनी फसलें बचाने में मदद करते हैं।',
+    about_tech_title:           'आधुनिक AI से बना',
+    about_tech_desc:            'सटीक और तेज़ परिणाम देने के लिए अत्याधुनिक तकनीक का उपयोग।',
+    about_dev_title:            'डेवलपर से मिलें',
+    about_cta_title:            'अपनी फसलों की सुरक्षा के लिए तैयार हैं?',
+    about_cta_btn:              '🔬 अभी स्कैन शुरू करें →',
+
+    contact_page_title:         'संपर्क करें',
+    contact_page_desc:          'स्मार्ट क्रॉप डिटेक्टिव के बारे में प्रश्न हैं? कोई समस्या रिपोर्ट करना चाहते हैं या फ़ीचर सुझाव देना चाहते हैं? हम आपसे सुनना चाहते हैं!',
+    contact_label_email:        'ईमेल',
+    contact_label_location:     'स्थान',
+    contact_label_response:     'प्रतिक्रिया समय',
+    contact_response_val:       '24 घंटे के भीतर',
+    contact_name_label:         'नाम',
+    contact_name_ph:            'आपका नाम',
+    contact_email_ph:           'आपका ईमेल पता',
+    contact_subject_label:      'विषय',
+    contact_subject_ph:         'यह किस बारे में है?',
+    contact_message_label:      'संदेश',
+    contact_message_ph:         'हमें और बताएं...',
+    contact_btn_send:           'संदेश भेजें',
+    contact_success_title:      'संदेश भेजा गया! 🎉',
+    contact_success_desc:       'हमसे संपर्क करने के लिए धन्यवाद। हम 24 घंटे के भीतर आपसे संपर्क करेंगे।',
   },
 
   mr: {
@@ -428,6 +660,13 @@ const TRANSLATIONS = {
     detect_prevention:  'प्रतिबंध टिप्स',
     detect_confidence:  'विश्वास',
 
+    detect_opt_upload:    'फोटो अपलोड करा',
+    detect_opt_camera:    'फोटो घ्या',
+    detect_camera_title:  'कॅमेरा वापरा',
+    detect_camera_desc:   'बाधित पानावर कॅमेरा धरा',
+    detect_camera_btn:    'कॅमेरा उघडा',
+    detect_camera_hint:   'मोबाईलवर मागील कॅमेरा उघडेल',
+
     auth_welcome_back:  'पुन्हा स्वागत आहे 👋',
     auth_create_acct:   'तुमचे खाते तयार करा',
     auth_email:         'ईमेल',
@@ -486,6 +725,113 @@ const TRANSLATIONS = {
     greeting_evening:   'शुभ संध्याकाळ',
 
     loading:            'लोड होत आहे…',
+
+    // ── Security Questions ─────────────
+    security_question_label:    'सुरक्षा प्रश्न',
+    security_answer_label:      'सुरक्षा उत्तर',
+    security_answer_placeholder:'तुमचे उत्तर प्रविष्ट करा',
+    err_select_question:        'कृपया एक सुरक्षा प्रश्न निवडा',
+    q_pet:                      'तुमच्या पहिल्या पाळीव प्राण्याचे नाव काय होते?',
+    q_school:                   'तुम्ही कोणत्या प्राथमिक शाळेत शिकलात?',
+    q_city:                     'तुमचा जन्म कोणत्या शहरात झाला?',
+    q_mother:                   'तुमच्या आईचे माहेरचे आडनाव काय आहे?',
+    q_teacher:                  'तुमचे आवडते हायस्कूल शिक्षक कोण होते?',
+    q_crop:                     'तुम्ही पहिल्यांदा कोणते पीक काढले होते?',
+
+    forgot_password_title:      'संकेतशब्द रीसेट करा',
+    forgot_step_1_desc:         'तुमचा नोंदणीकृत ईमेल पत्ता प्रविष्ट करा आणि आम्ही तुमचा सुरक्षा प्रश्न मिळवू.',
+    forgot_step_2_desc:         'तुमची ओळख सत्यापित करण्यासाठी तुमच्या सुरक्षा प्रश्नाचे उत्तर द्या.',
+    forgot_step_3_desc:         'तुमच्या खात्यासाठी नवीन मजबूत संकेतशब्द तयार करा.',
+    forgot_btn_get_question:    'सुरक्षा प्रश्न मिळवा →',
+    forgot_btn_verify_answer:   'उत्तर सत्यापित करा →',
+    forgot_btn_reset:           'संकेतशब्द रीसेट करा →',
+    forgot_back_to_login:       '← लॉगिनवर परत जा',
+    reset_new_pw_label:         'नवीन संकेतशब्द',
+    reset_confirm_pw_label:     'संकेतशब्द पुष्टी करा',
+    reset_confirm_ph:           'तुमचा संकेतशब्द पुष्टी करा',
+    reset_new_pw_ph:            'नवीन संकेतशब्द तयार करा',
+    toast_pw_mismatch:          'संकेतशब्द जुळत नाहीत',
+    toast_pw_short:             'संकेतशब्द किमान 8 अक्षरांचा असणे आवश्यक आहे',
+    toast_forgot_invalid:       'चुकीचे उत्तर. कृपया पुन्हा प्रयत्न करा.',
+    toast_forgot_sent:          'सुरक्षा प्रश्न यशस्वीरित्या मिळवला.',
+    toast_reset_ok:             'संकेतशब्द यशस्वीरित्या रीसेट झाला! कृपया लॉगिन करा.',
+    err_email_required:         'ईमेल आवश्यक आहे',
+    err_answer_required:        'कृपया तुमचे उत्तर प्रविष्ट करा',
+
+    hero_pill:                  '🌿 AI-चालित पीक आरोग्य',
+    hero_title_line1:           'पीक रोग ओळखा',
+    hero_title_line2:           'सेकंदात',
+    hero_title_highlight:       'AI सह',
+    hero_subtitle:              'पानाचा फोटो अपलोड करा आणि तात्काळ AI निदान + उपचार सल्ला मिळवा — मराठी, हिंदी आणि इंग्रजीत. तुमची पिके वाचवा.',
+    hero_cta_scan:              '🔬 तुमचे पीक स्कॅन करा',
+    hero_cta_how:               'हे कसे कार्य करते ↓',
+    hero_trust_free:            'मोफत',
+    hero_trust_noapp:           'कोणताही ॲप डाउनलोड नाही',
+    hero_trust_anyphone:        'कोणत्याही फोनवर कार्य करते',
+    stats_diseases:             'ओळखलेले रोग',
+    stats_accuracy:             'अचूकता दर',
+    stats_lang_support:         'भाषा समर्थन',
+    stats_lang_value:           'EN + हिंदी + मराठी',
+    features_section_title:     'तुमच्या पिकांच्या संरक्षणासाठी सर्वकाही',
+    features_section_desc:      'भारतीय शेतकऱ्यांना रोग लवकर शोधण्यात आणि कार्यवाही करण्यात मदत करण्यासाठी AI द्वारे चालवलेली सर्वसमावेशक साधने.',
+    feature_detect_title:       'AI रोग ओळख',
+    feature_detect_desc:        'प्रगत Gemini Vision AI वापरून एकाच फोटोतून 38+ पीक रोग ओळखतो.',
+    feature_detect_link:        'स्कॅन सुरू करा →',
+    feature_weather_title:      'हवामान सल्ला',
+    feature_weather_desc:       'तुमच्या स्थानासाठी थेट हवामान डेटावर आधारित सिंचन, पीक नियोजन आणि सूचना.',
+    feature_weather_link:       'हवामान तपासा →',
+    feature_lang_title:         'त्रिभाषिक समर्थन',
+    feature_lang_desc:          'संपूर्ण भारतातील शेतकऱ्यांसाठी मराठी, हिंदी आणि इंग्रजीत उपचार सल्ला.',
+    feature_lang_link:          'अधिक जाणून घ्या →',
+    feature_history_title:      'स्कॅन इतिहास',
+    feature_history_desc:       'सर्व ओळखी ट्रॅक करा आणि तपशीलवार अहवालांसह कालांतराने पीक आरोग्यावर लक्ष ठेवा.',
+    feature_history_link:       'अहवाल पाहा →',
+    how_title:                  'सोपे. जलद. अचूक.',
+    how_desc:                   'तीन सोप्या चरणांमध्ये पीक रोग निदान मिळवा.',
+    step1_title:                'फोटो अपलोड करा',
+    step1_desc:                 'प्रभावित पानाचा फोटो घ्या आणि अपलोड करा',
+    step2_title:                'AI विश्लेषण करते',
+    step2_desc:                 'Gemini Vision AI तात्काळ 38+ रोगांची तपासणी करते',
+    step3_title:                'उपचार मिळवा',
+    step3_desc:                 'तुमच्या भाषेत पायरी-पायरी उपचार + प्रतिबंध',
+    crops_title:                '14+ पिकांना समर्थन',
+    cta_banner_title:           'आजच तुमच्या पिकांचे संरक्षण सुरू करा — ते मोफत आहे',
+    cta_banner_btn:             '🔬 मोफत सुरू करा →',
+    footer_tagline:             'प्रत्येक शेतकऱ्यासाठी AI-चालित पीक आरोग्य',
+    footer_rights:              '© 2025 स्मार्ट क्रॉप डिटेक्टिव',
+    footer_made:                '❤️ भारतीय शेतकऱ्यांसाठी बनवले',
+
+    about_hero_title:           'स्मार्ट क्रॉप डिटेक्टिव बद्दल',
+    about_hero_desc:            'AI-चालित पीक आरोग्य निरीक्षणाने भारतीय शेतकऱ्यांना सक्षम करणे. रोग लवकर शोधा, तुमच्या भाषेत उपचार सल्ला मिळवा, तुमचे पीक वाचवा.',
+    about_mission_title:        'आमचे ध्येय',
+    about_problem_label:        'समस्या:',
+    about_problem_desc:         'पीक रोगांमुळे भारतीय शेतकऱ्यांचे दरवर्षी अब्जावधी रुपयांचे नुकसान होते. लवकर ओळख महत्त्वाची आहे, परंतु बहुतांश शेतकऱ्यांना तज्ज्ञ निदानाचा अभाव आहे.',
+    about_solution_label:       'आमचे उपाय:',
+    about_solution_desc:        'स्मार्ट क्रॉप डिटेक्टिव प्रत्येक शेतकऱ्याच्या बोटांपर्यंत तात्काळ रोग निदान आणण्यासाठी प्रगत AI तंत्रज्ञान वापरतो.',
+    about_impact_label:         'परिणाम:',
+    about_impact_desc:          'मराठी, हिंदी आणि इंग्रजीत लवकर ओळख आणि कृती करण्यायोग्य उपचार सल्ला देऊन, आम्ही शेतकऱ्यांना त्यांची पिके वाचवण्यास मदत करतो.',
+    about_tech_title:           'आधुनिक AI ने बनवले',
+    about_tech_desc:            'अचूक आणि जलद निकाल देण्यासाठी अत्याधुनिक तंत्रज्ञानाचा वापर.',
+    about_dev_title:            'विकसकाशी भेटा',
+    about_cta_title:            'तुमची पिके संरक्षित करण्यासाठी तयार आहात?',
+    about_cta_btn:              '🔬 आता स्कॅन सुरू करा →',
+
+    contact_page_title:         'संपर्क साधा',
+    contact_page_desc:          'स्मार्ट क्रॉप डिटेक्टिव बद्दल प्रश्न आहेत? समस्या नोंदवायची आहे किंवा फीचर सुचवायचे आहे? आम्हाला तुमच्याकडून ऐकायला आवडेल!',
+    contact_label_email:        'ईमेल',
+    contact_label_location:     'स्थान',
+    contact_label_response:     'प्रतिसाद वेळ',
+    contact_response_val:       '24 तासांच्या आत',
+    contact_name_label:         'नाव',
+    contact_name_ph:            'तुमचे नाव',
+    contact_email_ph:           'तुमचा ईमेल पत्ता',
+    contact_subject_label:      'विषय',
+    contact_subject_ph:         'हे कशाबद्दल आहे?',
+    contact_message_label:      'संदेश',
+    contact_message_ph:         'आम्हाला अधिक सांगा...',
+    contact_btn_send:           'संदेश पाठवा',
+    contact_success_title:      'संदेश पाठवला! 🎉',
+    contact_success_desc:       'संपर्क केल्याबद्दल धन्यवाद. आम्ही 24 तासांच्या आत तुमच्याशी संपर्क साधू.',
   },
 };
 
@@ -554,6 +900,30 @@ const Lang = {
         ?? TRANSLATIONS.en?.[el.dataset.i18nAria]
         ?? '');
     });
+
+    // Handle data-custom-i18n (textContent — used in auth.html security questions, forgot-password)
+    document.querySelectorAll('[data-custom-i18n]').forEach(el => {
+      const key = el.dataset.customI18n;
+      el.textContent = TRANSLATIONS[lang]?.[key]
+                   ?? TRANSLATIONS.en?.[key]
+                   ?? el.textContent;
+    });
+
+    // Handle data-custom-i18n-placeholder
+    document.querySelectorAll('[data-custom-i18n-placeholder]').forEach(el => {
+      const key = el.dataset.customI18nPlaceholder;
+      el.placeholder = TRANSLATIONS[lang]?.[key]
+                    ?? TRANSLATIONS.en?.[key]
+                    ?? el.placeholder;
+    });
+
+    // Handle <option> elements with data-custom-i18n (preserve value attribute)
+    document.querySelectorAll('option[data-custom-i18n]').forEach(el => {
+      const key = el.dataset.customI18n;
+      el.textContent = TRANSLATIONS[lang]?.[key]
+                   ?? TRANSLATIONS.en?.[key]
+                   ?? el.textContent;
+    });
   },
 
   _syncSelects(lang) {
@@ -580,8 +950,8 @@ const Lang = {
       for (const m of muts) {
         for (const n of m.addedNodes) {
           if (n.nodeType === 1 && (
-            n.matches?.('[data-i18n],[data-i18n-placeholder],[data-i18n-title],[data-i18n-aria]') ||
-            n.querySelector?.('[data-i18n],[data-i18n-placeholder],[data-i18n-title],[data-i18n-aria]')
+            n.matches?.('[data-i18n],[data-i18n-placeholder],[data-i18n-title],[data-i18n-aria],[data-custom-i18n],[data-custom-i18n-placeholder]') ||
+            n.querySelector?.('[data-i18n],[data-i18n-placeholder],[data-i18n-title],[data-i18n-aria],[data-custom-i18n],[data-custom-i18n-placeholder]')
           )) {
             this._apply(this.get());
             return;
@@ -602,6 +972,12 @@ const Lang = {
 
   init() {
     this._migrateLegacyKey();
+    // Auto-detect browser language for first-time visitors
+    if (!localStorage.getItem(this.STORAGE_KEY)) {
+      const browserLang = (navigator.language || navigator.userLanguage || 'en').split('-')[0].toLowerCase();
+      const detected = this.SUPPORTED.includes(browserLang) ? browserLang : 'en';
+      localStorage.setItem(this.STORAGE_KEY, detected);
+    }
     const lang = this.get();
     this._apply(lang);
     this._syncSelects(lang);

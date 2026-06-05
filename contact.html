@@ -35,14 +35,14 @@
     <div class="contact-inner">
       <!-- Left Side - Info -->
       <div class="contact-info">
-        <h2>Get in Touch</h2>
-        <p>Have questions about Smart Crop Detective? Want to report an issue or suggest a feature? We'd love to hear from you!</p>
+        <h2 data-i18n="contact_page_title">Get in Touch</h2>
+        <p data-i18n="contact_page_desc">Have questions about Smart Crop Detective? Want to report an issue or suggest a feature? We’d love to hear from you!</p>
         
         <div class="contact-cards">
           <div class="contact-card">
             <div class="contact-card-icon">📧</div>
             <div>
-              <p class="contact-card-label">Email</p>
+              <p class="contact-card-label" data-i18n="contact_label_email">Email</p>
               <p class="contact-card-value">support@smartcropdetective.com</p>
             </div>
           </div>
@@ -50,7 +50,7 @@
           <div class="contact-card">
             <div class="contact-card-icon">📍</div>
             <div>
-              <p class="contact-card-label">Location</p>
+              <p class="contact-card-label" data-i18n="contact_label_location">Location</p>
               <p class="contact-card-value">Shirpur, Maharashtra, India</p>
             </div>
           </div>
@@ -58,8 +58,8 @@
           <div class="contact-card">
             <div class="contact-card-icon">⏰</div>
             <div>
-              <p class="contact-card-label">Response Time</p>
-              <p class="contact-card-value">Within 24 hours</p>
+              <p class="contact-card-label" data-i18n="contact_label_response">Response Time</p>
+              <p class="contact-card-value" data-i18n="contact_response_val">Within 24 hours</p>
             </div>
           </div>
         </div>
@@ -69,38 +69,38 @@
       <div class="contact-form-card">
         <form id="contact-form" novalidate>
           <div class="form-group">
-            <label class="form-label" for="contact-name">Name</label>
-            <input type="text" id="contact-name" class="form-input" placeholder="Your name" required>
+            <label class="form-label" for="contact-name" data-i18n="contact_name_label">Name</label>
+            <input type="text" id="contact-name" class="form-input" placeholder="Your name" data-i18n-placeholder="contact_name_ph" required>
             <div class="form-error"></div>
           </div>
           
           <div class="form-group">
-            <label class="form-label" for="contact-email">Email</label>
-            <input type="email" id="contact-email" class="form-input" placeholder="Your email address" required>
+            <label class="form-label" for="contact-email" data-i18n="contact_label_email">Email</label>
+            <input type="email" id="contact-email" class="form-input" placeholder="Your email address" data-i18n-placeholder="contact_email_ph" required>
             <div class="form-error"></div>
           </div>
           
           <div class="form-group">
-            <label class="form-label" for="contact-subject">Subject</label>
-            <input type="text" id="contact-subject" class="form-input" placeholder="What is this about?" required>
+            <label class="form-label" for="contact-subject" data-i18n="contact_subject_label">Subject</label>
+            <input type="text" id="contact-subject" class="form-input" placeholder="What is this about?" data-i18n-placeholder="contact_subject_ph" required>
             <div class="form-error"></div>
           </div>
           
           <div class="form-group">
-            <label class="form-label" for="contact-message">Message</label>
-            <textarea id="contact-message" class="form-input" rows="5" placeholder="Tell us more..." required></textarea>
+            <label class="form-label" for="contact-message" data-i18n="contact_message_label">Message</label>
+            <textarea id="contact-message" class="form-input" rows="5" placeholder="Tell us more..." data-i18n-placeholder="contact_message_ph" required></textarea>
             <div class="form-error"></div>
           </div>
           
           <button type="submit" class="btn btn-orange btn-full" id="contact-btn">
-            Send Message
+            <span data-i18n="contact_btn_send">Send Message</span>
           </button>
         </form>
         
         <div class="contact-success" id="contact-success">
           <div class="contact-success-icon">✅</div>
-          <h3>Message Received!</h3>
-          <p style="color: var(--text-muted); margin-top: 8px;">We'll get back to you soon.</p>
+          <h3 data-i18n="contact_success_title">Message Sent! 🎉</h3>
+          <p style="color: var(--text-muted); margin-top: 8px;" data-i18n="contact_success_desc">Thank you for reaching out. We'll get back to you within 24 hours.</p>
         </div>
       </div>
     </div>
@@ -112,7 +112,7 @@
       <div class="footer-top">
         <div class="footer-brand">
           <div class="footer-logo">🌿 Smart Crop Detective</div>
-          <p class="footer-tagline">AI-powered crop health for every farmer</p>
+          <p class="footer-tagline" data-i18n="footer_tagline">AI-powered crop health for every farmer</p>
         </div>
         <div class="footer-links">
           <a href="/index.html" class="footer-link" data-i18n="nav_home">Home</a>
@@ -123,8 +123,8 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p class="footer-copyright">© 2025 Smart Crop Detective</p>
-        <p class="footer-made">Made with ❤️ for Indian Farmers</p>
+        <p class="footer-copyright" data-i18n="footer_rights">© 2025 Smart Crop Detective</p>
+        <p class="footer-made" data-i18n="footer_made">Made with ❤️ for Indian Farmers</p>
       </div>
     </div>
   </footer>

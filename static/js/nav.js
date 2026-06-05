@@ -155,6 +155,7 @@ const NavComponent = {
         if (dropdown) dropdown.classList.remove('show');
       }
     });
+    NavComponent._injectLangSwitcher();
   },
 
   toggleMobile: function() {
@@ -183,11 +184,185 @@ const NavComponent = {
       window.location.href = '/index.html';
     });
   }
+,
+
+  _injectLangSwitcher: function() {
+    const currentLang = window.Lang ? Lang.get() : (localStorage.getItem('lang') || 'en');
+    const labels = { en: 'EN', hi: 'हि', mr: 'म' };
+    const fullNames = {
+      en: { flag: '🇬🇧', name: 'English' },
+      hi: { flag: '🇮🇳', name: 'हिंदी' },
+      mr: { flag: '🇮🇳', name: 'मराठी' }
+    };
+
+    const existing = document.getElementById('global-lang-switcher');
+    if (existing) {
+      const lbl = existing.querySelector('.gls-label');
+      if (lbl) lbl.textContent = labels[currentLang] || 'EN';
+      existing.querySelectorAll('.gls-option').forEach(btn => {
+        btn.classList.toggle('gls-active', btn.dataset.lang === currentLang);
+      });
+      return;
+    }
+
+    if (!document.getElementById('gls-styles')) {
+      const style = document.createElement('style');
+      style.id = 'gls-styles';
+      style.textContent = `
+        #global-lang-switcher {
+          position: fixed;
+          bottom: 28px;
+          right: 24px;
+          z-index: 9999;
+          font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
+        }
+        .gls-btn {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 9px 15px;
+          background: var(--surface, #fff);
+          border: 1.5px solid var(--border, #e2e8f0);
+          border-radius: 999px;
+          cursor: pointer;
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--text, #1a202c);
+          box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+          transition: box-shadow 0.2s, transform 0.15s;
+          white-space: nowrap;
+          user-select: none;
+        }
+        @media (max-width: 768px) {
+          #global-lang-switcher {
+            bottom: 84px; /* Move above mobile-nav (64px) + 20px padding */
+          }
+        }
+        .gls-btn:hover {
+          box-shadow: 0 6px 28px rgba(0,0,0,0.18);
+          transform: translateY(-1px);
+        }
+        .gls-btn:active { transform: translateY(0); }
+        .gls-globe { font-size: 15px; line-height: 1; }
+        .gls-label { letter-spacing: 0.03em; }
+        .gls-chevron {
+          font-size: 10px;
+          opacity: 0.5;
+          transition: transform 0.2s;
+          display: inline-block;
+        }
+        #global-lang-switcher.open .gls-chevron { transform: rotate(180deg); }
+        .gls-popup {
+          display: none;
+          position: absolute;
+          bottom: calc(100% + 10px);
+          right: 0;
+          background: var(--surface, #fff);
+          border: 1.5px solid var(--border, #e2e8f0);
+          border-radius: 16px;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+          overflow: hidden;
+          min-width: 160px;
+          animation: glsPopIn 0.18s ease;
+        }
+        @keyframes glsPopIn {
+          from { opacity: 0; transform: translateY(6px) scale(0.97); }
+          to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        #global-lang-switcher.open .gls-popup { display: block; }
+        .gls-popup-header {
+          padding: 10px 14px 8px;
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: var(--text-muted, #718096);
+          border-bottom: 1px solid var(--border, #e2e8f0);
+        }
+        .gls-option {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          width: 100%;
+          padding: 11px 14px;
+          background: none;
+          border: none;
+          cursor: pointer;
+          font-size: 14px;
+          font-weight: 500;
+          color: var(--text, #1a202c);
+          text-align: left;
+          transition: background 0.15s;
+          font-family: inherit;
+        }
+        .gls-option:hover { background: var(--green-tint, rgba(45,106,79,0.07)); }
+        .gls-option.gls-active {
+          background: var(--green-tint, rgba(45,106,79,0.1));
+          color: var(--green-700, #2d6a4f);
+          font-weight: 700;
+        }
+        .gls-option .gls-check {
+          margin-left: auto;
+          opacity: 0;
+          color: var(--green-700, #2d6a4f);
+          font-size: 13px;
+        }
+        .gls-option.gls-active .gls-check { opacity: 1; }
+        .gls-flag { font-size: 16px; line-height: 1; }
+      `;
+      document.head.appendChild(style);
+    }
+
+    const widget = document.createElement('div');
+    widget.id = 'global-lang-switcher';
+
+    const optionsHTML = Object.entries(fullNames).map(([code, info]) => `
+      <button class="gls-option ${code === currentLang ? 'gls-active' : ''}" data-lang="${code}" tabindex="0"
+              onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"
+              onclick="event.stopPropagation(); if(window.Lang){Lang.set('${code}');} else{localStorage.setItem('lang','${code}');location.reload();} document.getElementById('global-lang-switcher').classList.remove('open');">
+        <span class="gls-flag">${info.flag}</span>
+        <span>${info.name}</span>
+        <span class="gls-check">✓</span>
+      </button>
+    `).join('');
+
+    widget.innerHTML = `
+      <div class="gls-popup" role="dialog" aria-label="Language selection">
+        <div class="gls-popup-header">🌐 Language / भाषा</div>
+        ${optionsHTML}
+      </div>
+      <button class="gls-btn" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();document.getElementById('global-lang-switcher').classList.toggle('open');}" onclick="document.getElementById('global-lang-switcher').classList.toggle('open');" aria-label="Switch language" aria-haspopup="true" aria-expanded="false">
+        <span class="gls-globe">🌐</span>
+        <span class="gls-label">${labels[currentLang] || 'EN'}</span>
+        <span class="gls-chevron">▲</span>
+      </button>
+    `;
+
+    document.body.appendChild(widget);
+
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('#global-lang-switcher')) {
+        widget.classList.remove('open');
+      }
+    });
+
+    // Keep aria-expanded in sync with the open class
+    const glsBtn = widget.querySelector('.gls-btn');
+    const observer = new MutationObserver(() => {
+      glsBtn.setAttribute('aria-expanded', widget.classList.contains('open').toString());
+    });
+    observer.observe(widget, { attributes: true, attributeFilter: ['class'] });
+
+    window.addEventListener('langchange', function(e) {
+      NavComponent._injectLangSwitcher();
+    });
+  }
 };
 
 // Auto-initialize on DOMContentLoaded
 document.addEventListener('DOMContentLoaded', function() {
   NavComponent.init('nav-root');
+  NavComponent._injectLangSwitcher();
 });
 
 window.NavComponent = NavComponent;

@@ -33,6 +33,7 @@
   <link rel="stylesheet" href="/static/css/components.css">
   <link rel="stylesheet" href="/static/css/pages.css">
   <link rel="stylesheet" href="/static/css/detect.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body class="auth-protected">
   <!-- Sidebar -->
@@ -129,12 +130,24 @@
     <!-- Interactive Card Wrap -->
     <div class="detect-card-wrap">
       <div class="detect-card">
-        <!-- Upload Zone -->
+        <!-- Input Method Selector -->
+        <div class="input-method-selector" id="input-method-selector">
+          <button class="input-method-btn active" id="btn-upload" onclick="switchInputMethod('upload')">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></svg>
+            <span data-i18n="detect_opt_upload">Upload Photo</span>
+          </button>
+          <button class="input-method-btn" id="btn-camera" onclick="switchInputMethod('camera')">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+            <span data-i18n="detect_opt_camera">Take Photo</span>
+          </button>
+        </div>
+
+        <!-- Upload Zone (shown by default) -->
         <div class="detect-upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
           <div id="upload-default">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="upload-icon-svg"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></svg>
             <h3 data-i18n="detect_upload">Upload a leaf photo</h3>
-            <p>or click to browse</p>
+            <p>or drag and drop here</p>
             <small>JPEG · PNG · Max 10MB</small>
           </div>
           <div class="upload-preview" id="upload-preview">
@@ -145,6 +158,44 @@
             <button class="upload-remove" onclick="removeImage(event)">✕ Remove</button>
           </div>
           <input type="file" id="file-input" accept="image/jpeg,image/png" style="display: none;">
+        </div>
+
+        <!-- Camera Zone (hidden by default) -->
+        <div class="detect-camera-zone" id="camera-zone" style="display: none;">
+          <div class="camera-idle" id="camera-idle">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="camera-icon-svg"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+            <h3 data-i18n="detect_camera_title">Use your camera</h3>
+            <p data-i18n="detect_camera_desc">Point at the affected leaf and tap capture</p>
+            <button class="btn-capture-trigger" id="btn-open-camera" onclick="openCameraCapture()">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+              <span data-i18n="detect_camera_btn">Open Camera</span>
+            </button>
+            <!-- Desktop: QR code hint (hidden on mobile via JS) -->
+            <div class="camera-qr-panel" id="camera-qr-panel" style="display:none;">
+              <div class="camera-qr-divider">
+                <span>or scan to open on your phone</span>
+              </div>
+              <div class="camera-qr-card">
+                <div class="camera-qr-code" id="qr-code-canvas"></div>
+                <div class="camera-qr-text">
+                  <p class="camera-qr-title">📷 Camera works best on mobile</p>
+                  <p class="camera-qr-desc">Scan this QR code to open Smart Crop Detective on your phone and use the rear camera directly on your crops.</p>
+                  <a class="camera-qr-link" href="https://agritech-v0.onrender.com/detect.html" target="_blank">
+                    agritech-v0.onrender.com →
+                  </a>
+                </div>
+              </div>
+            </div>
+            <small class="camera-mobile-hint" id="camera-mobile-hint">Opens rear camera on mobile · Works on any phone</small>
+          </div>
+          <div class="camera-preview" id="camera-preview" style="display: none;">
+            <div class="preview-img-container">
+              <img id="camera-preview-image" src="" alt="Camera capture">
+            </div>
+            <p class="upload-preview-info" id="camera-preview-info"></p>
+            <button class="upload-remove" onclick="removeCameraImage()">✕ Retake</button>
+          </div>
+          <input type="file" id="camera-input" accept="image/jpeg,image/png" capture="environment" style="display: none;">
         </div>
 
         <!-- Crop Selector -->
@@ -307,6 +358,7 @@
   <script src="/static/js/utils.js"></script>
   <script>
     let selectedFile = null;
+    let activeInputMethod = 'upload'; // 'upload' | 'camera'
     let detectionResult = null;
     let adviceData = null;
 
@@ -334,6 +386,127 @@
     const analyzeBtn = document.getElementById('analyze-btn');
 
     fileInput.addEventListener('change', handleFileSelect);
+
+    // Camera input handler
+    const cameraInput = document.getElementById('camera-input');
+    cameraInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        handleFile(file);
+        // Show preview in camera zone
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          document.getElementById('camera-preview-image').src = ev.target.result;
+          document.getElementById('camera-preview-info').textContent =
+            `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+          document.getElementById('camera-idle').style.display = 'none';
+          document.getElementById('camera-preview').style.display = 'flex';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function switchInputMethod(method) {
+      activeInputMethod = method;
+      const uploadZone = document.getElementById('upload-zone');
+      const cameraZone = document.getElementById('camera-zone');
+      const btnUpload = document.getElementById('btn-upload');
+      const btnCamera = document.getElementById('btn-camera');
+
+      if (method === 'upload') {
+        uploadZone.style.display = 'flex';
+        cameraZone.style.display = 'none';
+        btnUpload.classList.add('active');
+        btnCamera.classList.remove('active');
+        // Clear camera state
+        removeCameraImage(true);
+      } else {
+        uploadZone.style.display = 'none';
+        cameraZone.style.display = 'flex';
+        btnCamera.classList.add('active');
+        btnUpload.classList.remove('active');
+        // Clear upload state
+        removeImage({ stopPropagation: () => {} });
+        updateCameraZoneForDevice();
+      }
+    }
+
+    // Detect if running on a mobile/touch device
+    function isMobileDevice() {
+      return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
+             (navigator.maxTouchPoints > 1 && /Macintosh/i.test(navigator.userAgent) === false);
+    }
+
+    // Generate QR code once, lazily
+    let qrGenerated = false;
+    function initQRCode() {
+      if (qrGenerated) return;
+      const el = document.getElementById('qr-code-canvas');
+      if (!el) return;
+      el.innerHTML = '';
+      new QRCode(el, {
+        text: 'https://agritech-v0.onrender.com/detect.html',
+        width: 124,
+        height: 124,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+      qrGenerated = true;
+    }
+
+    // Show/hide QR panel based on device type
+    function updateCameraZoneForDevice() {
+      const qrPanel = document.getElementById('camera-qr-panel');
+      const mobileHint = document.getElementById('camera-mobile-hint');
+      const openBtn = document.getElementById('btn-open-camera');
+
+      if (isMobileDevice()) {
+        // Mobile: hide QR, show normal hint, keep button
+        if (qrPanel) qrPanel.style.display = 'none';
+        if (mobileHint) mobileHint.style.display = 'inline-block';
+        if (openBtn) openBtn.style.display = 'inline-flex';
+      } else {
+        // Desktop: show QR panel, hide normal hint, hide open camera button
+        if (qrPanel) qrPanel.style.display = 'block';
+        if (mobileHint) mobileHint.style.display = 'none';
+        if (openBtn) openBtn.style.display = 'none';
+        initQRCode();
+      }
+    }
+
+    function openCameraCapture() {
+      if (isMobileDevice()) {
+        document.getElementById('camera-input').click();
+      }
+      // On desktop this button is hidden — nothing to do
+    }
+
+    // Regenerate QR code when theme changes so colors match
+    window.addEventListener('themechange', function() {
+      qrGenerated = false;
+      const el = document.getElementById('qr-code-canvas');
+      if (el) el.innerHTML = '';
+      initQRCode();
+    });
+
+    // Wrap ThemeManager.toggle to dispatch 'themechange' event
+    if (window.ThemeManager && typeof window.ThemeManager.toggle === 'function') {
+      const originalToggle = window.ThemeManager.toggle;
+      window.ThemeManager.toggle = function() {
+        const res = originalToggle.apply(this, arguments);
+        window.dispatchEvent(new Event('themechange'));
+        return res;
+      };
+    }
+
+    function removeCameraImage(silent) {
+      selectedFile = null;
+      document.getElementById('camera-input').value = '';
+      document.getElementById('camera-idle').style.display = 'flex';
+      document.getElementById('camera-preview').style.display = 'none';
+      if (!silent) analyzeBtn.disabled = true;
+    }
 
     // Drag and drop
     uploadZone.addEventListener('dragover', (e) => {
@@ -615,12 +788,17 @@ function copyAdviceToClipboard() {
     });
 
     window.addEventListener('langchange', renderAdviceContent);
+    document.addEventListener('DOMContentLoaded', updateCameraZoneForDevice);
 
     function resetDetection() {
       selectedFile = null;
       detectionResult = null;
       adviceData = null;
       fileInput.value = '';
+      document.getElementById('camera-input').value = '';
+      document.getElementById('camera-idle').style.display = 'flex';
+      document.getElementById('camera-preview').style.display = 'none';
+      switchInputMethod('upload');
       document.getElementById('upload-default').style.display = 'block';
       document.getElementById('upload-preview').classList.remove('show');
       document.getElementById('detection-results').classList.remove('show');

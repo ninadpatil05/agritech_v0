@@ -314,6 +314,291 @@ html[data-theme="dark"] .detect-card {
   border-color: var(--border-strong);
 }
 
+  /* ─── INPUT METHOD SELECTOR ─────────────────────────────────────────── */
+  .input-method-selector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 4px;
+  }
+
+  .input-method-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .input-method-btn:hover {
+    color: var(--text);
+    background: var(--surface-hover);
+  }
+
+  .input-method-btn.active {
+    background: var(--accent-from);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+  }
+
+  .input-method-btn.active svg {
+    stroke: #ffffff;
+  }
+
+  html[data-theme="dark"] .input-method-btn.active {
+    box-shadow: 0 2px 12px rgba(52, 211, 153, 0.3);
+  }
+
+  /* ─── CAMERA ZONE ────────────────────────────────────────────────────── */
+  .detect-camera-zone {
+    border: 2px dashed var(--border);
+    border-radius: 16px;
+    padding: 48px 32px;
+    text-align: center;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 220px;
+    position: relative;
+    transition: border-color 0.2s ease;
+  }
+
+  .detect-camera-zone:hover {
+    border-color: var(--accent-from);
+  }
+
+  .camera-idle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .camera-icon-svg {
+    width: 48px;
+    height: 48px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+
+  .detect-camera-zone:hover .camera-icon-svg {
+    color: var(--accent-from);
+    transform: translateY(-2px);
+  }
+
+  .camera-idle h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .camera-idle p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .btn-capture-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: var(--gradient-cta);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+  }
+
+  .btn-capture-trigger:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+  }
+
+  .btn-capture-trigger:active {
+    transform: translateY(0);
+  }
+
+  .camera-idle small {
+    font-size: 11px;
+    font-family: monospace;
+    color: var(--text-subtle);
+    background: rgba(0, 0, 0, 0.04);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  html[data-theme="dark"] .camera-idle small {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .camera-preview {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  /* ─── CAMERA QR PANEL (desktop hint) ──────────────────────────────── */
+  .camera-qr-panel {
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .camera-qr-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    color: var(--text-subtle);
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .camera-qr-divider::before,
+  .camera-qr-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .camera-qr-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    transition: border-color 0.2s ease;
+  }
+
+  .camera-qr-card:hover {
+    border-color: var(--accent-from);
+  }
+
+  .camera-qr-code {
+    flex-shrink: 0;
+    width: 140px;
+    height: 140px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: white;
+    padding: 8px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Force QR canvas/img to fill container */
+  .camera-qr-code canvas,
+  .camera-qr-code img {
+    width: 124px !important;
+    height: 124px !important;
+    display: block;
+  }
+
+  .camera-qr-text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .camera-qr-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 6px 0;
+  }
+
+  .camera-qr-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin: 0 0 12px 0;
+  }
+
+  .camera-qr-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: monospace;
+    color: var(--accent-from);
+    text-decoration: none;
+    padding: 4px 10px;
+    background: rgba(16, 185, 129, 0.08);
+    border-radius: 6px;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    transition: opacity 0.2s ease;
+  }
+
+  .camera-qr-link:hover {
+    opacity: 0.8;
+  }
+
+  html[data-theme="dark"] .camera-qr-code {
+    background: #ffffff;
+  }
+
+  html[data-theme="dark"] .camera-qr-link {
+    background: rgba(52, 211, 153, 0.1);
+    border-color: rgba(52, 211, 153, 0.2);
+    color: var(--accent-from);
+  }
+
+  /* On mobile: QR panel is hidden by JS, but also hide via CSS as fallback */
+  @media (max-width: 600px) {
+    .camera-qr-panel {
+      display: none !important;
+    }
+    .camera-mobile-hint {
+      display: inline-block !important;
+    }
+  }
+
+  /* QR card stacks on narrow desktop */
+  @media (max-width: 480px) {
+    .camera-qr-card {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+  }
+
+  /* Mobile: stack selector buttons vertically on very small screens */
+  @media (max-width: 400px) {
+    .input-method-selector {
+      flex-direction: column;
+    }
+  }
+
 /* Drag & Drop Zone */
 .detect-upload-zone {
   border: 2px dashed var(--border);

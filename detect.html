@@ -444,6 +444,16 @@
       const el = document.getElementById('qr-code-canvas');
       if (!el) return;
       el.innerHTML = '';
+
+      // Force visible so QRCode.js can measure dimensions correctly
+      const panel = document.getElementById('camera-qr-panel');
+      const wasHidden = panel && panel.style.display === 'none';
+      if (wasHidden) {
+        panel.style.visibility = 'hidden';
+        panel.style.position = 'absolute';
+        panel.style.display = 'block';
+      }
+
       new QRCode(el, {
         text: 'https://agritech-v0.onrender.com/detect.html',
         width: 124,
@@ -452,6 +462,18 @@
         colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.M
       });
+
+      if (wasHidden) {
+        panel.style.display = 'none';
+        panel.style.visibility = '';
+        panel.style.position = '';
+      }
+
+      const canvas = el.querySelector('canvas');
+      if (!canvas || canvas.width === 0) {
+        qrGenerated = false; // Allow retry
+        return;
+      }
       qrGenerated = true;
     }
 
@@ -788,7 +810,11 @@ function copyAdviceToClipboard() {
     });
 
     window.addEventListener('langchange', renderAdviceContent);
-    document.addEventListener('DOMContentLoaded', updateCameraZoneForDevice);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', updateCameraZoneForDevice);
+    } else {
+      updateCameraZoneForDevice();
+    }
 
     function resetDetection() {
       selectedFile = null;

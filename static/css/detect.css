@@ -456,13 +456,6 @@ html[data-theme="dark"] .detect-card {
     background: rgba(255, 255, 255, 0.04);
   }
 
-  .camera-preview {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-  }
-
   /* ─── CAMERA QR PANEL (desktop hint) ──────────────────────────────── */
   .camera-qr-panel {
     width: 100%;
@@ -667,6 +660,13 @@ html[data-theme="dark"] .detect-upload-zone small {
   gap: 16px;
 }
 
+.camera-preview {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
 .preview-img-container {
   position: relative;
   border-radius: 12px;
@@ -674,11 +674,20 @@ html[data-theme="dark"] .detect-upload-zone small {
   border: 1px solid var(--border);
   background: var(--bg);
   box-shadow: var(--shadow-sm);
+  width: 100%;
 }
 
 #preview-image {
   max-height: 240px;
   max-width: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+#camera-preview-image {
+  max-height: 240px;
+  max-width: 100%;
+  width: 100%;
   object-fit: contain;
   display: block;
 }
